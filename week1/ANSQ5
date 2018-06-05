@@ -1,0 +1,5 @@
+A branch in git is a tool for contributors of a project to create a divergent path of commits.
+A branch is different of the default MASTER branch. Basically a branch is a savepoint to use a gaming analogy.
+From this "savepoint" a contributor can make a commit in the same way as via the MASTER branch.
+However if something ends up malfuncitoning in the the final product you can revert to previous versions. 
+It is an effective tool to make changes yourself and not corrupt the project for the rest of a group.
