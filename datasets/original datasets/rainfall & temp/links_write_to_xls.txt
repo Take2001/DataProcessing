@@ -1,7 +1,0 @@
-http://pandas.pydata.org/pandas-docs/version/0.17/generated/pandas.DataFrame.insert.html
-http://pandas.pydata.org/pandas-docs/version/0.22/generated/pandas.DataFrame.insert.html
-http://pandas.pydata.org/pandas-docs/version/0.22/generated/pandas.DataFrame.to_excel.html
-https://www.quora.com/In-Python-3-how-do-you-extract-for-example-only-column-2-from-an-excel-sheet
-https://xlsxwriter.readthedocs.io/worksheet.html#write_column
-https://stackoverflow.com/questions/33005722/insert-list-into-excel-column
-
