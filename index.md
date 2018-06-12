@@ -1,3 +1,5 @@
-### Data Processing
+## Introductie en doelen van het project
+Hoofdvraag, deelvragen & hypotheses
+## Resultaten
 
-Door Midas Amersfoort, Alex Labro, Bob Leijnse & Paul Pos
+## Top 3 meest interessante bevindingen
