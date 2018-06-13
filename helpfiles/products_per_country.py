@@ -1,35 +1,3 @@
-
-# coding: utf-8
-
-# In[8]:
-
-
-import pandas as pd
-import matplotlib.pyplot as plt
-from bokeh.plotting import figure
-from bokeh.io import output_file, show, save
-import os
-
-
-# In[38]:
-
-
-# import dataset Foodprices
-print(os.getcwd())
-
-os.chdir("../")
-os.chdir("datasets/preprocessed datasets/Food prices")
-df_foodprices = pd.read_csv('Food_prizes_Africa_processed.csv')
-os.chdir("../../")
-
-print(os.getcwd())
-
-
-# # Producten per land
-
-# In[42]:
-
-
 # laat zien welke producten er in een bepaald land te koop zijn voor een bepaalde input_data
 def products_country(input_data, country):
     products = []
@@ -41,4 +9,3 @@ def products_country(input_data, country):
             products.append(item)
     return(products)
 products_country(df_foodprices, 'Mali')
-
