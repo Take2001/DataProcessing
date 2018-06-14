@@ -1,4 +1,4 @@
-## DataProcessing groep 24
+## Introductie en doelen van het project
 Hoofdvraag, deelvragen & hypotheses
 ## Resultaten
 
