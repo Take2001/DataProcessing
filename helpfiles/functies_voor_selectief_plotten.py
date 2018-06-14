@@ -186,9 +186,9 @@ y3 = normalize(select_plot_temperature_and_precipitation(df_weather, 'Sudan', 20
 
 output_file("Line.html")
 
+f = figure(plot_width=1500, plot_height=600)
 f.xaxis.axis_label = "Temperature and precipitation"
 f.yaxis.axis_label = "Average foodprices"
-f = figure(plot_width=1500, plot_height=600)
 
 # Plot the line
 f.line(x1, y1, color='red')
