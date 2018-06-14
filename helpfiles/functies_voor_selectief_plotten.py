@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[5]:
+# In[2]:
 
 
 import pandas as pd
@@ -12,7 +12,7 @@ print(os.getcwd())
 # controleer altijd of je in de map helpfiles zit
 
 
-# In[6]:
+# In[3]:
 
 
 from select_df import select_df
@@ -22,9 +22,34 @@ df_migration = select_df(1, 'migration_movements')
 df_weather = select_df(1, 'temperature_and_precipitation')
 
 
+# ## Normalize function
+
+# In[17]:
+
+
+# normaliseer de data van een speciefieke kolom naar waardes tussen 0 en 1.
+
+def normalize(input_data, column):
+    values = []
+    
+    for value in input_data[column]:
+         values.append(value)
+            
+    Min = min(values)
+    Max = max(values)
+        
+    output_data = []
+    for value in input_data[column]:
+        output_data.append((value - Min)/(Max - Min))
+    
+    input_data['Normalized_data'] = output_data
+    
+    return input_data
+
+
 # # Plot migration movements
 
-# In[7]:
+# In[22]:
 
 
 # selecteer voor een #input_data de #country_of_residence vanuit een bepaalde #origin vanaf #year1 tot en met #year2
@@ -39,18 +64,13 @@ def select_plot_migration_movements(input_data, country_of_residence, origin, ye
     input_data = input_data.loc[(input_data['YearMonth'] > year1) & (input_data['YearMonth'] < year2 + 1)]
     return input_data
 
-select_plot_migration_movements(df_migration, 'Netherlands', 'Zimbabwe', 2000, 2012)
-
-
-# In[8]:
-
-
-test = select_plot_migration_movements(df_migration, 'Germany', 'Zimbabwe', 1999, 2017)
+# werking
+# select_plot_migration_movements(df_migration, 'Netherlands', 'Zimbabwe', 2000, 2012)
 
 
 # # Plot temperature and precipitation
 
-# In[18]:
+# In[21]:
 
 
 # geeft voor een #input_data van een #country de pr en tas vanaf #year1 tot en met #year2
@@ -81,18 +101,13 @@ def select_plot_temperature_and_precipitation(input_data, country, year1, year2)
     input_data = input_data[['pr', 'tas', 'country', 'YearMonth']]
     return input_data
 
-select_plot_temperature_and_precipitation(df_weather, 'Mauritania', 1985, 2030)
-
-
-# In[10]:
-
-
-df_foodprices
+# werking
+# select_plot_temperature_and_precipitation(df_weather, 'Mauritania', 1985, 2030)
 
 
 # # Plot foodprices per market
 
-# In[11]:
+# In[23]:
 
 
 def select_plot_foodprices_per_market(input_data, country, product, year1, year2):
@@ -101,13 +116,14 @@ def select_plot_foodprices_per_market(input_data, country, product, year1, year2
     input_data = input_data.loc[(input_data['Year'] >= year1) & (input_data['Year'] < year2 + 1)]
     return input_data
 
-select_plot_foodprices_per_market(df_foodprices, 'Burkina Faso', 'Maize', 2004, 2004)
+# werking
+# select_plot_foodprices_per_market(df_foodprices, 'Burkina Faso', 'Maize', 2004, 2004)
 
 
-# In[12]:
+# In[25]:
 
 
-# 
+# berekend de gemiddelde voedselprijzen van een product in een land
 
 def select_plot_foodprices_average(input_data, country, product, year1, year2):
     input_data = select_plot_foodprices_per_market(input_data, country, product, year1, year2)
@@ -144,12 +160,13 @@ def select_plot_foodprices_average(input_data, country, product, year1, year2):
     output_data['average_price'] = average_price_list
     return output_data
 
-select_plot_foodprices_average(df_foodprices, 'Burkina Faso', 'Maize', 2004, 2006)    
+# werking
+# select_plot_foodprices_average(df_foodprices, 'Burkina Faso', 'Maize', 2004, 2006)    
 
 
 # # Plot functies
 
-# In[13]:
+# In[26]:
 
 
 from bokeh.plotting import figure
@@ -162,20 +179,26 @@ x1 = select_plot_foodprices_average(df_foodprices, 'Sudan', 'Sorghum', 2004, 201
 y1 = normalize(select_plot_foodprices_average(df_foodprices, 'Sudan', 'Sorghum', 2004, 2014), 'average_price')['Normalized_data']  
 
 x2 = select_plot_temperature_and_precipitation(df_weather, 'Sudan', 2004, 2014)['YearMonth']    
-y2 = normalize(select_plot_temperature_and_precipitation(df_weather, 'Sudan', 2004, 2014), 'tas')['Normalized_data']    
+y2 = normalize(select_plot_temperature_and_precipitation(df_weather, 'Sudan', 2004, 2014), 'tas')['Normalized_data']  
+
+x3 = select_plot_temperature_and_precipitation(df_weather, 'Sudan', 2004, 2014)['YearMonth']    
+y3 = normalize(select_plot_temperature_and_precipitation(df_weather, 'Sudan', 2004, 2014), 'pr')['Normalized_data'] 
 
 output_file("Line.html")
 
+f.xaxis.axis_label = "Temperature and precipitation"
+f.yaxis.axis_label = "Average foodprices"
 f = figure(plot_width=1500, plot_height=600)
 
 # Plot the line
 f.line(x1, y1, color='red')
 f.line(x2, y2, color='blue')
+f.line(x3, y3, color='orange')
 
 show(f)
 
 
-# In[15]:
+# In[18]:
 
 
 x1 = normalize(select_plot_temperature_and_precipitation(df_weather, 'Sudan', 2004, 2014), 'tas')['Normalized_data']    
@@ -192,32 +215,4 @@ f.yaxis.axis_label = "Average foodprices"
 f.circle(x1, y1, color='red')
 
 show(f)
-
-
-# In[2]:
-
-
-def normalize(input_data, column):
-    values = []
-    
-    for value in input_data[column]:
-         values.append(value)
-            
-    Min = min(values)
-    Max = max(values)
-        
-    output_data = []
-    for value in input_data[column]:
-        output_data.append((value - Min)/(Max - Min))
-    
-    input_data['Normalized_data'] = output_data
-    
-    return input_data
-
-
-# In[24]:
-
-
-y1 = normalize(select_plot_foodprices_average(df_foodprices, 'Sudan', 'Sorghum', 2004, 2014), 'average_price')['average_price']
-y1
 
