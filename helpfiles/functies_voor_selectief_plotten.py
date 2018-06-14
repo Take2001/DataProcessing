@@ -1,3 +1,32 @@
+
+# coding: utf-8
+
+# In[5]:
+
+
+import pandas as pd
+import numpy as np
+import os
+
+print(os.getcwd())
+# controleer altijd of je in de map helpfiles zit
+
+
+# In[6]:
+
+
+from select_df import select_df
+
+df_foodprices = select_df(1, 'foodprices')
+df_migration = select_df(1, 'migration_movements')
+df_weather = select_df(1, 'temperature_and_precipitation')
+
+
+# # Plot migration movements
+
+# In[7]:
+
+
 # selecteer voor een #input_data de #country_of_residence vanuit een bepaalde #origin vanaf #year1 tot en met #year2
 
 def select_plot_migration_movements(input_data, country_of_residence, origin, year1, year2):
@@ -13,15 +42,21 @@ def select_plot_migration_movements(input_data, country_of_residence, origin, ye
 select_plot_migration_movements(df_migration, 'Netherlands', 'Zimbabwe', 2000, 2012)
 
 
+# In[8]:
+
+
+test = select_plot_migration_movements(df_migration, 'Germany', 'Zimbabwe', 1999, 2017)
+
+
 # # Plot temperature and precipitation
 
-# In[19]:
+# In[18]:
 
 
 # geeft voor een #input_data van een #country de pr en tas vanaf #year1 tot en met #year2
 
 def select_plot_temperature_and_precipitation(input_data, country, year1, year2):
-    saved_dict = {'Mauritania': 'MRT', 'Lesotho': 'LSO', 'Somalia': 'SOM', 'Nigeria': 'NGA', 'Tanzania': 'TZA', 'Zambia': 'ZMB', 'Burundi': 'BDI', 'Afghanistan': 'AFG', 'Mali': 'MLI', 'Niger': 'NER', 'Malawi': 'MWI', 'Congo': 'ZAR', 'Cabo Verde': 'CPV', 'Sudan': 'SDN', 'Pakistan': 'PAK', 'Burkina Baso': 'BFA', 'Rwanda': 'RWA', 'Kenya': 'KEN', 'Senegal': 'SEN', 'Cameroon': 'CMR', 'Sierra Leone': 'SLE', 'Iraq': 'IRQ', 'Uganda': 'UGA', 'Mozambique': 'MOZ', 'Zimbabwe': 'ZWE', 'Central African Republic': 'CAF', 'Ethiopia': 'ETH', 'Guinea': 'GIN', 'Liberia': 'LBR', 'Djibouti': 'DJI', 'Iran': 'IRN', 'Madagascar': 'MDG', 'Lebanon': 'LBN'}
+    saved_dict = {'Mauritania': 'MRT', 'Lesotho': 'LSO', 'Somalia': 'SOM', 'Nigeria': 'NGA', 'Tanzania': 'TZA', 'Zambia': 'ZMB', 'Burundi': 'BDI', 'Afghanistan': 'AFG', 'Mali': 'MLI', 'Niger': 'NER', 'Malawi': 'MWI', 'Congo': 'ZAR', 'Cabo Verde': 'CPV', 'Sudan': 'SDN', 'Pakistan': 'PAK', 'Burkina Faso': 'BFA', 'Rwanda': 'RWA', 'Kenya': 'KEN', 'Senegal': 'SEN', 'Cameroon': 'CMR', 'Sierra Leone': 'SLE', 'Iraq': 'IRQ', 'Uganda': 'UGA', 'Mozambique': 'MOZ', 'Zimbabwe': 'ZWE', 'Central African Republic': 'CAF', 'Ethiopia': 'ETH', 'Guinea': 'GIN', 'Liberia': 'LBR', 'Djibouti': 'DJI', 'Iran': 'IRN', 'Madagascar': 'MDG', 'Lebanon': 'LBN'}
 
     if country in saved_dict.keys():
         country = saved_dict[country]
@@ -46,12 +81,18 @@ def select_plot_temperature_and_precipitation(input_data, country, year1, year2)
     input_data = input_data[['pr', 'tas', 'country', 'YearMonth']]
     return input_data
 
-select_plot_temperature_and_precipitation(df_weather, 'Mali', 1990, 2030)
+select_plot_temperature_and_precipitation(df_weather, 'Mauritania', 1985, 2030)
+
+
+# In[10]:
+
+
+df_foodprices
 
 
 # # Plot foodprices per market
 
-# In[20]:
+# In[11]:
 
 
 def select_plot_foodprices_per_market(input_data, country, product, year1, year2):
@@ -63,7 +104,7 @@ def select_plot_foodprices_per_market(input_data, country, product, year1, year2
 select_plot_foodprices_per_market(df_foodprices, 'Burkina Faso', 'Maize', 2004, 2004)
 
 
-# In[21]:
+# In[12]:
 
 
 # 
@@ -108,30 +149,75 @@ select_plot_foodprices_average(df_foodprices, 'Burkina Faso', 'Maize', 2004, 200
 
 # # Plot functies
 
-# In[22]:
+# In[13]:
 
 
 from bokeh.plotting import figure
 from bokeh.io import output_file, show, save
+
 import pandas
 
-def plot_line_difference(country, product, year1, year2):
-    # Make sure x and y are of the same length.
-    x1 = select_plot_foodprices_average(df_foodprices, country, product, 2004, 2014)['year'] 
-    y1 = select_plot_foodprices_average(df_foodprices, country, product, 2004, 2014)['average_price']  
+# Make sure x and y are of the same length.
+x1 = select_plot_foodprices_average(df_foodprices, 'Sudan', 'Sorghum', 2004, 2014)['year'] 
+y1 = normalize(select_plot_foodprices_average(df_foodprices, 'Sudan', 'Sorghum', 2004, 2014), 'average_price')['Normalized_data']  
 
-    x2 = select_plot_temperature_and_precipitation(df_weather, country, 2004, 2014)['YearMonth']    
-    y2 = select_plot_temperature_and_precipitation(df_weather, country, 2004, 2014)['tas']    
+x2 = select_plot_temperature_and_precipitation(df_weather, 'Sudan', 2004, 2014)['YearMonth']    
+y2 = normalize(select_plot_temperature_and_precipitation(df_weather, 'Sudan', 2004, 2014), 'tas')['Normalized_data']    
 
-#     output_file("Line.html")
+output_file("Line.html")
 
-    f = figure(plot_width=1500, plot_height=600)
+f = figure(plot_width=1500, plot_height=600)
 
-    # Plot the line
-    f.line(x1, y1, color='red')
-    f.line(x2, y2, color='blue')
+# Plot the line
+f.line(x1, y1, color='red')
+f.line(x2, y2, color='blue')
 
-    show(f)
+show(f)
 
-plot_line_difference('Mali', 'Maize', 2002, 2010)
+
+# In[15]:
+
+
+x1 = normalize(select_plot_temperature_and_precipitation(df_weather, 'Sudan', 2004, 2014), 'tas')['Normalized_data']    
+y1 = normalize(select_plot_foodprices_average(df_foodprices, 'Sudan', 'Sorghum', 2004, 2014), 'average_price')['Normalized_data']  
+
+output_file("Line.html")
+
+# Create a figure (that's 600x600)
+f = figure(plot_width=600, plot_height=600)
+f.xaxis.axis_label = "Temperature and precipitation"
+f.yaxis.axis_label = "Average foodprices"
+
+# Plot the line
+f.circle(x1, y1, color='red')
+
+show(f)
+
+
+# In[2]:
+
+
+def normalize(input_data, column):
+    values = []
+    
+    for value in input_data[column]:
+         values.append(value)
+            
+    Min = min(values)
+    Max = max(values)
+        
+    output_data = []
+    for value in input_data[column]:
+        output_data.append((value - Min)/(Max - Min))
+    
+    input_data['Normalized_data'] = output_data
+    
+    return input_data
+
+
+# In[24]:
+
+
+y1 = normalize(select_plot_foodprices_average(df_foodprices, 'Sudan', 'Sorghum', 2004, 2014), 'average_price')['average_price']
+y1
 
