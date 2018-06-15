@@ -1,3 +1,4 @@
 theme: jekyll-theme-merlot
+markdown: kramdown
 title: DataProcessing
 description: A data visualisation project by Midas Amersfoort, Alex Labro, Bob Leijnse & Take Pos

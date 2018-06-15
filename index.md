@@ -1,3 +1,9 @@
+---
+layout: default
+title: Dataprocessing Groep24
+---
+<link rel="stylesheet" type="text/css" href="/css/main.css">
+<title>Dataprocessing Groep24</title>
 ## Introductie en doelen van het project
 We zijn dit onderzoek begonnen omdat de vluchtelingen al jarenlang een punt van discussie zijn. We hopen met dit onderzoek verklaringen te vinden voor de richting en grootte van vluchtelingenstromen, zodat organisaties zoals de VN in de toekomst betere maatregelen kan nemen om de vluchtelingenstromingen te verminderen. ofzo.
 ## Resultaten
