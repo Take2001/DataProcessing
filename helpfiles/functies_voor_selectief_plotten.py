@@ -67,6 +67,13 @@ def select_plot_migration_movements(input_data, country_of_residence, origin, ye
 # werking
 # select_plot_migration_movements(df_migration, 'Netherlands', 'Zimbabwe', 2000, 2012)
 
+# selecteer voor een #input_data de #origin vanaf #year1 tot en met #year2
+
+def select_plot_migration_movements1(input_data,origin, year1, year2):
+    input_data = input_data.loc[input_data['Origin'] == origin]
+    input_data = input_data.loc[(input_data['Timestamp'] > year1) & (input_data['Timestamp'] < year2)]
+    return input_data
+
 
 # # Plot temperature and precipitation
 

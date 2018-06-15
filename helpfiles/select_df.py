@@ -15,7 +15,7 @@ def select_df(folders_up, dataset):
         for i in range(folders_up):
             os.chdir("../")
         os.chdir("datasets/preprocessed datasets/Food prices")
-        raw_data = pd.read_csv('Food_prizes_Africa_processed.csv')
+        raw_data = pd.read_csv('Food_prizes_MiddleEast_and_Africa_processed.csv')
         df = pd.DataFrame(raw_data)
         print('Succesfully imported foodprices!')   
         
@@ -23,7 +23,7 @@ def select_df(folders_up, dataset):
         for i in range(folders_up):
             os.chdir("../")                   
         os.chdir("datasets/preprocessed datasets/Migration movements")
-        raw_data = pd.read_csv('data_africa.csv')
+        raw_data = pd.read_csv('data_africa_middleEast_per_timestamp.csv')
         df = pd.DataFrame(raw_data)
         print('Succesfully imported migration_movements!')    
                                     
