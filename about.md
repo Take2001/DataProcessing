@@ -17,7 +17,7 @@ hier zie je een aantal grafieken  die duidelijke correlatie geven tussen voedsel
 	y: [1, 2, 4, 8, 16] }], {
 	margin: { t: 0 } } );
 </script>
-<div id="tester2" style="width:600px;height:600px;"></div>
+
 <script>
 var trace1 = {
   x: [1, 2, 3, 4],
