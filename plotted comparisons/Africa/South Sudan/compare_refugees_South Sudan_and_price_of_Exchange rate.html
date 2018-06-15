@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bokeh Plot</title>
+        
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css" type="text/css" />
+        
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+    </head>
+    <body>
+        
+        <div class="bk-root">
+            <div class="bk-plotdiv" id="bf79e628-76c6-41af-b716-f4244e47e93f"></div>
+        </div>
+        
+        <script type="application/json" id="c4421466-ecc1-4c53-8b67-079cfe78f58e">
+          {"e1937a6d-c8ce-40ce-b89d-45d97d568f4d":{"roots":{"references":[{"attributes":{},"id":"3646c0cf-2018-4531-8299-a3894a68fcce","type":"HelpTool"},{"attributes":{"overlay":{"id":"d3ea8f78-515d-4bdc-86e3-f197c9ffa8f2","type":"BoxAnnotation"}},"id":"17d28c2f-8fff-49c3-b5f7-f5c7b33b0480","type":"BoxZoomTool"},{"attributes":{},"id":"b0ef3ea9-c677-4f72-8911-598f919ca2a7","type":"BasicTickFormatter"},{"attributes":{"align":"center","plot":null,"text":"Correlation between refugees South Sudan and price of Exchange rate","text_font_size":{"value":"25px"}},"id":"7c5dc7fa-8172-47ef-a848-df424a0425d0","type":"Title"},{"attributes":{"source":{"id":"b343cbbf-577b-4835-acd7-9b47e85a43b2","type":"ColumnDataSource"}},"id":"37898942-556f-42b9-a1fc-f31fa67cca57","type":"CDSView"},{"attributes":{"fill_color":{"value":"red"},"line_color":{"value":"red"},"x":{"field":"x"},"y":{"field":"y"}},"id":"b00d1adf-13f3-4d8d-babf-75cb7ab09ac7","type":"Circle"},{"attributes":{},"id":"86757e48-cd02-45ad-aa94-9c89867fe2a9","type":"BasicTickFormatter"},{"attributes":{"data_source":{"id":"b343cbbf-577b-4835-acd7-9b47e85a43b2","type":"ColumnDataSource"},"glyph":{"id":"b00d1adf-13f3-4d8d-babf-75cb7ab09ac7","type":"Circle"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"4e6c9388-83aa-4628-bba6-07cc611d1885","type":"Circle"},"selection_glyph":null,"view":{"id":"37898942-556f-42b9-a1fc-f31fa67cca57","type":"CDSView"}},"id":"b9d56196-766e-4131-8b35-b91636fdd4a5","type":"GlyphRenderer"},{"attributes":{},"id":"1ca739d8-8c9b-4793-af63-da39116e70e9","type":"BasicTicker"},{"attributes":{"callback":null},"id":"dc29f791-1489-4dc1-81de-a6127a842000","type":"DataRange1d"},{"attributes":{},"id":"ec3223f8-efdb-4821-ad84-1b819b3d348c","type":"PanTool"},{"attributes":{},"id":"6e27ee94-f7e5-4a62-9cc0-b045ebf68ccb","type":"ResetTool"},{"attributes":{"axis_label":"Price of Exchange rate","formatter":{"id":"86757e48-cd02-45ad-aa94-9c89867fe2a9","type":"BasicTickFormatter"},"plot":{"id":"0059d57b-ce59-44ec-8ae7-0b79aa767841","subtype":"Figure","type":"Plot"},"ticker":{"id":"1ca739d8-8c9b-4793-af63-da39116e70e9","type":"BasicTicker"}},"id":"fdc2417e-b3ca-4fb9-9988-45513a19b942","type":"LinearAxis"},{"attributes":{},"id":"0dad0973-0240-4528-a100-adb12bc65799","type":"UnionRenderers"},{"attributes":{},"id":"7c198a20-3b58-42c7-a5e0-c229256d30a3","type":"LinearScale"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"x":{"field":"x"},"y":{"field":"y"}},"id":"4e6c9388-83aa-4628-bba6-07cc611d1885","type":"Circle"},{"attributes":{},"id":"b1067761-03db-4a1b-bc33-f0bc72aea18f","type":"SaveTool"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFOxOhWrU8E/U7E6FatTwT/5q3R2uELOP56rmieGMNA/nquaJ4Yw0D+eq5onhjDQP+vimOX7NNU/uIm05Npv1z8ffgfidyDeP0Vacu23++c/uRyNy9G47D+5HI3L0bjsP+pUrE7F6u4/iN+B+B2I7z/E70D8DsTvPwAAAAAAAPA/","dtype":"float64","shape":[42]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmpmZmZmZmT+amZmZmZmZP5qZmZmZmZk/mpmZmZmZuT9mZmZmZmbGPzMzMzMzM8M/AAAAAAAA0D/NzMzMzMzMP5qZmZmZmak/MzMzMzMzsz8zMzMzMzPDP5qZmZmZmck/ZmZmZmZmxj/NzMzMzMzUP83MzMzMzNw/ZmZmZmZm1j+amZmZmZnRPzMzMzMzM8M/mpmZmZmZuT8AAAAAAADQP5qZmZmZmdk/MzMzMzMz0z+amZmZmZnRP5qZmZmZmeE/zczMzMzM3D9mZmZmZmbWP83MzMzMzNw/mpmZmZmZ4T/NzMzMzMzsP5qZmZmZme0/zczMzMzM3D9mZmZmZmbePzMzMzMzM+s/zczMzMzM6D/NzMzMzMzkP5qZmZmZmeE/zczMzMzM5D8AAAAAAADoP2ZmZmZmZt4/mpmZmZmZyT/NzMzMzMzMP83MzMzMzNQ/zczMzMzM1D8AAAAAAADYPwAAAAAAANg/AAAAAAAA4D9mZmZmZmbuPwAAAAAAAPA/ZmZmZmZm5j8AAAAAAADkP5qZmZmZmeE/AAAAAAAA5D8AAAAAAADgPwAAAAAAANA/MzMzMzMz0z8zMzMzMzPbPwAAAAAAANg/ZmZmZmZm1j8zMzMzMzPjPwAAAAAAAPA/ZmZmZmZm6j/NzMzMzMzcP83MzMzMzOA/mpmZmZmZ0T8zMzMzMzPDPzMzMzMzM8M/","dtype":"float64","shape":[216]}},"selected":{"id":"f0dba344-fed3-412d-b2cc-97cbcb903d06","type":"Selection"},"selection_policy":{"id":"0dad0973-0240-4528-a100-adb12bc65799","type":"UnionRenderers"}},"id":"b343cbbf-577b-4835-acd7-9b47e85a43b2","type":"ColumnDataSource"},{"attributes":{},"id":"cd6e9e04-80c8-4c01-a94a-6f67903a51e8","type":"WheelZoomTool"},{"attributes":{"dimension":1,"plot":{"id":"0059d57b-ce59-44ec-8ae7-0b79aa767841","subtype":"Figure","type":"Plot"},"ticker":{"id":"65bad855-6747-41bd-ad85-32604ae45aae","type":"BasicTicker"}},"id":"9f7b85e9-f08a-4ef3-8ccf-6e5ba1ca7413","type":"Grid"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"plot":null,"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"d3ea8f78-515d-4bdc-86e3-f197c9ffa8f2","type":"BoxAnnotation"},{"attributes":{},"id":"f0dba344-fed3-412d-b2cc-97cbcb903d06","type":"Selection"},{"attributes":{"axis_label":"Amount of refugees in South Sudan","formatter":{"id":"b0ef3ea9-c677-4f72-8911-598f919ca2a7","type":"BasicTickFormatter"},"plot":{"id":"0059d57b-ce59-44ec-8ae7-0b79aa767841","subtype":"Figure","type":"Plot"},"ticker":{"id":"65bad855-6747-41bd-ad85-32604ae45aae","type":"BasicTicker"}},"id":"053972d6-6b62-4b10-9b3a-c22a8cf619f6","type":"LinearAxis"},{"attributes":{"background_fill_alpha":{"value":0.1},"background_fill_color":{"value":"lightblue"},"below":[{"id":"fdc2417e-b3ca-4fb9-9988-45513a19b942","type":"LinearAxis"}],"left":[{"id":"053972d6-6b62-4b10-9b3a-c22a8cf619f6","type":"LinearAxis"}],"plot_height":650,"plot_width":1000,"renderers":[{"id":"fdc2417e-b3ca-4fb9-9988-45513a19b942","type":"LinearAxis"},{"id":"919a2eda-bee1-4d15-98c4-aff8edce40c4","type":"Grid"},{"id":"053972d6-6b62-4b10-9b3a-c22a8cf619f6","type":"LinearAxis"},{"id":"9f7b85e9-f08a-4ef3-8ccf-6e5ba1ca7413","type":"Grid"},{"id":"d3ea8f78-515d-4bdc-86e3-f197c9ffa8f2","type":"BoxAnnotation"},{"id":"b9d56196-766e-4131-8b35-b91636fdd4a5","type":"GlyphRenderer"}],"title":{"id":"7c5dc7fa-8172-47ef-a848-df424a0425d0","type":"Title"},"toolbar":{"id":"c9e65595-0ea6-496f-ac50-d4dbf901d9d3","type":"Toolbar"},"toolbar_location":"above","x_range":{"id":"a4915f23-bcf8-477c-a68e-6649477f6cc6","type":"DataRange1d"},"x_scale":{"id":"7c198a20-3b58-42c7-a5e0-c229256d30a3","type":"LinearScale"},"y_range":{"id":"dc29f791-1489-4dc1-81de-a6127a842000","type":"DataRange1d"},"y_scale":{"id":"540f4af7-6363-4ab4-8875-2da2520f0fd6","type":"LinearScale"}},"id":"0059d57b-ce59-44ec-8ae7-0b79aa767841","subtype":"Figure","type":"Plot"},{"attributes":{},"id":"540f4af7-6363-4ab4-8875-2da2520f0fd6","type":"LinearScale"},{"attributes":{"plot":{"id":"0059d57b-ce59-44ec-8ae7-0b79aa767841","subtype":"Figure","type":"Plot"},"ticker":{"id":"1ca739d8-8c9b-4793-af63-da39116e70e9","type":"BasicTicker"}},"id":"919a2eda-bee1-4d15-98c4-aff8edce40c4","type":"Grid"},{"attributes":{},"id":"65bad855-6747-41bd-ad85-32604ae45aae","type":"BasicTicker"},{"attributes":{"callback":null},"id":"a4915f23-bcf8-477c-a68e-6649477f6cc6","type":"DataRange1d"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"ec3223f8-efdb-4821-ad84-1b819b3d348c","type":"PanTool"},{"id":"cd6e9e04-80c8-4c01-a94a-6f67903a51e8","type":"WheelZoomTool"},{"id":"17d28c2f-8fff-49c3-b5f7-f5c7b33b0480","type":"BoxZoomTool"},{"id":"b1067761-03db-4a1b-bc33-f0bc72aea18f","type":"SaveTool"},{"id":"6e27ee94-f7e5-4a62-9cc0-b045ebf68ccb","type":"ResetTool"},{"id":"3646c0cf-2018-4531-8299-a3894a68fcce","type":"HelpTool"}]},"id":"c9e65595-0ea6-496f-ac50-d4dbf901d9d3","type":"Toolbar"}],"root_ids":["0059d57b-ce59-44ec-8ae7-0b79aa767841"]},"title":"Bokeh Application","version":"0.12.16"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('c4421466-ecc1-4c53-8b67-079cfe78f58e').textContent;
+                  var render_items = [{"docid":"e1937a6d-c8ce-40ce-b89d-45d97d568f4d","elementid":"bf79e628-76c6-41af-b716-f4244e47e93f","modelid":"0059d57b-ce59-44ec-8ae7-0b79aa767841"}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bokeh Plot</title>
+        
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css" type="text/css" />
+        
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+    </head>
+    <body>
+        
+        <div class="bk-root">
+            <div class="bk-plotdiv" id="ac5f8f8c-9896-40e4-bbfe-8f0d8afa7bbd"></div>
+        </div>
+        
+        <script type="application/json" id="6dd52ccc-6364-4e8c-90cf-9d337389a490">
+          {"6329ba77-45e7-4f41-abe2-30c396e17fb6":{"roots":{"references":[{"attributes":{},"id":"77cd386d-c483-4f5e-890f-fd3fd7e96ab6","type":"WheelZoomTool"},{"attributes":{"data_source":{"id":"325ff53f-980b-41e5-bbaf-79b5e965616b","type":"ColumnDataSource"},"glyph":{"id":"5f90db16-4663-419f-b102-c5d8590230dc","type":"Circle"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3be2c963-417a-4082-bc98-61cd82ec6324","type":"Circle"},"selection_glyph":null,"view":{"id":"2467dbc9-9126-422b-8b50-f6179b75f3f9","type":"CDSView"}},"id":"b6a6d0b9-50a8-4da3-85f3-f3fb30751ac6","type":"GlyphRenderer"},{"attributes":{},"id":"395d98bc-1594-49c7-b3ec-fb5c4598ee46","type":"UnionRenderers"},{"attributes":{"fill_color":{"value":"red"},"line_color":{"value":"red"},"x":{"field":"x"},"y":{"field":"y"}},"id":"5f90db16-4663-419f-b102-c5d8590230dc","type":"Circle"},{"attributes":{"source":{"id":"325ff53f-980b-41e5-bbaf-79b5e965616b","type":"ColumnDataSource"}},"id":"2467dbc9-9126-422b-8b50-f6179b75f3f9","type":"CDSView"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"x":{"field":"x"},"y":{"field":"y"}},"id":"3be2c963-417a-4082-bc98-61cd82ec6324","type":"Circle"},{"attributes":{"align":"center","plot":null,"text":"Correlation between refugees Nigeria and price of Sorghum (white)","text_font_size":{"value":"25px"}},"id":"ac48f2a3-69ed-4f41-a332-76146d6685eb","type":"Title"},{"attributes":{},"id":"e0bf3b2a-5298-447f-bad9-9b6377117e24","type":"SaveTool"},{"attributes":{},"id":"42df4194-6d32-49ef-9427-c92f6b4d78af","type":"Selection"},{"attributes":{},"id":"6f96e144-1ae6-4e50-87e2-d064143b2328","type":"LinearScale"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"0bfa4cef-e585-44a8-a91f-6cf926e57aa3","type":"PanTool"},{"id":"77cd386d-c483-4f5e-890f-fd3fd7e96ab6","type":"WheelZoomTool"},{"id":"ed4b0afd-f9be-436e-8bb5-1ba397979bdf","type":"BoxZoomTool"},{"id":"e0bf3b2a-5298-447f-bad9-9b6377117e24","type":"SaveTool"},{"id":"2b68f239-3729-40d2-aad6-baa440207b5a","type":"ResetTool"},{"id":"138ee200-8abc-4ea7-a646-829e580d77c8","type":"HelpTool"}]},"id":"bba4a118-37cb-4c57-a9ae-12692b3b7d62","type":"Toolbar"},{"attributes":{},"id":"ea6b7edd-eafa-4ff8-9376-5a79d7cd10a2","type":"BasicTicker"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"A43syg9Juj9hu0KeyZ+2P25vPIwveLU/J7atQn2wtD8YPJ6OQa+xP/1UmnwkdKY/AEV4ib9gXz+CCjAnE15XPwAAAAAAAAAAKVOn3f4MjT/L0hNXi86NPziMhJZaUKE/PJxIjoN8oT+sYa8kVzycPyzOz9I9Kqc/+ZS1a3sFqz9qf4pKINiwP1kwfsHa/qU/QKXlUOmssz8glcOtrczAP2TGbhRwgMY/8XtWg3m+yz94D6YYf4bUP0OsPgsUrto/0+dv0DZG3j8YBDen3O/nP4ODIeFRXus/sI77flpv7D9iwG6DRI/rPzOlUN1uzuQ/J3D5ZkrI5z+Yet4cDq3nPyOiYR9kGuo/uwv3oO6w6z8sO8/2LSntP0v4BrFZIO0/O04/HA9h7T8AAAAAAADwP1D4t7kIyOs/iOzwYNIG6D8=","dtype":"float64","shape":[40]},"y":{"__ndarray__":"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","dtype":"float64","shape":[236]}},"selected":{"id":"42df4194-6d32-49ef-9427-c92f6b4d78af","type":"Selection"},"selection_policy":{"id":"395d98bc-1594-49c7-b3ec-fb5c4598ee46","type":"UnionRenderers"}},"id":"325ff53f-980b-41e5-bbaf-79b5e965616b","type":"ColumnDataSource"},{"attributes":{"dimension":1,"plot":{"id":"e83e5ed7-557c-404a-a197-9d4ec9ee3b11","subtype":"Figure","type":"Plot"},"ticker":{"id":"ea6b7edd-eafa-4ff8-9376-5a79d7cd10a2","type":"BasicTicker"}},"id":"7947e524-7ace-4975-8b91-81776de5f561","type":"Grid"},{"attributes":{},"id":"f8568375-6d78-4bd1-a146-dd688fe0c283","type":"BasicTickFormatter"},{"attributes":{},"id":"138ee200-8abc-4ea7-a646-829e580d77c8","type":"HelpTool"},{"attributes":{"axis_label":"Price of Sorghum (white)","formatter":{"id":"001740b3-0cbd-4028-8d5f-bd9bca4d5d3d","type":"BasicTickFormatter"},"plot":{"id":"e83e5ed7-557c-404a-a197-9d4ec9ee3b11","subtype":"Figure","type":"Plot"},"ticker":{"id":"7ff0bccc-53c4-420d-a900-6163242de9b0","type":"BasicTicker"}},"id":"3fe53d4e-03ab-431e-9964-207099fc7b8d","type":"LinearAxis"},{"attributes":{"background_fill_alpha":{"value":0.1},"background_fill_color":{"value":"lightblue"},"below":[{"id":"3fe53d4e-03ab-431e-9964-207099fc7b8d","type":"LinearAxis"}],"left":[{"id":"7db68199-c386-4c77-a085-0c971a91946e","type":"LinearAxis"}],"plot_height":650,"plot_width":1000,"renderers":[{"id":"3fe53d4e-03ab-431e-9964-207099fc7b8d","type":"LinearAxis"},{"id":"3b6a1a94-7c7d-4227-92ca-205c475de5cd","type":"Grid"},{"id":"7db68199-c386-4c77-a085-0c971a91946e","type":"LinearAxis"},{"id":"7947e524-7ace-4975-8b91-81776de5f561","type":"Grid"},{"id":"3556054c-3d2c-40a4-b963-e58ddd357562","type":"BoxAnnotation"},{"id":"b6a6d0b9-50a8-4da3-85f3-f3fb30751ac6","type":"GlyphRenderer"}],"title":{"id":"ac48f2a3-69ed-4f41-a332-76146d6685eb","type":"Title"},"toolbar":{"id":"bba4a118-37cb-4c57-a9ae-12692b3b7d62","type":"Toolbar"},"toolbar_location":"above","x_range":{"id":"32f11f19-567e-4c2c-9f7f-736d0d2a0109","type":"DataRange1d"},"x_scale":{"id":"6f96e144-1ae6-4e50-87e2-d064143b2328","type":"LinearScale"},"y_range":{"id":"9c8d8f1f-6afb-4dbe-ad29-c22f3b936231","type":"DataRange1d"},"y_scale":{"id":"03426e2d-c9e6-4fa5-93f2-7cb4e17e2221","type":"LinearScale"}},"id":"e83e5ed7-557c-404a-a197-9d4ec9ee3b11","subtype":"Figure","type":"Plot"},{"attributes":{},"id":"2b68f239-3729-40d2-aad6-baa440207b5a","type":"ResetTool"},{"attributes":{"callback":null},"id":"32f11f19-567e-4c2c-9f7f-736d0d2a0109","type":"DataRange1d"},{"attributes":{"axis_label":"Amount of refugees in Nigeria","formatter":{"id":"f8568375-6d78-4bd1-a146-dd688fe0c283","type":"BasicTickFormatter"},"plot":{"id":"e83e5ed7-557c-404a-a197-9d4ec9ee3b11","subtype":"Figure","type":"Plot"},"ticker":{"id":"ea6b7edd-eafa-4ff8-9376-5a79d7cd10a2","type":"BasicTicker"}},"id":"7db68199-c386-4c77-a085-0c971a91946e","type":"LinearAxis"},{"attributes":{},"id":"7ff0bccc-53c4-420d-a900-6163242de9b0","type":"BasicTicker"},{"attributes":{},"id":"001740b3-0cbd-4028-8d5f-bd9bca4d5d3d","type":"BasicTickFormatter"},{"attributes":{},"id":"0bfa4cef-e585-44a8-a91f-6cf926e57aa3","type":"PanTool"},{"attributes":{},"id":"03426e2d-c9e6-4fa5-93f2-7cb4e17e2221","type":"LinearScale"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"plot":null,"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"3556054c-3d2c-40a4-b963-e58ddd357562","type":"BoxAnnotation"},{"attributes":{"overlay":{"id":"3556054c-3d2c-40a4-b963-e58ddd357562","type":"BoxAnnotation"}},"id":"ed4b0afd-f9be-436e-8bb5-1ba397979bdf","type":"BoxZoomTool"},{"attributes":{"plot":{"id":"e83e5ed7-557c-404a-a197-9d4ec9ee3b11","subtype":"Figure","type":"Plot"},"ticker":{"id":"7ff0bccc-53c4-420d-a900-6163242de9b0","type":"BasicTicker"}},"id":"3b6a1a94-7c7d-4227-92ca-205c475de5cd","type":"Grid"},{"attributes":{"callback":null},"id":"9c8d8f1f-6afb-4dbe-ad29-c22f3b936231","type":"DataRange1d"}],"root_ids":["e83e5ed7-557c-404a-a197-9d4ec9ee3b11"]},"title":"Bokeh Application","version":"0.12.16"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('6dd52ccc-6364-4e8c-90cf-9d337389a490').textContent;
+                  var render_items = [{"docid":"6329ba77-45e7-4f41-abe2-30c396e17fb6","elementid":"ac5f8f8c-9896-40e4-bbfe-8f0d8afa7bbd","modelid":"e83e5ed7-557c-404a-a197-9d4ec9ee3b11"}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bokeh Plot</title>
+        
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css" type="text/css" />
+        
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+    </head>
+    <body>
+        
+        <div class="bk-root">
+            <div class="bk-plotdiv" id="d87e2f4f-f602-464c-9ff0-095342d9ec92"></div>
+        </div>
+        
+        <script type="application/json" id="2cb69b2a-9b1c-4cb1-88c6-eec1a690d71d">
+          {"e9741175-cf28-428d-b7ac-3295895f6588":{"roots":{"references":[{"attributes":{},"id":"65229599-85a4-40e2-9db7-70d4cef2ff0c","type":"ResetTool"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"659e3a6e-fe3e-4445-9111-ce1a7b839207","type":"PanTool"},{"id":"c3906db2-b164-4305-8572-fe7565bb19f4","type":"WheelZoomTool"},{"id":"9fda7c5f-11c7-4741-b342-a9a2c10eefd6","type":"BoxZoomTool"},{"id":"7b383d39-6442-40e7-bab2-f5840f54f1f4","type":"SaveTool"},{"id":"65229599-85a4-40e2-9db7-70d4cef2ff0c","type":"ResetTool"},{"id":"4d3bb0a2-cc41-46f9-ae36-9facbbeab6f1","type":"HelpTool"}]},"id":"dc6a4cf2-a240-4945-ae85-a44ce9818d2a","type":"Toolbar"},{"attributes":{"axis_label":"Price of Rice (imported, Indian)","formatter":{"id":"f79f5f57-9c4f-4147-b971-79431bc850be","type":"BasicTickFormatter"},"plot":{"id":"48584021-a337-489d-be8f-956e183d1156","subtype":"Figure","type":"Plot"},"ticker":{"id":"6042995f-44a8-4b49-8d94-b36e9a55d95a","type":"BasicTicker"}},"id":"7d1fa85c-832a-407f-ab59-83a5a892e9a9","type":"LinearAxis"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"plot":null,"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"4345f28a-d9b7-48e0-a98d-ffca7af9950f","type":"BoxAnnotation"},{"attributes":{},"id":"2dd69726-4b7e-4fd9-bcbe-33f2315c83cd","type":"LinearScale"},{"attributes":{},"id":"7b383d39-6442-40e7-bab2-f5840f54f1f4","type":"SaveTool"},{"attributes":{"callback":null},"id":"d62f8cee-46ab-4eae-80fd-77ddbd5dba68","type":"DataRange1d"},{"attributes":{},"id":"2690c344-b9c8-44ff-b298-c380fd63bb84","type":"BasicTickFormatter"},{"attributes":{},"id":"d4b086e9-77ab-43df-b7c6-46b757ffeb7f","type":"UnionRenderers"},{"attributes":{"fill_color":{"value":"red"},"line_color":{"value":"red"},"x":{"field":"x"},"y":{"field":"y"}},"id":"3b393f25-8521-4d72-8eaf-8c389aff443c","type":"Circle"},{"attributes":{"callback":null},"id":"3a33fcd4-5f75-4a49-8792-efcf11a9b381","type":"DataRange1d"},{"attributes":{},"id":"c3906db2-b164-4305-8572-fe7565bb19f4","type":"WheelZoomTool"},{"attributes":{"align":"center","plot":null,"text":"Correlation between refugees Rwanda and price of Rice (imported, Indian)","text_font_size":{"value":"25px"}},"id":"b89cd030-f27c-4132-931a-882415a9c60e","type":"Title"},{"attributes":{"overlay":{"id":"4345f28a-d9b7-48e0-a98d-ffca7af9950f","type":"BoxAnnotation"}},"id":"9fda7c5f-11c7-4741-b342-a9a2c10eefd6","type":"BoxZoomTool"},{"attributes":{},"id":"f79f5f57-9c4f-4147-b971-79431bc850be","type":"BasicTickFormatter"},{"attributes":{},"id":"a6c62a2b-d3cf-404a-93f7-dff7d0a25c22","type":"LinearScale"},{"attributes":{},"id":"c0840bc4-93fa-4401-8937-506ff52462bb","type":"Selection"},{"attributes":{},"id":"6042995f-44a8-4b49-8d94-b36e9a55d95a","type":"BasicTicker"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"x":{"field":"x"},"y":{"field":"y"}},"id":"e9b4b60d-f3d9-4ab2-9620-22165e2c7739","type":"Circle"},{"attributes":{},"id":"659e3a6e-fe3e-4445-9111-ce1a7b839207","type":"PanTool"},{"attributes":{},"id":"d51aef87-1aa5-4ed6-8fe7-c5a39c4910af","type":"BasicTicker"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"cxJvo+Du4T8CUgXDpmrZP9M/zz+nHtM/xAKwpy6f0j8eoPZcr7XFPxndz6ak+Mo/sQjrIV0iuT/R2rauBS29PxnIDFPhdLE/CpaS4wIwnz/bM+XJXGC4PxRprKiYz7A/MHD4QPJ9rD+xB3A1oVR8PwAAAAAAAAAAmU5IGHSrnD86K9UzsOuGP5ctJ4OQW6c/aCLkHfwusT80lLxyDwupP7F8tSVkyd0/JUzeEknq5j9HsqKFeMToP2IXh/p/u+g/4UmiPaX46z+hIAafc13uPwUjaUroyu4/AAAAAAAA8D9JWpGpkWLpP5bQaeYYpeg/xZDBSFgY6T//he7bg1znP4eYvMew1eg/fd8f9lsp6T/bTVViftTqPx1tScTnVeg/GmDziJ++5z/0jRqn2enoPw==","dtype":"float64","shape":[38]},"y":{"__ndarray__":"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","dtype":"float64","shape":[229]}},"selected":{"id":"c0840bc4-93fa-4401-8937-506ff52462bb","type":"Selection"},"selection_policy":{"id":"d4b086e9-77ab-43df-b7c6-46b757ffeb7f","type":"UnionRenderers"}},"id":"4cbcb501-b145-4e84-b1d6-1125a26bcdac","type":"ColumnDataSource"},{"attributes":{"data_source":{"id":"4cbcb501-b145-4e84-b1d6-1125a26bcdac","type":"ColumnDataSource"},"glyph":{"id":"3b393f25-8521-4d72-8eaf-8c389aff443c","type":"Circle"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"e9b4b60d-f3d9-4ab2-9620-22165e2c7739","type":"Circle"},"selection_glyph":null,"view":{"id":"eb4973c4-5d80-42ad-b8b7-d0b28b7e0ae4","type":"CDSView"}},"id":"95ffc765-4a77-436e-bb73-857594f0f9d6","type":"GlyphRenderer"},{"attributes":{"dimension":1,"plot":{"id":"48584021-a337-489d-be8f-956e183d1156","subtype":"Figure","type":"Plot"},"ticker":{"id":"d51aef87-1aa5-4ed6-8fe7-c5a39c4910af","type":"BasicTicker"}},"id":"12651b2d-d303-43b0-b1a7-0ef03eb6942b","type":"Grid"},{"attributes":{"background_fill_alpha":{"value":0.1},"background_fill_color":{"value":"lightblue"},"below":[{"id":"7d1fa85c-832a-407f-ab59-83a5a892e9a9","type":"LinearAxis"}],"left":[{"id":"ec0bdfb1-0be1-4f73-b74a-770542404ebb","type":"LinearAxis"}],"plot_height":650,"plot_width":1000,"renderers":[{"id":"7d1fa85c-832a-407f-ab59-83a5a892e9a9","type":"LinearAxis"},{"id":"76a52319-934b-414d-859b-4b3fc8bf204a","type":"Grid"},{"id":"ec0bdfb1-0be1-4f73-b74a-770542404ebb","type":"LinearAxis"},{"id":"12651b2d-d303-43b0-b1a7-0ef03eb6942b","type":"Grid"},{"id":"4345f28a-d9b7-48e0-a98d-ffca7af9950f","type":"BoxAnnotation"},{"id":"95ffc765-4a77-436e-bb73-857594f0f9d6","type":"GlyphRenderer"}],"title":{"id":"b89cd030-f27c-4132-931a-882415a9c60e","type":"Title"},"toolbar":{"id":"dc6a4cf2-a240-4945-ae85-a44ce9818d2a","type":"Toolbar"},"toolbar_location":"above","x_range":{"id":"d62f8cee-46ab-4eae-80fd-77ddbd5dba68","type":"DataRange1d"},"x_scale":{"id":"a6c62a2b-d3cf-404a-93f7-dff7d0a25c22","type":"LinearScale"},"y_range":{"id":"3a33fcd4-5f75-4a49-8792-efcf11a9b381","type":"DataRange1d"},"y_scale":{"id":"2dd69726-4b7e-4fd9-bcbe-33f2315c83cd","type":"LinearScale"}},"id":"48584021-a337-489d-be8f-956e183d1156","subtype":"Figure","type":"Plot"},{"attributes":{"plot":{"id":"48584021-a337-489d-be8f-956e183d1156","subtype":"Figure","type":"Plot"},"ticker":{"id":"6042995f-44a8-4b49-8d94-b36e9a55d95a","type":"BasicTicker"}},"id":"76a52319-934b-414d-859b-4b3fc8bf204a","type":"Grid"},{"attributes":{},"id":"4d3bb0a2-cc41-46f9-ae36-9facbbeab6f1","type":"HelpTool"},{"attributes":{"source":{"id":"4cbcb501-b145-4e84-b1d6-1125a26bcdac","type":"ColumnDataSource"}},"id":"eb4973c4-5d80-42ad-b8b7-d0b28b7e0ae4","type":"CDSView"},{"attributes":{"axis_label":"Amount of refugees in Rwanda","formatter":{"id":"2690c344-b9c8-44ff-b298-c380fd63bb84","type":"BasicTickFormatter"},"plot":{"id":"48584021-a337-489d-be8f-956e183d1156","subtype":"Figure","type":"Plot"},"ticker":{"id":"d51aef87-1aa5-4ed6-8fe7-c5a39c4910af","type":"BasicTicker"}},"id":"ec0bdfb1-0be1-4f73-b74a-770542404ebb","type":"LinearAxis"}],"root_ids":["48584021-a337-489d-be8f-956e183d1156"]},"title":"Bokeh Application","version":"0.12.16"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('2cb69b2a-9b1c-4cb1-88c6-eec1a690d71d').textContent;
+                  var render_items = [{"docid":"e9741175-cf28-428d-b7ac-3295895f6588","elementid":"d87e2f4f-f602-464c-9ff0-095342d9ec92","modelid":"48584021-a337-489d-be8f-956e183d1156"}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    </body>
+</html>

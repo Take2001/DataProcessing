@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bokeh Plot</title>
+        
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css" type="text/css" />
+        
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+    </head>
+    <body>
+        
+        <div class="bk-root">
+            <div class="bk-plotdiv" id="8f9eeafd-c42c-4e00-a26d-db8aea6707b9"></div>
+        </div>
+        
+        <script type="application/json" id="1de0e734-356c-47d2-9b36-35f7511aac88">
+          {"d7e589f6-3703-498f-ad2d-b748f6fb48a3":{"roots":{"references":[{"attributes":{"fill_color":{"value":"red"},"line_color":{"value":"red"},"x":{"field":"x"},"y":{"field":"y"}},"id":"af5ea118-558f-437d-9913-46379085677a","type":"Circle"},{"attributes":{},"id":"27afcc9a-1c88-497c-9a6e-3973e814865d","type":"SaveTool"},{"attributes":{},"id":"9a62258e-1afb-4fd0-b384-f8a246c37700","type":"LinearScale"},{"attributes":{},"id":"ee223a91-fca5-4279-a55c-6dad2b031fd5","type":"WheelZoomTool"},{"attributes":{},"id":"2fd08307-502e-463c-856c-4b90a1d4c574","type":"BasicTicker"},{"attributes":{},"id":"af5396e5-adad-4808-b103-cc3c2b574db1","type":"BasicTickFormatter"},{"attributes":{},"id":"53cde3d7-1f1f-4235-acc1-0c418daad0e0","type":"LinearScale"},{"attributes":{},"id":"a941b78b-cc40-4039-8569-b8f15bb1fa68","type":"BasicTickFormatter"},{"attributes":{"data_source":{"id":"a0e2e4af-16d2-4b9c-b761-18f31cd0a548","type":"ColumnDataSource"},"glyph":{"id":"af5ea118-558f-437d-9913-46379085677a","type":"Circle"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"f75852fc-7ebb-4158-b05b-ccdb1d4df3bd","type":"Circle"},"selection_glyph":null,"view":{"id":"bd5a258d-fe35-4ad8-93b0-ed008b902029","type":"CDSView"}},"id":"fba050d8-8ddc-4839-a45c-c840f20ae4ab","type":"GlyphRenderer"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"x":{"field":"x"},"y":{"field":"y"}},"id":"f75852fc-7ebb-4158-b05b-ccdb1d4df3bd","type":"Circle"},{"attributes":{"overlay":{"id":"b27b0eac-6888-434f-af92-63ce1e7664a9","type":"BoxAnnotation"}},"id":"b92cba5c-1573-4901-8952-021284911671","type":"BoxZoomTool"},{"attributes":{"dimension":1,"plot":{"id":"f68f5419-c6cb-462e-8ba4-d2e6ea80e6a6","subtype":"Figure","type":"Plot"},"ticker":{"id":"948b86de-4dfc-4bdf-b045-a221433a1337","type":"BasicTicker"}},"id":"97f79509-b10a-48e9-bda3-4fe96cd78bb2","type":"Grid"},{"attributes":{},"id":"643e2cca-2bb6-44d3-8a2f-2f4deacd75e0","type":"PanTool"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"TcJqw5Ow6j+8tUTuby3BP8QfQjnxh+A/c9FFF1104T9z0UUXXXThP8Wr05fx6uQ/a7LJJpts4j9rsskmm2ziP7aWyP2tJeI/tpbI/a0l4j+2lsj9rSXiP7aWyP2tJeI/tpbI/a0l4j+2lsj9rSXiP7aWyP2tJeI/S6pHBpPq4T9LqkcGk+rhP0uqRwaT6uE/Vn5CnJWf4D9WfkKclZ/gP8fUwN4xNeA/4/7WErm/5T9B7m8tkfvrP4LmULGgOeQ/+1tL5P7W4j/7W0vk/tbiP8jD9lTysO0/AAAAAAAA8D8AAAAAAADwPwAAAAAAAPA/AAAAAAAA8D/sHVMDe8fkP2FqYO+YGug/ep7neZ7n2T8c1EEd1EG9P9/iN+9JHbc/AAAAAAAAAAA=","dtype":"float64","shape":[37]},"y":{"__ndarray__":"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","dtype":"float64","shape":[217]}},"selected":{"id":"44b07145-b844-4763-8c8d-bced7d0ba010","type":"Selection"},"selection_policy":{"id":"3c4b4f5b-98f4-4cc0-901a-672f89effb4d","type":"UnionRenderers"}},"id":"a0e2e4af-16d2-4b9c-b761-18f31cd0a548","type":"ColumnDataSource"},{"attributes":{"source":{"id":"a0e2e4af-16d2-4b9c-b761-18f31cd0a548","type":"ColumnDataSource"}},"id":"bd5a258d-fe35-4ad8-93b0-ed008b902029","type":"CDSView"},{"attributes":{},"id":"7fd10975-070b-45f6-b6d9-2d522093a467","type":"ResetTool"},{"attributes":{},"id":"3c4b4f5b-98f4-4cc0-901a-672f89effb4d","type":"UnionRenderers"},{"attributes":{"callback":null},"id":"c6fe6145-ea2d-4642-92a1-b9e4cd1bc7ef","type":"DataRange1d"},{"attributes":{"axis_label":"Price of Groundnuts (shelled)","formatter":{"id":"af5396e5-adad-4808-b103-cc3c2b574db1","type":"BasicTickFormatter"},"plot":{"id":"f68f5419-c6cb-462e-8ba4-d2e6ea80e6a6","subtype":"Figure","type":"Plot"},"ticker":{"id":"2fd08307-502e-463c-856c-4b90a1d4c574","type":"BasicTicker"}},"id":"16f2a9a4-03d3-407a-9e7c-bb912c3143f8","type":"LinearAxis"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"643e2cca-2bb6-44d3-8a2f-2f4deacd75e0","type":"PanTool"},{"id":"ee223a91-fca5-4279-a55c-6dad2b031fd5","type":"WheelZoomTool"},{"id":"b92cba5c-1573-4901-8952-021284911671","type":"BoxZoomTool"},{"id":"27afcc9a-1c88-497c-9a6e-3973e814865d","type":"SaveTool"},{"id":"7fd10975-070b-45f6-b6d9-2d522093a467","type":"ResetTool"},{"id":"6724a6ef-5a73-4a51-a0d7-08aea68a5823","type":"HelpTool"}]},"id":"2ec432cc-7e80-4cce-998c-0e9202e9a7d3","type":"Toolbar"},{"attributes":{},"id":"6724a6ef-5a73-4a51-a0d7-08aea68a5823","type":"HelpTool"},{"attributes":{},"id":"44b07145-b844-4763-8c8d-bced7d0ba010","type":"Selection"},{"attributes":{"plot":{"id":"f68f5419-c6cb-462e-8ba4-d2e6ea80e6a6","subtype":"Figure","type":"Plot"},"ticker":{"id":"2fd08307-502e-463c-856c-4b90a1d4c574","type":"BasicTicker"}},"id":"9ca03e44-3471-4cfa-a554-d358c5adb76b","type":"Grid"},{"attributes":{"callback":null},"id":"0350dc6b-d6ea-4dde-9ca1-5f080e68a03e","type":"DataRange1d"},{"attributes":{"axis_label":"Amount of refugees in Zimbabwe","formatter":{"id":"a941b78b-cc40-4039-8569-b8f15bb1fa68","type":"BasicTickFormatter"},"plot":{"id":"f68f5419-c6cb-462e-8ba4-d2e6ea80e6a6","subtype":"Figure","type":"Plot"},"ticker":{"id":"948b86de-4dfc-4bdf-b045-a221433a1337","type":"BasicTicker"}},"id":"afc6d876-230c-439d-8ed2-5238fb77f73b","type":"LinearAxis"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"plot":null,"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"b27b0eac-6888-434f-af92-63ce1e7664a9","type":"BoxAnnotation"},{"attributes":{"align":"center","plot":null,"text":"Correlation between refugees Zimbabwe and price of Groundnuts (shelled)","text_font_size":{"value":"25px"}},"id":"78e2c04e-6b60-4b90-a228-3ed151875f22","type":"Title"},{"attributes":{},"id":"948b86de-4dfc-4bdf-b045-a221433a1337","type":"BasicTicker"},{"attributes":{"background_fill_alpha":{"value":0.1},"background_fill_color":{"value":"lightblue"},"below":[{"id":"16f2a9a4-03d3-407a-9e7c-bb912c3143f8","type":"LinearAxis"}],"left":[{"id":"afc6d876-230c-439d-8ed2-5238fb77f73b","type":"LinearAxis"}],"plot_height":650,"plot_width":1000,"renderers":[{"id":"16f2a9a4-03d3-407a-9e7c-bb912c3143f8","type":"LinearAxis"},{"id":"9ca03e44-3471-4cfa-a554-d358c5adb76b","type":"Grid"},{"id":"afc6d876-230c-439d-8ed2-5238fb77f73b","type":"LinearAxis"},{"id":"97f79509-b10a-48e9-bda3-4fe96cd78bb2","type":"Grid"},{"id":"b27b0eac-6888-434f-af92-63ce1e7664a9","type":"BoxAnnotation"},{"id":"fba050d8-8ddc-4839-a45c-c840f20ae4ab","type":"GlyphRenderer"}],"title":{"id":"78e2c04e-6b60-4b90-a228-3ed151875f22","type":"Title"},"toolbar":{"id":"2ec432cc-7e80-4cce-998c-0e9202e9a7d3","type":"Toolbar"},"toolbar_location":"above","x_range":{"id":"c6fe6145-ea2d-4642-92a1-b9e4cd1bc7ef","type":"DataRange1d"},"x_scale":{"id":"9a62258e-1afb-4fd0-b384-f8a246c37700","type":"LinearScale"},"y_range":{"id":"0350dc6b-d6ea-4dde-9ca1-5f080e68a03e","type":"DataRange1d"},"y_scale":{"id":"53cde3d7-1f1f-4235-acc1-0c418daad0e0","type":"LinearScale"}},"id":"f68f5419-c6cb-462e-8ba4-d2e6ea80e6a6","subtype":"Figure","type":"Plot"}],"root_ids":["f68f5419-c6cb-462e-8ba4-d2e6ea80e6a6"]},"title":"Bokeh Application","version":"0.12.16"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('1de0e734-356c-47d2-9b36-35f7511aac88').textContent;
+                  var render_items = [{"docid":"d7e589f6-3703-498f-ad2d-b748f6fb48a3","elementid":"8f9eeafd-c42c-4e00-a26d-db8aea6707b9","modelid":"f68f5419-c6cb-462e-8ba4-d2e6ea80e6a6"}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    </body>
+</html>

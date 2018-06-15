@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bokeh Plot</title>
+        
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css" type="text/css" />
+        
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+    </head>
+    <body>
+        
+        <div class="bk-root">
+            <div class="bk-plotdiv" id="7bb41db5-ddb6-4ed2-8ac1-84e039ad8e7e"></div>
+        </div>
+        
+        <script type="application/json" id="60dda959-7b6b-4399-9f49-7f0e275223b9">
+          {"bdbe7a9d-1bc4-4fdf-8af5-bf5803dec948":{"roots":{"references":[{"attributes":{"overlay":{"id":"095c971a-4f80-435c-9f5f-082f1bce5656","type":"BoxAnnotation"}},"id":"52042cc3-22b2-4296-a3ca-a6ed27acf83f","type":"BoxZoomTool"},{"attributes":{"data_source":{"id":"791bb9f4-6d3f-43c2-a89c-bcef34d11994","type":"ColumnDataSource"},"glyph":{"id":"a820e3cd-72ba-454f-80a7-e3cae91380d7","type":"Circle"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"901e0a09-bef4-458d-9fc6-e8e984d4f6a3","type":"Circle"},"selection_glyph":null,"view":{"id":"01d26f6b-a93c-4a0b-8847-e6340ff994b8","type":"CDSView"}},"id":"cf1d8adf-3d08-4587-aaf7-ba80aefd4941","type":"GlyphRenderer"},{"attributes":{"axis_label":"Price of Wage (non-qualified labour, agricultural)","formatter":{"id":"b2c95d11-aa06-474d-9f54-c5871d306a60","type":"BasicTickFormatter"},"plot":{"id":"4787b8eb-3a22-4dd8-8194-32151519074e","subtype":"Figure","type":"Plot"},"ticker":{"id":"5e853f44-305a-48bb-865e-1cbdc0914de6","type":"BasicTicker"}},"id":"b324861f-2965-485e-b80b-c0041d18faf4","type":"LinearAxis"},{"attributes":{},"id":"5afb25bd-0943-4d49-b60b-2e2897cef446","type":"SaveTool"},{"attributes":{},"id":"5e853f44-305a-48bb-865e-1cbdc0914de6","type":"BasicTicker"},{"attributes":{"callback":null},"id":"11492d2b-2f40-43d2-90d4-66c95b1a864f","type":"DataRange1d"},{"attributes":{},"id":"17df2e3c-78c0-4e7c-a113-a1bd9cd5beee","type":"Selection"},{"attributes":{"axis_label":"Amount of refugees in Liberia","formatter":{"id":"c1ffa223-dc5d-4d32-b728-9d03092a19f0","type":"BasicTickFormatter"},"plot":{"id":"4787b8eb-3a22-4dd8-8194-32151519074e","subtype":"Figure","type":"Plot"},"ticker":{"id":"f8a09bf8-a349-420c-9272-1f45582276cf","type":"BasicTicker"}},"id":"8701c1ad-8c61-45f3-9a7e-9ccc087393c8","type":"LinearAxis"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"FqB+LiW11T/cfSzSlqPeP8F5DOcxnN8/AAAAAAAAAAAAAAAAAAAAAExnMZ3FdLY/AAAAAAAA8D9jOovpLKbbP72G8hrKa+g/","dtype":"float64","shape":[9]},"y":{"__ndarray__":"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","dtype":"float64","shape":[226]}},"selected":{"id":"17df2e3c-78c0-4e7c-a113-a1bd9cd5beee","type":"Selection"},"selection_policy":{"id":"dd61b971-57ab-4313-9551-6228eb327419","type":"UnionRenderers"}},"id":"791bb9f4-6d3f-43c2-a89c-bcef34d11994","type":"ColumnDataSource"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"aea2f7d6-3b2d-40db-b219-2be14d83f0b5","type":"PanTool"},{"id":"4b7f287c-75a1-4bab-942b-3f7c62b0459b","type":"WheelZoomTool"},{"id":"52042cc3-22b2-4296-a3ca-a6ed27acf83f","type":"BoxZoomTool"},{"id":"5afb25bd-0943-4d49-b60b-2e2897cef446","type":"SaveTool"},{"id":"0e5459e3-490b-4728-b0a0-d01598fc8220","type":"ResetTool"},{"id":"73b8395c-e935-4b65-8ffa-e97fc192accf","type":"HelpTool"}]},"id":"2f3b7906-ba9a-4bca-b55c-da5c342df131","type":"Toolbar"},{"attributes":{},"id":"aea2f7d6-3b2d-40db-b219-2be14d83f0b5","type":"PanTool"},{"attributes":{"callback":null},"id":"73e283e2-7de5-4d9d-90ec-4791237ed661","type":"DataRange1d"},{"attributes":{"source":{"id":"791bb9f4-6d3f-43c2-a89c-bcef34d11994","type":"ColumnDataSource"}},"id":"01d26f6b-a93c-4a0b-8847-e6340ff994b8","type":"CDSView"},{"attributes":{},"id":"66884773-b1e3-4ca4-9f6d-c63e06b9c863","type":"LinearScale"},{"attributes":{},"id":"dd61b971-57ab-4313-9551-6228eb327419","type":"UnionRenderers"},{"attributes":{},"id":"0e5459e3-490b-4728-b0a0-d01598fc8220","type":"ResetTool"},{"attributes":{"align":"center","plot":null,"text":"Correlation between refugees Liberia and price of Wage (non-qualified labour, agricultural)","text_font_size":{"value":"25px"}},"id":"c86d038d-1cfb-4fea-ac68-051f47440203","type":"Title"},{"attributes":{"dimension":1,"plot":{"id":"4787b8eb-3a22-4dd8-8194-32151519074e","subtype":"Figure","type":"Plot"},"ticker":{"id":"f8a09bf8-a349-420c-9272-1f45582276cf","type":"BasicTicker"}},"id":"e12f9a3c-3370-4002-be9d-833015f2ba82","type":"Grid"},{"attributes":{},"id":"c1ffa223-dc5d-4d32-b728-9d03092a19f0","type":"BasicTickFormatter"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"plot":null,"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"095c971a-4f80-435c-9f5f-082f1bce5656","type":"BoxAnnotation"},{"attributes":{"background_fill_alpha":{"value":0.1},"background_fill_color":{"value":"lightblue"},"below":[{"id":"b324861f-2965-485e-b80b-c0041d18faf4","type":"LinearAxis"}],"left":[{"id":"8701c1ad-8c61-45f3-9a7e-9ccc087393c8","type":"LinearAxis"}],"plot_height":650,"plot_width":1000,"renderers":[{"id":"b324861f-2965-485e-b80b-c0041d18faf4","type":"LinearAxis"},{"id":"62ff5d7f-1590-4516-a0cd-ffc403365591","type":"Grid"},{"id":"8701c1ad-8c61-45f3-9a7e-9ccc087393c8","type":"LinearAxis"},{"id":"e12f9a3c-3370-4002-be9d-833015f2ba82","type":"Grid"},{"id":"095c971a-4f80-435c-9f5f-082f1bce5656","type":"BoxAnnotation"},{"id":"cf1d8adf-3d08-4587-aaf7-ba80aefd4941","type":"GlyphRenderer"}],"title":{"id":"c86d038d-1cfb-4fea-ac68-051f47440203","type":"Title"},"toolbar":{"id":"2f3b7906-ba9a-4bca-b55c-da5c342df131","type":"Toolbar"},"toolbar_location":"above","x_range":{"id":"73e283e2-7de5-4d9d-90ec-4791237ed661","type":"DataRange1d"},"x_scale":{"id":"66884773-b1e3-4ca4-9f6d-c63e06b9c863","type":"LinearScale"},"y_range":{"id":"11492d2b-2f40-43d2-90d4-66c95b1a864f","type":"DataRange1d"},"y_scale":{"id":"75a148bf-7de1-48a2-8cf5-cc5b48e60da3","type":"LinearScale"}},"id":"4787b8eb-3a22-4dd8-8194-32151519074e","subtype":"Figure","type":"Plot"},{"attributes":{},"id":"f8a09bf8-a349-420c-9272-1f45582276cf","type":"BasicTicker"},{"attributes":{"fill_color":{"value":"red"},"line_color":{"value":"red"},"x":{"field":"x"},"y":{"field":"y"}},"id":"a820e3cd-72ba-454f-80a7-e3cae91380d7","type":"Circle"},{"attributes":{},"id":"b2c95d11-aa06-474d-9f54-c5871d306a60","type":"BasicTickFormatter"},{"attributes":{"plot":{"id":"4787b8eb-3a22-4dd8-8194-32151519074e","subtype":"Figure","type":"Plot"},"ticker":{"id":"5e853f44-305a-48bb-865e-1cbdc0914de6","type":"BasicTicker"}},"id":"62ff5d7f-1590-4516-a0cd-ffc403365591","type":"Grid"},{"attributes":{},"id":"73b8395c-e935-4b65-8ffa-e97fc192accf","type":"HelpTool"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"x":{"field":"x"},"y":{"field":"y"}},"id":"901e0a09-bef4-458d-9fc6-e8e984d4f6a3","type":"Circle"},{"attributes":{},"id":"4b7f287c-75a1-4bab-942b-3f7c62b0459b","type":"WheelZoomTool"},{"attributes":{},"id":"75a148bf-7de1-48a2-8cf5-cc5b48e60da3","type":"LinearScale"}],"root_ids":["4787b8eb-3a22-4dd8-8194-32151519074e"]},"title":"Bokeh Application","version":"0.12.16"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('60dda959-7b6b-4399-9f49-7f0e275223b9').textContent;
+                  var render_items = [{"docid":"bdbe7a9d-1bc4-4fdf-8af5-bf5803dec948","elementid":"7bb41db5-ddb6-4ed2-8ac1-84e039ad8e7e","modelid":"4787b8eb-3a22-4dd8-8194-32151519074e"}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    </body>
+</html>

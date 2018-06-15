@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bokeh Plot</title>
+        
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css" type="text/css" />
+        
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+    </head>
+    <body>
+        
+        <div class="bk-root">
+            <div class="bk-plotdiv" id="cf46ca01-6be7-4e0a-a7d6-ab5cc285b523"></div>
+        </div>
+        
+        <script type="application/json" id="c5c820f4-3784-4fed-b13f-df38409bcd52">
+          {"f60f9ff7-f700-4752-a063-c2a807ce5250":{"roots":{"references":[{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"7RvWvmHt2z/tG9a+Ye3bP54S5ClBnuI/nhLkKUGe4j+eEuQpQZ7iP54S5ClBnuI/nhLkKUGe4j8c1r5h7RvmPwAAAAAAAPA/WPuGtW9Y6z9Y+4a1b1jrP1j7hrVvWOs/AAAAAAAAAACx9g1r37DmP9a+Ye0b1u4/1r5h7RvW7j/WvmHtG9buP9a+Ye0b1u4/HNa+Ye0b5j8=","dtype":"float64","shape":[19]},"y":{"__ndarray__":"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","dtype":"float64","shape":[216]}},"selected":{"id":"59fa4ee8-2868-4ea6-ae98-7cfb0b45fd82","type":"Selection"},"selection_policy":{"id":"0281947f-f0fb-4f91-a7a8-6bba2ca9dd7b","type":"UnionRenderers"}},"id":"8f4a0a58-5515-4f13-b05a-315cac73c852","type":"ColumnDataSource"},{"attributes":{"axis_label":"Price of Fuel (diesel)","formatter":{"id":"52796382-b56c-41d4-9c13-0fac02e98e61","type":"BasicTickFormatter"},"plot":{"id":"841ced20-f7d6-48b2-96e7-f7d358e28cca","subtype":"Figure","type":"Plot"},"ticker":{"id":"8387a4a6-bb76-41f4-8764-85e616ad8c3c","type":"BasicTicker"}},"id":"f73d5442-c832-4b49-aab1-aa8b0adc7b00","type":"LinearAxis"},{"attributes":{"overlay":{"id":"8b083432-9890-46b0-87f0-fde1cc21c8a0","type":"BoxAnnotation"}},"id":"fd6a7add-75b1-43db-91f9-2b40a34a576a","type":"BoxZoomTool"},{"attributes":{"callback":null},"id":"d60e25c0-1122-46f1-9f7d-3a6403c1ccc9","type":"DataRange1d"},{"attributes":{},"id":"59fa4ee8-2868-4ea6-ae98-7cfb0b45fd82","type":"Selection"},{"attributes":{},"id":"27e9bb24-c24a-4341-9d62-c630667f4554","type":"SaveTool"},{"attributes":{},"id":"7d151f49-2dbe-4980-ba07-ba751d1228c9","type":"ResetTool"},{"attributes":{},"id":"b91affd2-5f78-4743-8f9e-3149ce02887e","type":"HelpTool"},{"attributes":{"fill_color":{"value":"red"},"line_color":{"value":"red"},"x":{"field":"x"},"y":{"field":"y"}},"id":"691efaf4-e642-4a42-ab06-c66945506942","type":"Circle"},{"attributes":{},"id":"21c156d9-9bad-4b1f-bb65-f7a678a2f3b3","type":"WheelZoomTool"},{"attributes":{"plot":{"id":"841ced20-f7d6-48b2-96e7-f7d358e28cca","subtype":"Figure","type":"Plot"},"ticker":{"id":"8387a4a6-bb76-41f4-8764-85e616ad8c3c","type":"BasicTicker"}},"id":"854ed7a6-8295-410f-8e3a-514e483285fc","type":"Grid"},{"attributes":{},"id":"7c56c589-0121-4e7c-aa95-00d858999941","type":"LinearScale"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"x":{"field":"x"},"y":{"field":"y"}},"id":"122f82d0-4918-43b7-b281-6b197d1b1375","type":"Circle"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"plot":null,"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"8b083432-9890-46b0-87f0-fde1cc21c8a0","type":"BoxAnnotation"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"de2a0234-f4af-4413-9bc6-e34659c23cee","type":"PanTool"},{"id":"21c156d9-9bad-4b1f-bb65-f7a678a2f3b3","type":"WheelZoomTool"},{"id":"fd6a7add-75b1-43db-91f9-2b40a34a576a","type":"BoxZoomTool"},{"id":"27e9bb24-c24a-4341-9d62-c630667f4554","type":"SaveTool"},{"id":"7d151f49-2dbe-4980-ba07-ba751d1228c9","type":"ResetTool"},{"id":"b91affd2-5f78-4743-8f9e-3149ce02887e","type":"HelpTool"}]},"id":"8a52ea46-e483-45d8-8cf5-7042cde71031","type":"Toolbar"},{"attributes":{"align":"center","plot":null,"text":"Correlation between refugees Madagascar and price of Fuel (diesel)","text_font_size":{"value":"25px"}},"id":"f19b3296-0bbc-4af3-a03b-7b3512014b73","type":"Title"},{"attributes":{},"id":"1b287842-55ba-4682-80ce-87662b5fb814","type":"BasicTickFormatter"},{"attributes":{"dimension":1,"plot":{"id":"841ced20-f7d6-48b2-96e7-f7d358e28cca","subtype":"Figure","type":"Plot"},"ticker":{"id":"837d62a6-7711-4864-a273-82d9940b7f61","type":"BasicTicker"}},"id":"036a1e93-d24d-4b6d-81fc-584901e37022","type":"Grid"},{"attributes":{},"id":"984e1d47-c7ba-48cd-8c31-ea7eb98ff1fa","type":"LinearScale"},{"attributes":{},"id":"52796382-b56c-41d4-9c13-0fac02e98e61","type":"BasicTickFormatter"},{"attributes":{},"id":"0281947f-f0fb-4f91-a7a8-6bba2ca9dd7b","type":"UnionRenderers"},{"attributes":{"callback":null},"id":"c0531377-ec3a-427c-8b27-6a101c41748b","type":"DataRange1d"},{"attributes":{"background_fill_alpha":{"value":0.1},"background_fill_color":{"value":"lightblue"},"below":[{"id":"f73d5442-c832-4b49-aab1-aa8b0adc7b00","type":"LinearAxis"}],"left":[{"id":"b0562202-648e-44d9-8b92-0b51a7765fea","type":"LinearAxis"}],"plot_height":650,"plot_width":1000,"renderers":[{"id":"f73d5442-c832-4b49-aab1-aa8b0adc7b00","type":"LinearAxis"},{"id":"854ed7a6-8295-410f-8e3a-514e483285fc","type":"Grid"},{"id":"b0562202-648e-44d9-8b92-0b51a7765fea","type":"LinearAxis"},{"id":"036a1e93-d24d-4b6d-81fc-584901e37022","type":"Grid"},{"id":"8b083432-9890-46b0-87f0-fde1cc21c8a0","type":"BoxAnnotation"},{"id":"66c47a44-6af2-49f8-ac34-5f3d09671e2a","type":"GlyphRenderer"}],"title":{"id":"f19b3296-0bbc-4af3-a03b-7b3512014b73","type":"Title"},"toolbar":{"id":"8a52ea46-e483-45d8-8cf5-7042cde71031","type":"Toolbar"},"toolbar_location":"above","x_range":{"id":"d60e25c0-1122-46f1-9f7d-3a6403c1ccc9","type":"DataRange1d"},"x_scale":{"id":"7c56c589-0121-4e7c-aa95-00d858999941","type":"LinearScale"},"y_range":{"id":"c0531377-ec3a-427c-8b27-6a101c41748b","type":"DataRange1d"},"y_scale":{"id":"984e1d47-c7ba-48cd-8c31-ea7eb98ff1fa","type":"LinearScale"}},"id":"841ced20-f7d6-48b2-96e7-f7d358e28cca","subtype":"Figure","type":"Plot"},{"attributes":{"source":{"id":"8f4a0a58-5515-4f13-b05a-315cac73c852","type":"ColumnDataSource"}},"id":"d02f5a06-08e5-4d72-806a-4c57223569c8","type":"CDSView"},{"attributes":{},"id":"8387a4a6-bb76-41f4-8764-85e616ad8c3c","type":"BasicTicker"},{"attributes":{"axis_label":"Amount of refugees in Madagascar","formatter":{"id":"1b287842-55ba-4682-80ce-87662b5fb814","type":"BasicTickFormatter"},"plot":{"id":"841ced20-f7d6-48b2-96e7-f7d358e28cca","subtype":"Figure","type":"Plot"},"ticker":{"id":"837d62a6-7711-4864-a273-82d9940b7f61","type":"BasicTicker"}},"id":"b0562202-648e-44d9-8b92-0b51a7765fea","type":"LinearAxis"},{"attributes":{},"id":"837d62a6-7711-4864-a273-82d9940b7f61","type":"BasicTicker"},{"attributes":{},"id":"de2a0234-f4af-4413-9bc6-e34659c23cee","type":"PanTool"},{"attributes":{"data_source":{"id":"8f4a0a58-5515-4f13-b05a-315cac73c852","type":"ColumnDataSource"},"glyph":{"id":"691efaf4-e642-4a42-ab06-c66945506942","type":"Circle"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"122f82d0-4918-43b7-b281-6b197d1b1375","type":"Circle"},"selection_glyph":null,"view":{"id":"d02f5a06-08e5-4d72-806a-4c57223569c8","type":"CDSView"}},"id":"66c47a44-6af2-49f8-ac34-5f3d09671e2a","type":"GlyphRenderer"}],"root_ids":["841ced20-f7d6-48b2-96e7-f7d358e28cca"]},"title":"Bokeh Application","version":"0.12.16"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('c5c820f4-3784-4fed-b13f-df38409bcd52').textContent;
+                  var render_items = [{"docid":"f60f9ff7-f700-4752-a063-c2a807ce5250","elementid":"cf46ca01-6be7-4e0a-a7d6-ab5cc285b523","modelid":"841ced20-f7d6-48b2-96e7-f7d358e28cca"}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    </body>
+</html>
