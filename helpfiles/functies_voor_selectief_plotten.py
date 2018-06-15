@@ -75,6 +75,24 @@ def select_plot_migration_movements1(input_data,origin, year1, year2):
     return input_data
 
 
+# checks if a product is in the foodprices dataset, if not, it returns a list of all available products in a given country
+def check_product_in_foodprices(country, product, foodprices):
+    
+    product_list = []
+    for product in foodprices.loc[foodprices['adm0_name'] == country]['cm_name']:
+        if product not in product_list:
+            product_list.append(product)
+
+    d = {'Product_List' : product_list}
+
+    df = pd.DataFrame(data=d)
+    
+    if not product in product_list:
+        print('Error, product not recognized. Choose a product from the list below')
+        return df
+    else:
+        return 'Succesfully imported values!'
+
 # # Plot temperature and precipitation
 
 # In[21]:
@@ -157,8 +175,7 @@ def select_plot_foodprices_average(input_data, country, product, year1, year2):
                 product_list.append(product)
 #                 average data            
                 average_price_list.append(sum(output_data['mp_price']) / len(output_data['mp_price']))
-            else:
-                print('ERROR: Geen data beschikbaar over het jaar', i + j/12)
+
     
     output_data = pd.DataFrame()    
     output_data['country'] = country_list
