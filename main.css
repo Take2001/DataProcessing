@@ -1,6 +1,8 @@
 ﻿body {
     margin: 60px auto;
-    padding: 70%;
+    <!-- width: 70%;-->
+    padding-left: 10%;
+    padding-right: 10%;
 }
 li{
 
