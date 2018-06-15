@@ -19,11 +19,27 @@ hier zie je een aantal grafieken  die duidelijke correlatie geven tussen voedsel
 </script>
 <div id="tester2" style="width:600px;height:600px;"></div>
 <script>
-  trace = {
-    x:[2,4,6,8,10],
-    y:[1,2,3,4,5]
-    type:'bar');
-    data=[trace];
-    Plotly.plot(div.data)
-  }
+var trace1 = {
+  x: [1, 2, 3, 4],
+  y: [10, 15, 13, 17],
+  mode: 'markers'
+};
+
+var trace2 = {
+  x: [2, 3, 4, 5],
+  y: [16, 5, 11, 10],
+  mode: 'lines'
+};
+
+var trace3 = {
+  x: [1, 2, 3, 4],
+  y: [12, 9, 15, 12],
+  mode: 'lines+markers'
+};
+
+var data = [ trace1, trace2, trace3 ];
+
+var layout = {};
+
+Plotly.newPlot('myDiv', data, layout);
 </script>
