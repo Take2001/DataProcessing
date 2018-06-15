@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bokeh Plot</title>
+        
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css" type="text/css" />
+        
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+    </head>
+    <body>
+        
+        <div class="bk-root">
+            <div class="bk-plotdiv" id="15dc072e-947b-4d70-981f-cb77bad12cde"></div>
+        </div>
+        
+        <script type="application/json" id="a5cd8983-d752-48c7-898c-f80e8aa3e1b7">
+          {"dbbd25b7-9b43-4d52-945b-c6b276a7270a":{"roots":{"references":[{"attributes":{},"id":"e1049ee5-7929-4d2d-bd8f-7673baaaf683","type":"BasicTicker"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"q4LE4bX3pD8RERERERGxPxEREREREaE/ERERERERsT8RERERERHRP97d3d3d3c0/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARERERERGhP5qZmZmZmck/UrgehetRyD+amZmZmZnJP2As+cWSX9w/YCz5xZJf3D8AAAAAAADwP1K4HoXrUeQ/mpmZmZmZ4T8HOm2g0wbaP08b6LSBTts/TxvotIFO2z/NzMzMzMzcP83MzMzMzNw/cT0K16Nw3T/e3d3d3d3dP3E9CtejcN0/iYiIiIiI4D9jyS+W/GLhP+ErvuIrvuI/PfZjP/Zj3z/v7u7u7u7eP4mIiIiIiOA/ERERERER4T+rqqqqqqriP7y7u7u7u+M/vLu7u7u74z+PwvUoXI/iPw==","dtype":"float64","shape":[38]},"y":{"__ndarray__":"zEjNE7GhfT9uZj3dY6eFPz919UE9qoE/dSiUMO99fD/EhnbAJcuGP8AlyxbgX4M/HwhbTS1aez/EhnbAJcuGP0Y3TJXIgIg/99hpBZIzjj8T5VhQXBiRP/N3vltMyIo/Spj3Pg7siz/SDO7lij2QPxunr6Pn7oc/bmY93WOnhT/32GkFkjOOP4BNYKwOhZI/8BYTsgZdlz8FX+Eq96WXP6vd/J3vFpM/RjdMlciAiD/zd75bTMiKP075ouhTV48/Spj3Pg7siz+huDAi0A+NP075ouhTV48/CcCM1DwRmz9GN0yVyICYP8AlyxbgX5M/XH8aDrnJmD+HD7f/mVuZP1x/Gg65yZg/xIZ2wCXLlj+Z9tnORDmWP2oFkjMePJI/VL3Dui3zkT8tjtJyksyUP0LWoOuCFZU/mfbZzkQ5lj9GN0yVyICYP9rORDkWFJc/q938ne8Wkz+ATWCsDoWSP8jnIWprNpo/CcCM1DwRmz8tjtJyksyUPy2O0nKSzJQ/csfohqkSmT8fCFtNLVqbPwVf4Sr3pZc/XH8aDrnJmD9GN0yVyICYP25mPd1jp5U/hw+3/5lbmT8fCFtNLVqbP7YA/5rAWJ0/YODFt/40nD8x730c2DeYP1x/Gg65yZg/I2kG93LFnj/dMFUiA2KgP/fYaQWSM54/83e+W0zImj9g4MW3/jScP8fohqkSGaA/y0kyU1iEoz+kGkELvV2mP1S9w7ot86E/zEjNE7GhnT95iT/aNOmfP/fYaQWSM54/Me99HNg3mD8fCFtNLVqbP4twYqnfxpw/hw+3/5lbmT9yx+iGqRKZPy2O0nKSzJQ//pyK12vPkD8XRgT6oYOUP94v8OJbf5o/RjdMlciAmD/stWcIwfGTPyktJ8lMYZE/WB5vZHNelT+Z9tnORDmWP+y1ZwjB8ZM/bmY93WOnlT8pLSfJTGGRPxdGBPqhg5Q/WB5vZHNelT+r3fyd7xaTP5n22c5EOZY/Qtag64IVlT8FX+Eq96WXP7YA/5rAWJ0/dSiUMO99nD+HD7f/mVuZPxdGBPqhg5Q/RjdMlciAmD+huDAi0A+dPzRQKcYdo5s/YODFt/40nD+huDAi0A+dP+KQm4yh6p0/G6evo+fulz8NITh+gnyeP25mPd1jp6U/I2kG93LFrj/zeCOb86qwP075ouhTV68/rNyXXkg0rT8/dJAClserP6G4MCLQD60/7ebvfLeYsD+guZVhd/KyP+YjNOqE37M/xrf+NBxysz9hEU4s9du4P0qY9z4O7Ls/F0YE+qGDtD80UY4FxYWxP9ieIQTHT7A/KS0nyUxhsT9ZHQolzHuvPzsT5VhQXKg//pslmMTsqj9O+aLoU1evP90wVSIDYrA/i3Biqd/GrD8/dJAClserP6G4MCLQD60/2J4hBMdPsD9kQXFhRKCvPwAAAAAAAAAASDQd19LY1j8AAAAAAAAAAAAAAAAAAAAAaTqupbFt5j+VlS4l/82iPwAAAAAAAAAAiqQZ3MsV6z+ATPtsZ6KsPxhFn7r6oK4/4pCbjKHqrT9uZdidvMSvPwL90EEKWK4/wlZTi9YGsD/c/8ytDLuzPzRRjgXFhbE/x+iGqRIZsD9vl8VRWk6yP8tJMlNYhLM//pyK12vPsD96uyyO0nKyPxunr6Pn7rc/9ahG0EJvtz+JQD90kAK2Pyf8nlRWurQ/pUvJf7MEsz/Gt/40HHKzP3Up+W+WYLI/6FS8XnuGsD9PK5Cc8eCxP+YjNOqE37M/pBpBC71dtj+prHQp+W+2PzIgBpHO3rQ/yhiq3mHdtj8Aza0Mu5O3P1OMO0Y3TLU/pkpkQAwivT+zOErLSTLDP075ouhTV78/ZEFxYUSgvz9R9KmrD+rBP9BD1NZsNMA/cmDfYHhXwj+YXkg0HdfCP/FHmyb9A8Q/nVeFeIqkyT9KmPc+DuzLP/AWE7IGXcc/4fgJ8nmIyj9Xht3JS/zRPyj7ORWv184/iHT2pnxR1D96Ija0Ay7ZP4Hl8UY259U/NFApxh2j2z8b2gGXLFvgPxgR6IcOUuA/0A8dpIDl4T+wCYzVoVDiPyeW+m3M4eM/gbE6FEqY5z/kJmOoeoflP4Wr3JdeSOQ/uZbGtpn15D9grXPEucjjPwy8+NafhuM/Z9bTPXZa4T8QtppatDbgPxndMFUiA+I/g+LCiEA/5D8Fk5hd4/TlP14WR2k5SeY/7bOdiXIs6D8t9HZZHKXlP00tWhtApt0/5Fm1m7/z3T8MVlTwFa7iP1DDITcZQ+U/t/+ZWxl25z8olDDvfRzoP9BCb5fFUeo/AAAAAAAA8D8dPXe/wIvvP8UeCFtNLeo/wr1csQfC5j+cizyrdvPnPxZ7IGw1teg/DVSKccfo5j+iHXDJsgXoPw==","dtype":"float64","shape":[224]}},"selected":{"id":"19db7db2-67ed-4130-8547-d10baa84037b","type":"Selection"},"selection_policy":{"id":"27b7888c-6dac-4967-8067-b26436dcb939","type":"UnionRenderers"}},"id":"9357a490-c5fc-4998-957f-d5348c88293f","type":"ColumnDataSource"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"x":{"field":"x"},"y":{"field":"y"}},"id":"7018dcd4-4fcc-4ec7-9ffb-2c6c65ff3e74","type":"Circle"},{"attributes":{"fill_color":{"value":"red"},"line_color":{"value":"red"},"x":{"field":"x"},"y":{"field":"y"}},"id":"eafb3b51-15c3-4964-b453-69c90fad718e","type":"Circle"},{"attributes":{},"id":"19db7db2-67ed-4130-8547-d10baa84037b","type":"Selection"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"plot":null,"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"3b3e1af1-3c0f-4d3a-a97f-22bf3376cc8a","type":"BoxAnnotation"},{"attributes":{},"id":"3a7447a4-6a6e-4dfc-b742-10353088a9ee","type":"PanTool"},{"attributes":{},"id":"012b868e-98da-4913-85b7-57998d77ca33","type":"LinearScale"},{"attributes":{"axis_label":"Amount of refugees in Gambia","formatter":{"id":"c574e5c1-1dac-46ee-8a1f-42819e9172d7","type":"BasicTickFormatter"},"plot":{"id":"2d4df553-6925-4c03-99be-be7cdc8cd251","subtype":"Figure","type":"Plot"},"ticker":{"id":"e1049ee5-7929-4d2d-bd8f-7673baaaf683","type":"BasicTicker"}},"id":"c68c34f4-6a11-4007-a90a-48a44b8a932f","type":"LinearAxis"},{"attributes":{"callback":null},"id":"e8466a7e-af9b-4959-b0d0-14a71174300a","type":"DataRange1d"},{"attributes":{"data_source":{"id":"9357a490-c5fc-4998-957f-d5348c88293f","type":"ColumnDataSource"},"glyph":{"id":"eafb3b51-15c3-4964-b453-69c90fad718e","type":"Circle"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"7018dcd4-4fcc-4ec7-9ffb-2c6c65ff3e74","type":"Circle"},"selection_glyph":null,"view":{"id":"8262db71-b382-4bae-bd8f-c3505aedaf90","type":"CDSView"}},"id":"7ee09fb0-ebd4-472d-9c7f-942a573e2b92","type":"GlyphRenderer"},{"attributes":{},"id":"c574e5c1-1dac-46ee-8a1f-42819e9172d7","type":"BasicTickFormatter"},{"attributes":{"plot":{"id":"2d4df553-6925-4c03-99be-be7cdc8cd251","subtype":"Figure","type":"Plot"},"ticker":{"id":"73685cdb-2996-4323-82e2-547e494a1c1a","type":"BasicTicker"}},"id":"3d4e22e8-268e-4059-bee8-03d6ad31d71f","type":"Grid"},{"attributes":{},"id":"73685cdb-2996-4323-82e2-547e494a1c1a","type":"BasicTicker"},{"attributes":{"align":"center","plot":null,"text":"Correlation between refugees Gambia and price of Oil (vegetable)","text_font_size":{"value":"25px"}},"id":"bf81e598-7127-4761-a3ac-8b58ae7ad98d","type":"Title"},{"attributes":{},"id":"6f9de7b4-050c-4de2-9c1c-8b072bbdcd45","type":"LinearScale"},{"attributes":{},"id":"5d250c16-40eb-4b74-aaa3-04f117073e1d","type":"ResetTool"},{"attributes":{"source":{"id":"9357a490-c5fc-4998-957f-d5348c88293f","type":"ColumnDataSource"}},"id":"8262db71-b382-4bae-bd8f-c3505aedaf90","type":"CDSView"},{"attributes":{},"id":"37feba0b-6019-432e-9836-a278a81b6697","type":"BasicTickFormatter"},{"attributes":{"overlay":{"id":"3b3e1af1-3c0f-4d3a-a97f-22bf3376cc8a","type":"BoxAnnotation"}},"id":"3d2a7d2c-bfb2-4749-addd-62519634fb7f","type":"BoxZoomTool"},{"attributes":{},"id":"88425c4e-ac4f-44fc-a0ff-249d06ee819b","type":"HelpTool"},{"attributes":{},"id":"27b7888c-6dac-4967-8067-b26436dcb939","type":"UnionRenderers"},{"attributes":{"dimension":1,"plot":{"id":"2d4df553-6925-4c03-99be-be7cdc8cd251","subtype":"Figure","type":"Plot"},"ticker":{"id":"e1049ee5-7929-4d2d-bd8f-7673baaaf683","type":"BasicTicker"}},"id":"9e778ce4-c633-4987-8658-ae33363a12fb","type":"Grid"},{"attributes":{"background_fill_alpha":{"value":0.1},"background_fill_color":{"value":"lightblue"},"below":[{"id":"0dfece21-5283-48e7-983c-6beaf1273f4a","type":"LinearAxis"}],"left":[{"id":"c68c34f4-6a11-4007-a90a-48a44b8a932f","type":"LinearAxis"}],"plot_height":650,"plot_width":1000,"renderers":[{"id":"0dfece21-5283-48e7-983c-6beaf1273f4a","type":"LinearAxis"},{"id":"3d4e22e8-268e-4059-bee8-03d6ad31d71f","type":"Grid"},{"id":"c68c34f4-6a11-4007-a90a-48a44b8a932f","type":"LinearAxis"},{"id":"9e778ce4-c633-4987-8658-ae33363a12fb","type":"Grid"},{"id":"3b3e1af1-3c0f-4d3a-a97f-22bf3376cc8a","type":"BoxAnnotation"},{"id":"7ee09fb0-ebd4-472d-9c7f-942a573e2b92","type":"GlyphRenderer"}],"title":{"id":"bf81e598-7127-4761-a3ac-8b58ae7ad98d","type":"Title"},"toolbar":{"id":"1b4bfb47-a1db-428d-b5ef-fe9b11ed48b6","type":"Toolbar"},"toolbar_location":"above","x_range":{"id":"e8466a7e-af9b-4959-b0d0-14a71174300a","type":"DataRange1d"},"x_scale":{"id":"012b868e-98da-4913-85b7-57998d77ca33","type":"LinearScale"},"y_range":{"id":"5e386f92-3ba2-4fac-bb74-def4f91fa312","type":"DataRange1d"},"y_scale":{"id":"6f9de7b4-050c-4de2-9c1c-8b072bbdcd45","type":"LinearScale"}},"id":"2d4df553-6925-4c03-99be-be7cdc8cd251","subtype":"Figure","type":"Plot"},{"attributes":{"axis_label":"Price of Oil (vegetable)","formatter":{"id":"37feba0b-6019-432e-9836-a278a81b6697","type":"BasicTickFormatter"},"plot":{"id":"2d4df553-6925-4c03-99be-be7cdc8cd251","subtype":"Figure","type":"Plot"},"ticker":{"id":"73685cdb-2996-4323-82e2-547e494a1c1a","type":"BasicTicker"}},"id":"0dfece21-5283-48e7-983c-6beaf1273f4a","type":"LinearAxis"},{"attributes":{"callback":null},"id":"5e386f92-3ba2-4fac-bb74-def4f91fa312","type":"DataRange1d"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"3a7447a4-6a6e-4dfc-b742-10353088a9ee","type":"PanTool"},{"id":"c8563bb3-4fb6-4285-aec8-a0ecb0274bbe","type":"WheelZoomTool"},{"id":"3d2a7d2c-bfb2-4749-addd-62519634fb7f","type":"BoxZoomTool"},{"id":"92f71b2c-935b-40d2-af4b-26ba96ac2094","type":"SaveTool"},{"id":"5d250c16-40eb-4b74-aaa3-04f117073e1d","type":"ResetTool"},{"id":"88425c4e-ac4f-44fc-a0ff-249d06ee819b","type":"HelpTool"}]},"id":"1b4bfb47-a1db-428d-b5ef-fe9b11ed48b6","type":"Toolbar"},{"attributes":{},"id":"92f71b2c-935b-40d2-af4b-26ba96ac2094","type":"SaveTool"},{"attributes":{},"id":"c8563bb3-4fb6-4285-aec8-a0ecb0274bbe","type":"WheelZoomTool"}],"root_ids":["2d4df553-6925-4c03-99be-be7cdc8cd251"]},"title":"Bokeh Application","version":"0.12.16"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('a5cd8983-d752-48c7-898c-f80e8aa3e1b7').textContent;
+                  var render_items = [{"docid":"dbbd25b7-9b43-4d52-945b-c6b276a7270a","elementid":"15dc072e-947b-4d70-981f-cb77bad12cde","modelid":"2d4df553-6925-4c03-99be-be7cdc8cd251"}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bokeh Plot</title>
+        
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css" type="text/css" />
+        
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+    </head>
+    <body>
+        
+        <div class="bk-root">
+            <div class="bk-plotdiv" id="bd806d82-7aa2-4226-933d-5cf562324645"></div>
+        </div>
+        
+        <script type="application/json" id="f6ed4acf-17f0-4901-859b-3b44181a0196">
+          {"68306547-cdd6-43af-80ce-93db1f7e33f8":{"roots":{"references":[{"attributes":{"data_source":{"id":"448ea20d-85c0-47bc-ac1d-f2b4795e86d9","type":"ColumnDataSource"},"glyph":{"id":"629db0ad-23e1-4873-914d-fec75ad09a86","type":"Circle"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6bd70974-3a46-4168-85e5-23ca367facd2","type":"Circle"},"selection_glyph":null,"view":{"id":"5cbffd32-2b99-4f7c-b12a-b711f69c8ae7","type":"CDSView"}},"id":"e5a59d70-fb95-4283-8c63-f90d2d7ec18d","type":"GlyphRenderer"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"v7vqmi8duD8cKRrij1vHPwAAAAAAAAAAo+IRgyvjwz/KM0L4IsOLPwAAAAAAAPA/sJq9sucd3T+hXC6t+E7KPzJS57oP7dI/PTaiTI/U3j8=","dtype":"float64","shape":[10]},"y":{"__ndarray__":"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","dtype":"float64","shape":[216]}},"selected":{"id":"5dc9ba06-e23e-43aa-a32e-5ddc739bfc00","type":"Selection"},"selection_policy":{"id":"a57a756e-dc37-407d-89bf-33a1e6bae854","type":"UnionRenderers"}},"id":"448ea20d-85c0-47bc-ac1d-f2b4795e86d9","type":"ColumnDataSource"},{"attributes":{"callback":null},"id":"595d6707-0d0a-4415-bf79-4bf4b49da0c9","type":"DataRange1d"},{"attributes":{"axis_label":"Price of Sorghum","formatter":{"id":"94807efd-ca82-48b0-afa8-4198246bba6c","type":"BasicTickFormatter"},"plot":{"id":"39b72584-5c7c-43d6-b384-11e061a2e024","subtype":"Figure","type":"Plot"},"ticker":{"id":"3fedc180-9b54-4b4a-87a0-3a5cbe2482f8","type":"BasicTicker"}},"id":"8961d959-e3b7-45b7-b815-7323ca6aa92a","type":"LinearAxis"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"201509bb-09c8-4439-a306-cbec2e6e3bcc","type":"PanTool"},{"id":"2f6d34d2-8be6-47bd-af94-3cab9f991300","type":"WheelZoomTool"},{"id":"bcfbd60c-abd7-48f4-841e-dcc0cbc907a8","type":"BoxZoomTool"},{"id":"b51a6076-fa16-402f-9917-5681bdc467c0","type":"SaveTool"},{"id":"05df062c-5417-4436-ac17-d44251d7ec6a","type":"ResetTool"},{"id":"48b134ca-c80f-482d-9b3a-d53727c5dd6a","type":"HelpTool"}]},"id":"7a4f9089-9f28-4fd3-9f47-98f9981478a0","type":"Toolbar"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"x":{"field":"x"},"y":{"field":"y"}},"id":"6bd70974-3a46-4168-85e5-23ca367facd2","type":"Circle"},{"attributes":{},"id":"94807efd-ca82-48b0-afa8-4198246bba6c","type":"BasicTickFormatter"},{"attributes":{"source":{"id":"448ea20d-85c0-47bc-ac1d-f2b4795e86d9","type":"ColumnDataSource"}},"id":"5cbffd32-2b99-4f7c-b12a-b711f69c8ae7","type":"CDSView"},{"attributes":{"fill_color":{"value":"red"},"line_color":{"value":"red"},"x":{"field":"x"},"y":{"field":"y"}},"id":"629db0ad-23e1-4873-914d-fec75ad09a86","type":"Circle"},{"attributes":{"plot":{"id":"39b72584-5c7c-43d6-b384-11e061a2e024","subtype":"Figure","type":"Plot"},"ticker":{"id":"3fedc180-9b54-4b4a-87a0-3a5cbe2482f8","type":"BasicTicker"}},"id":"bf7d87a6-8939-4dbc-821f-57c639939598","type":"Grid"},{"attributes":{"align":"center","plot":null,"text":"Correlation between refugees Central African Republic and price of Sorghum","text_font_size":{"value":"25px"}},"id":"15487bd6-4007-4d06-8d36-87fb1bc6b54f","type":"Title"},{"attributes":{},"id":"a57a756e-dc37-407d-89bf-33a1e6bae854","type":"UnionRenderers"},{"attributes":{},"id":"2105b109-4bfb-4794-ad29-09c332c38bb1","type":"BasicTicker"},{"attributes":{},"id":"9e7d8397-8ffc-4ea0-aadb-3d3f3b50627c","type":"LinearScale"},{"attributes":{},"id":"2f6d34d2-8be6-47bd-af94-3cab9f991300","type":"WheelZoomTool"},{"attributes":{"callback":null},"id":"cef11f92-032d-4cbb-b21a-f18ec685c670","type":"DataRange1d"},{"attributes":{"axis_label":"Amount of refugees in Central African Republic","formatter":{"id":"f5de5059-9039-49f2-94bd-f31feaf202e4","type":"BasicTickFormatter"},"plot":{"id":"39b72584-5c7c-43d6-b384-11e061a2e024","subtype":"Figure","type":"Plot"},"ticker":{"id":"2105b109-4bfb-4794-ad29-09c332c38bb1","type":"BasicTicker"}},"id":"7ddc7f2b-b275-4e99-a96d-bcf4bf82be07","type":"LinearAxis"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"plot":null,"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"170a1feb-ddb0-497d-a651-161fb56d322d","type":"BoxAnnotation"},{"attributes":{},"id":"c1e6845f-5167-4714-a838-b5147710c802","type":"LinearScale"},{"attributes":{},"id":"05df062c-5417-4436-ac17-d44251d7ec6a","type":"ResetTool"},{"attributes":{},"id":"48b134ca-c80f-482d-9b3a-d53727c5dd6a","type":"HelpTool"},{"attributes":{},"id":"b51a6076-fa16-402f-9917-5681bdc467c0","type":"SaveTool"},{"attributes":{},"id":"5dc9ba06-e23e-43aa-a32e-5ddc739bfc00","type":"Selection"},{"attributes":{"dimension":1,"plot":{"id":"39b72584-5c7c-43d6-b384-11e061a2e024","subtype":"Figure","type":"Plot"},"ticker":{"id":"2105b109-4bfb-4794-ad29-09c332c38bb1","type":"BasicTicker"}},"id":"edd747dd-ed7e-46c3-a4e7-a6159c0bad14","type":"Grid"},{"attributes":{},"id":"3fedc180-9b54-4b4a-87a0-3a5cbe2482f8","type":"BasicTicker"},{"attributes":{},"id":"201509bb-09c8-4439-a306-cbec2e6e3bcc","type":"PanTool"},{"attributes":{"overlay":{"id":"170a1feb-ddb0-497d-a651-161fb56d322d","type":"BoxAnnotation"}},"id":"bcfbd60c-abd7-48f4-841e-dcc0cbc907a8","type":"BoxZoomTool"},{"attributes":{},"id":"f5de5059-9039-49f2-94bd-f31feaf202e4","type":"BasicTickFormatter"},{"attributes":{"background_fill_alpha":{"value":0.1},"background_fill_color":{"value":"lightblue"},"below":[{"id":"8961d959-e3b7-45b7-b815-7323ca6aa92a","type":"LinearAxis"}],"left":[{"id":"7ddc7f2b-b275-4e99-a96d-bcf4bf82be07","type":"LinearAxis"}],"plot_height":650,"plot_width":1000,"renderers":[{"id":"8961d959-e3b7-45b7-b815-7323ca6aa92a","type":"LinearAxis"},{"id":"bf7d87a6-8939-4dbc-821f-57c639939598","type":"Grid"},{"id":"7ddc7f2b-b275-4e99-a96d-bcf4bf82be07","type":"LinearAxis"},{"id":"edd747dd-ed7e-46c3-a4e7-a6159c0bad14","type":"Grid"},{"id":"170a1feb-ddb0-497d-a651-161fb56d322d","type":"BoxAnnotation"},{"id":"e5a59d70-fb95-4283-8c63-f90d2d7ec18d","type":"GlyphRenderer"}],"title":{"id":"15487bd6-4007-4d06-8d36-87fb1bc6b54f","type":"Title"},"toolbar":{"id":"7a4f9089-9f28-4fd3-9f47-98f9981478a0","type":"Toolbar"},"toolbar_location":"above","x_range":{"id":"595d6707-0d0a-4415-bf79-4bf4b49da0c9","type":"DataRange1d"},"x_scale":{"id":"9e7d8397-8ffc-4ea0-aadb-3d3f3b50627c","type":"LinearScale"},"y_range":{"id":"cef11f92-032d-4cbb-b21a-f18ec685c670","type":"DataRange1d"},"y_scale":{"id":"c1e6845f-5167-4714-a838-b5147710c802","type":"LinearScale"}},"id":"39b72584-5c7c-43d6-b384-11e061a2e024","subtype":"Figure","type":"Plot"}],"root_ids":["39b72584-5c7c-43d6-b384-11e061a2e024"]},"title":"Bokeh Application","version":"0.12.16"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('f6ed4acf-17f0-4901-859b-3b44181a0196').textContent;
+                  var render_items = [{"docid":"68306547-cdd6-43af-80ce-93db1f7e33f8","elementid":"bd806d82-7aa2-4226-933d-5cf562324645","modelid":"39b72584-5c7c-43d6-b384-11e061a2e024"}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    </body>
+</html>

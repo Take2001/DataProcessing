@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bokeh Plot</title>
+        
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css" type="text/css" />
+        
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+    </head>
+    <body>
+        
+        <div class="bk-root">
+            <div class="bk-plotdiv" id="b5858fa0-2e57-42aa-8fa2-d6f4af981fbd"></div>
+        </div>
+        
+        <script type="application/json" id="9ff7ac7d-fda1-48fb-9489-d057a6d7c533">
+          {"64cf2190-c25a-4dfd-a183-e0fa98cc1f7c":{"roots":{"references":[{"attributes":{},"id":"40a6e2e0-3145-405d-8b46-2f166ca9754a","type":"WheelZoomTool"},{"attributes":{"axis_label":"Price of Oil (cooking)","formatter":{"id":"0a474f4c-a7d3-4852-8f9a-2ae42e94684d","type":"BasicTickFormatter"},"plot":{"id":"af3576ab-3dc6-440a-bd00-3df3fa3f97cf","subtype":"Figure","type":"Plot"},"ticker":{"id":"b471d4e6-1ff3-4874-a742-0a392384071d","type":"BasicTicker"}},"id":"c9cd3da4-8f1e-4a84-8598-fa9e37acdeee","type":"LinearAxis"},{"attributes":{"background_fill_alpha":{"value":0.1},"background_fill_color":{"value":"lightblue"},"below":[{"id":"c9cd3da4-8f1e-4a84-8598-fa9e37acdeee","type":"LinearAxis"}],"left":[{"id":"b78a5b11-61ae-4379-b368-0ff4a75b7c4e","type":"LinearAxis"}],"plot_height":650,"plot_width":1000,"renderers":[{"id":"c9cd3da4-8f1e-4a84-8598-fa9e37acdeee","type":"LinearAxis"},{"id":"8437f76f-119d-400d-bd3c-2f0b54507f9f","type":"Grid"},{"id":"b78a5b11-61ae-4379-b368-0ff4a75b7c4e","type":"LinearAxis"},{"id":"5e87272d-85ac-4b37-afa4-d1fe4638c519","type":"Grid"},{"id":"462d32d8-d158-4006-8783-23e557f62766","type":"BoxAnnotation"},{"id":"eb96cfe5-a7f4-42ea-9c17-48a784dd3081","type":"GlyphRenderer"}],"title":{"id":"a6f74602-60e2-41ea-a68c-ded711ffdd32","type":"Title"},"toolbar":{"id":"a7fec69c-b053-40ed-b33c-5e3780284e9f","type":"Toolbar"},"toolbar_location":"above","x_range":{"id":"0f6ea4a0-3f4f-4b56-a679-ab6b350b0533","type":"DataRange1d"},"x_scale":{"id":"993de205-a951-4999-8b6c-1730d04d3e4c","type":"LinearScale"},"y_range":{"id":"2328a6b4-1fe4-4a08-adf6-1bcb369bfed5","type":"DataRange1d"},"y_scale":{"id":"0bcb2023-891c-492e-bdd6-adbab188607e","type":"LinearScale"}},"id":"af3576ab-3dc6-440a-bd00-3df3fa3f97cf","subtype":"Figure","type":"Plot"},{"attributes":{"source":{"id":"25358d03-0b54-4d0c-820d-f6b516297756","type":"ColumnDataSource"}},"id":"0326bb51-73b5-42fa-a80c-5733906ef1bf","type":"CDSView"},{"attributes":{},"id":"60dfbf88-6061-4c02-913b-866fb8a84881","type":"HelpTool"},{"attributes":{},"id":"0c359203-9b61-4d1a-9fcd-9c5e0cc2698c","type":"SaveTool"},{"attributes":{},"id":"3f01466c-6ef2-4a56-b374-f044941ba05a","type":"UnionRenderers"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"63c94895-50e1-4f00-bd56-48bebda9e7e9","type":"PanTool"},{"id":"40a6e2e0-3145-405d-8b46-2f166ca9754a","type":"WheelZoomTool"},{"id":"4e080cf5-f403-420e-812a-b2d3242776ef","type":"BoxZoomTool"},{"id":"0c359203-9b61-4d1a-9fcd-9c5e0cc2698c","type":"SaveTool"},{"id":"98857048-3971-40d1-8c13-9524f5636bdf","type":"ResetTool"},{"id":"60dfbf88-6061-4c02-913b-866fb8a84881","type":"HelpTool"}]},"id":"a7fec69c-b053-40ed-b33c-5e3780284e9f","type":"Toolbar"},{"attributes":{"overlay":{"id":"462d32d8-d158-4006-8783-23e557f62766","type":"BoxAnnotation"}},"id":"4e080cf5-f403-420e-812a-b2d3242776ef","type":"BoxZoomTool"},{"attributes":{},"id":"334f9130-ce0a-4a63-9250-3de721d674d5","type":"BasicTicker"},{"attributes":{},"id":"b471d4e6-1ff3-4874-a742-0a392384071d","type":"BasicTicker"},{"attributes":{"axis_label":"Amount of refugees in Pakistan","formatter":{"id":"90099980-cb04-4adf-b719-c4d910b97e14","type":"BasicTickFormatter"},"plot":{"id":"af3576ab-3dc6-440a-bd00-3df3fa3f97cf","subtype":"Figure","type":"Plot"},"ticker":{"id":"334f9130-ce0a-4a63-9250-3de721d674d5","type":"BasicTicker"}},"id":"b78a5b11-61ae-4379-b368-0ff4a75b7c4e","type":"LinearAxis"},{"attributes":{},"id":"98857048-3971-40d1-8c13-9524f5636bdf","type":"ResetTool"},{"attributes":{"data_source":{"id":"25358d03-0b54-4d0c-820d-f6b516297756","type":"ColumnDataSource"},"glyph":{"id":"80b43eb7-9c1c-4443-9186-0a8974b78bf4","type":"Circle"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"ae5a0324-043b-420e-8746-5f3a8225b6dd","type":"Circle"},"selection_glyph":null,"view":{"id":"0326bb51-73b5-42fa-a80c-5733906ef1bf","type":"CDSView"}},"id":"eb96cfe5-a7f4-42ea-9c17-48a784dd3081","type":"GlyphRenderer"},{"attributes":{},"id":"0717c9c3-5488-4897-a822-9822052e30aa","type":"Selection"},{"attributes":{},"id":"63c94895-50e1-4f00-bd56-48bebda9e7e9","type":"PanTool"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"x":{"field":"x"},"y":{"field":"y"}},"id":"ae5a0324-043b-420e-8746-5f3a8225b6dd","type":"Circle"},{"attributes":{"fill_color":{"value":"red"},"line_color":{"value":"red"},"x":{"field":"x"},"y":{"field":"y"}},"id":"80b43eb7-9c1c-4443-9186-0a8974b78bf4","type":"Circle"},{"attributes":{"callback":null},"id":"0f6ea4a0-3f4f-4b56-a679-ab6b350b0533","type":"DataRange1d"},{"attributes":{},"id":"993de205-a951-4999-8b6c-1730d04d3e4c","type":"LinearScale"},{"attributes":{"plot":{"id":"af3576ab-3dc6-440a-bd00-3df3fa3f97cf","subtype":"Figure","type":"Plot"},"ticker":{"id":"b471d4e6-1ff3-4874-a742-0a392384071d","type":"BasicTicker"}},"id":"8437f76f-119d-400d-bd3c-2f0b54507f9f","type":"Grid"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"plot":null,"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"462d32d8-d158-4006-8783-23e557f62766","type":"BoxAnnotation"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"7x28rTqi7j8xnvGMZzzrP7ipTW1qU+s/xjOe8Yxn7D/aEfUO3lbtPwAAAAAAAPA/AAAAAAAA8D8AAAAAAADwP+MZz3jGM+4/4xnPeMYz7j/pm0WTAGvuP+pHP/rRj+4/6l73ute97j/yda973evuP3KYwxzmMO8/AAAAAAAA8D8AAAAAAADwPwAAAAAAAPA/AAAAAAAA8D8AAAAAAADwP/nRj370o+8/qU1talOb6j+oTW1qU5viP16fxwkbpeU/qE1talOb4j/Cd592yfnVP45Bpsv2T8k/jonlxcjfxz8gWclKVrLCP6v5ZtEkwLo/WoELXOACpz8AAAAAAAAAABZxwkZpfZ4/lPGMZzzjuT/8ccJGaX2+P4iRvy+xvLg/LAHWfLNosj+gwduqI+qdP6DB26oj6p0/oMHbqiPqnT+gwduqI+qdP6DB26oj6p0/ccGbbEk+gj+gwduqI+qdP6DB26oj6p0/zmEOc5jDrD9PsbwY+fuyP/wV4kNSxb0/DwHWfLNowj84YaO0Po/DPzhho7Q+j8M/OGGjtD6Pwz9m+6cMMl3GP3eBC1zgAsc/d4ELXOACxz8=","dtype":"float64","shape":[55]},"y":{"__ndarray__":"eJDzf7F3sD+ctBek1ZvUPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOkyXAGW6NI/AAAAAAAAAABYkXgViVexP3jz4qCYd9M/DhY3u8sN1j8AAAAAAAAAAAAAAAAAAAAATrE9bzVO4T8AAAAAAAAAAFcdNpklV50/AAAAAAAAAAAAAAAAAADwPwrxjQHQCeE/MhGNfDoyoT8AAAAAAAAAAMABCiuvv+E/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","dtype":"float64","shape":[24]}},"selected":{"id":"0717c9c3-5488-4897-a822-9822052e30aa","type":"Selection"},"selection_policy":{"id":"3f01466c-6ef2-4a56-b374-f044941ba05a","type":"UnionRenderers"}},"id":"25358d03-0b54-4d0c-820d-f6b516297756","type":"ColumnDataSource"},{"attributes":{"callback":null},"id":"2328a6b4-1fe4-4a08-adf6-1bcb369bfed5","type":"DataRange1d"},{"attributes":{"align":"center","plot":null,"text":"Correlation between refugees Pakistan and price of Oil (cooking)","text_font_size":{"value":"25px"}},"id":"a6f74602-60e2-41ea-a68c-ded711ffdd32","type":"Title"},{"attributes":{},"id":"90099980-cb04-4adf-b719-c4d910b97e14","type":"BasicTickFormatter"},{"attributes":{"dimension":1,"plot":{"id":"af3576ab-3dc6-440a-bd00-3df3fa3f97cf","subtype":"Figure","type":"Plot"},"ticker":{"id":"334f9130-ce0a-4a63-9250-3de721d674d5","type":"BasicTicker"}},"id":"5e87272d-85ac-4b37-afa4-d1fe4638c519","type":"Grid"},{"attributes":{},"id":"0a474f4c-a7d3-4852-8f9a-2ae42e94684d","type":"BasicTickFormatter"},{"attributes":{},"id":"0bcb2023-891c-492e-bdd6-adbab188607e","type":"LinearScale"}],"root_ids":["af3576ab-3dc6-440a-bd00-3df3fa3f97cf"]},"title":"Bokeh Application","version":"0.12.16"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('9ff7ac7d-fda1-48fb-9489-d057a6d7c533').textContent;
+                  var render_items = [{"docid":"64cf2190-c25a-4dfd-a183-e0fa98cc1f7c","elementid":"b5858fa0-2e57-42aa-8fa2-d6f4af981fbd","modelid":"af3576ab-3dc6-440a-bd00-3df3fa3f97cf"}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    </body>
+</html>
