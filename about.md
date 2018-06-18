@@ -17,3 +17,11 @@ hier zie je een aantal grafieken  die duidelijke correlatie geven tussen voedsel
 	y: [1, 2, 4, 8, 16] }], {
 	margin: { t: 0 } } );
 </script>
+
+<?php
+echo "php is cool en hopelijk werkt onze website"
+$command = escapeshellcmd('/usr/custom/test.py');
+$output = shell_exec($command);
+echo $output;
+
+?>
