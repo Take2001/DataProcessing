@@ -15,7 +15,7 @@ hier zie je een aantal grafieken  die duidelijke correlatie geven tussen voedsel
 	Plotly.plot( TESTER, [{
 	x: [1, 2, 3, 4, 5],
 	y: [1, 2, 4, 8, 16] }
-  z: [5,6,7,1,3,6,7]], {
+{
 	margin: { t: 0 } } );
 
   var trace1 = {
