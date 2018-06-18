@@ -46,6 +46,7 @@ var data = [trace1, trace2];
 
 Plotly.newPlot('myDiv', data, layout);
 </script>
+
 <div id="myCSV" style="width:600px;height:"600px";></div>
 <script>
 function makeplot() {
