@@ -47,7 +47,7 @@ var data = [trace1, trace2];
 Plotly.newPlot('myDiv', data, layout);
 </script>
 
-<div id="myCSV" style="width:600px;height:"600px";></div>
+<div id="myDiv" style="width:600px;height:"600px";></div>
 <script>
 HTML   JS  Result
 Edit on
