@@ -17,6 +17,7 @@ hallo beste meneertj/mevrouwtj ik zie dat je mijn grafieken hebt gevonden ik wee
 </script>
 
 <div id="myDiv" style="width:450px;height:450px;"></div>
+<script>
 var trace1 = {
   x: [1, 2, 3, 4],
   y: [10, 15, 13, 17],
@@ -32,3 +33,4 @@ var trace2 = {
 var data = [trace1, trace2];
 
 Plotly.newPlot('myDiv', data);
+</script>
