@@ -51,25 +51,9 @@ def normalize(input_data, column):
 
 # In[22]:
 
-
-# selecteer voor een #input_data de #country_of_residence vanuit een bepaalde #origin vanaf #year1 tot en met #year2
-
-def select_plot_migration_movements(input_data, country_of_residence, origin, year1, year2):
-    input_data = input_data.loc[input_data['Country of residence'] == country_of_residence]
-    if input_data.empty == True:
-        return('Error: Country of residence: {} is not included in DataFrame!'.format(country_of_residence))
-    input_data = input_data.loc[input_data['Origin'] == origin]
-    if input_data.empty == True:
-        return('Error: Origin: {} is not included in DataFrame!'.format(country_of_residence))
-    input_data = input_data.loc[(input_data['YearMonth'] > year1) & (input_data['YearMonth'] < year2 + 1)]
-    return input_data
-
-# werking
-# select_plot_migration_movements(df_migration, 'Netherlands', 'Zimbabwe', 2000, 2012)
-
 # selecteer voor een #input_data de #origin vanaf #year1 tot en met #year2
 
-def select_plot_migration_movements1(input_data,origin, year1, year2):
+def select_plot_migration_movements(input_data,origin, year1, year2):
     input_data = input_data.loc[input_data['Origin'] == origin]
     input_data = input_data.loc[(input_data['Timestamp'] > year1) & (input_data['Timestamp'] < year2)]
     return input_data
@@ -186,4 +170,25 @@ def select_plot_foodprices_average(input_data, country, product, year1, year2):
     return output_data
 
 # werking
-# select_plot_foodprices_average(df_foodprices, 'Burkina Faso', 'Maize', 2004, 2006)    
+# select_plot_foodprices_average(df_foodprices, 'Burkina Faso', 'Maize', 2004, 2006)
+
+def possible_range(data1, data2):
+    # bepaal de range van dataset 1 (migration movements)
+    min1 = float(data1.head(1))
+    max1 = float(data1.tail(1))
+    # bepaal de range van dataset 2 (foodprices average)
+    min2 = float(data2.head(1))
+    max2 = float(data2.tail(1))
+
+    # bepaal de mogelijke combinatie range
+    if min1 >= min2: year_min = int(np.ceil(min1))
+    else: year_min = int(np.ceil(min2))
+    if max1 <= max2: year_max = int(np.ceil(max1))
+    else: year_max = int(np.ceil(max1))
+        
+    return(year_min, year_max)
+
+# werking
+# data1 = select_plot_migration_movements1(df_migration, 'Zimbabwe', 1990, 2018)['Timestamp']
+# data2 = select_plot_foodprices_average(df_foodprices, 'Zimbabwe', 'Cowpeas', 1990, 2018)['year']
+# possible_range(data1, data2)
