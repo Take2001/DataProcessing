@@ -16,18 +16,30 @@ hallo beste meneertj/mevrouwtj ik zie dat je mijn grafieken hebt gevonden ik wee
 	margin: { t: 0 } } );
 </script>
 
-<div id="myDiv" style="width:450px;height:450px;"></div>
+<div id="myDiv" style="width:600px;height:600px;"></div>
 <script>
 var trace1 = {
-  x: [1, 2, 3, 4],
-  y: [10, 15, 13, 17],
-  type: 'scatter'
+  x: [2000, 2002, 2003, 2004, 2005, 2006, 2007, 2008],
+  y: [10, 15, 20, 30, 40, 50, 70, 100],
+  mode: 'lines',
+  name: 'Lines
 };
 
 var trace2 = {
   x: [1, 2, 3, 4],
   y: [16, 5, 11, 9],
-  type: 'scatter'
+  mode: 'lines+markers',
+  name: 'Scatter and Lines'
+};
+
+var layout = {
+  title: 'Mooien grafyk',
+  xaxis: {
+    title: 'Jaren'
+  },
+  yaxis: {
+    title: 'Chilisaus op kapsalon'
+  }
 };
 
 var data = [trace1, trace2];
