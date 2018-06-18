@@ -49,34 +49,36 @@ Plotly.newPlot('myDiv', data, layout);
 
 <div id="myCSV" style="width:600px;height:"600px";></div>
 <script>
+HTML   JS  Result
+Edit on
 function makeplot() {
-  Plotly.d3.csv("https://raw.githubusercontent.com/plotly/datasets/master/2014_apple_stock.csv", function(data){ processData(data) } );
+    Plotly.d3.csv("https://raw.githubusercontent.com/plotly/datasets/master/2014_apple_stock.csv", function(data){ processData(data) } );
 
 };
 
 function processData(allRows) {
 
-  console.log(allRows);
-  var x = [], y = [], standard_deviation = [];
+    console.log(allRows);
+    var x = [], y = [], standard_deviation = [];
 
-  for (var i=0; i<allRows.length; i++) {
-    row = allRows[i];
-    x.push( row['AAPL_x'] );
-    y.push( row['AAPL_y'] );
-  }
-  console.log( 'X',x, 'Y',y, 'SD',standard_deviation );
-  makePlotly( x, y, standard_deviation );
+    for (var i=0; i<allRows.length; i++) {
+        row = allRows[i];
+        x.push( row['AAPL_x'] );
+        y.push( row['AAPL_y'] );
+    }
+    console.log( 'X',x, 'Y',y, 'SD',standard_deviation );
+    makePlotly( x, y, standard_deviation );
 }
 
 function makePlotly( x, y, standard_deviation ){
-  var plotDiv = document.getElementById("plot");
-  var traces = [{
-    x: x,
-    y: y
-  }];
+    var plotDiv = document.getElementById("plot");
+    var traces = [{
+        x: x,
+        y: y
+    }];
 
-  Plotly.newPlot('myCSV', traces,
-    {title: 'Plotting CSV data from AJAX call'});
+    Plotly.newPlot('myDiv', traces,
+        {title: 'Plotting CSV data from AJAX call'});
 };
   makeplot();
 </script>
