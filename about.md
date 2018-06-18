@@ -20,6 +20,8 @@ hier zie je een aantal grafieken  die duidelijke correlatie geven tussen voedsel
 
 <?php
 echo "php is cool en hopelijk werkt onze website"
+$txt = "Kaas"
+echo "ik hou van $txt "
 $command = escapeshellcmd('/usr/custom/test.py');
 $output = shell_exec($command);
 echo $output;
