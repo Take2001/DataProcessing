@@ -15,6 +15,7 @@ title: Dataprocessing Groep24
 ## Grafiekprobeersels en geleuter
 hallo beste meneertj/mevrouwtj ik zie dat je mijn grafieken hebt gevonden ik weet nog niet hoe je onze database/scripts koppelt aan deze grafiek noch hoe ik het interactive kan maken. Ik zal mijn best doen om dit wel te kunnen en dan zien we hopelijk resultaat. groetjs
 update: d3 is een waardeloos hoopje code en ik snap niet dat iemand dat zou gebruiken. moraal is laag maar de zoektocht gaat door.
+
 <script>
 // set the dimensions and margins of the graph
 var margin = {top: 20, right: 20, bottom: 30, left: 50},
@@ -33,7 +34,7 @@ var valueline = d3.line()
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.close); });
 
-// append the svg obgect to the body of the page
+// append the svg object to the body of the page
 // appends a 'group' element to 'svg'
 // moves the 'group' element to the top left margin
 var svg = d3.select("body").append("svg")
