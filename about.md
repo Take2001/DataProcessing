@@ -3,46 +3,76 @@ layout: default
 title: Dataprocessing Groep24
 ---
 <head>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 ## Grafiekprobeersels en geleuter
 hallo beste meneertj/mevrouwtj ik zie dat je mijn grafieken hebt gevonden ik weet nog niet hoe je onze database/scripts koppelt aan deze grafiek noch hoe ik het interactive kan maken. Ik zal mijn best doen om dit wel te kunnen en dan zien we hopelijk resultaat. groetjs
-<div id="tester" style="width:600px;height:600px;"></div>
+<svg id="visualisation" width="1000" height="500"></svg>
 <script>
-	TESTER = document.getElementById('tester');
-	Plotly.plot( TESTER, [{
-	x: [1, 2, 3, 4, 5],
-	y: [1, 2, 4, 8, 16] }], {
-	margin: { t: 0 } } );
-</script>
+var lineData = [{
+  x: 1,
+  y: 5
+}, {
+  x: 20,
+  y: 20
+}, {
+  x: 40,
+  y: 10
+}, {
+  x: 60,
+  y: 40
+}, {
+  x: 80,
+  y: 5
+}, {
+  x: 100,
+  y: 60
+}];
+var vis = d3.select('#visualisation'),
+    WIDTH = 1000,
+    HEIGHT = 500,
+    MARGINS = {
+      top: 20,
+      right: 20,
+      bottom: 20,
+      left: 50
+    },
+    xRange = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([d3.min(lineData, function(d) {
+      return d.x;
+    }), d3.max(lineData, function(d) {
+      return d.x;
+    })]),
+    yRange = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([d3.min(lineData, function(d) {
+      return d.y;
+    }), d3.max(lineData, function(d) {
+      return d.y;
+    })]),
+    xAxis = d3.svg.axis()
+      .scale(xRange)
+      .tickSize(5)
+      .tickSubdivide(true),
+    yAxis = d3.svg.axis()
+      .scale(yRange)
+      .tickSize(5)
+      .orient('left')
+      .tickSubdivide(true);
 
-<div id="myDiv" style="width:600px;height:600px;"></div>
-<script>
-var trace1 = {
-  x: [1, 2, 3, 4],
-  y: [10, 15, 13, 17],
-  type: 'scatter',
-  name: 'Scatter'
-};
+vis.append('svg:g')
+  .attr('class', 'x axis')
+  .attr('transform', 'translate(0,' + (HEIGHT - MARGINS.bottom) + ')')
+  .call(xAxis);
 
-var trace2 = {
-  x: [1, 2, 3, 4],
-  y: [16, 5, 11, 9],
-  type: 'scatter',
-  name: 'chilisaus op kapsalon'
-};
+vis.append('svg:g')
+  .attr('class', 'y axis')
+  .attr('transform', 'translate(' + (MARGINS.left) + ',0)')
+  .call(yAxis);
 
-var layout = {
-  title: 'Title of the Graph',
-  xaxis: {
-    title: 'x-axis title'
-  },
-  yaxis: {
-    title: 'y-axis title'
-  }
-};
-
-var data = [trace1, trace2];
-
-Plotly.newPlot('myDiv', data, layout);
+	var lineFunc = d3.svg.line()
+  .x(function(d) {
+    return xRange(d.x);
+  })
+  .y(function(d) {
+    return yRange(d.y);
+  })
+  .interpolate('linear');
 </script>
