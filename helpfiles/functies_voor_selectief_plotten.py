@@ -85,8 +85,18 @@ def check_product_in_foodprices(set_country, set_product, foodprices):
 
 # geeft voor een #input_data van een #country de pr en tas vanaf #year1 tot en met #year2
 
+# geeft voor een #input_data van een #country de pr en tas vanaf #year1 tot en met #year2
+
+# geeft voor een #input_data van een #country de pr en tas vanaf #year1 tot en met #year2
+
 def select_plot_temperature_and_precipitation(input_data, country, year1, year2):
-    saved_dict = {'Mauritania': 'MRT', 'Lesotho': 'LSO', 'Somalia': 'SOM', 'Nigeria': 'NGA', 'Tanzania': 'TZA', 'Zambia': 'ZMB', 'Burundi': 'BDI', 'Afghanistan': 'AFG', 'Mali': 'MLI', 'Niger': 'NER', 'Malawi': 'MWI', 'Congo': 'ZAR', 'Cabo Verde': 'CPV', 'Sudan': 'SDN', 'Pakistan': 'PAK', 'Burkina Faso': 'BFA', 'Rwanda': 'RWA', 'Kenya': 'KEN', 'Senegal': 'SEN', 'Cameroon': 'CMR', 'Sierra Leone': 'SLE', 'Iraq': 'IRQ', 'Uganda': 'UGA', 'Mozambique': 'MOZ', 'Zimbabwe': 'ZWE', 'Central African Republic': 'CAF', 'Ethiopia': 'ETH', 'Guinea': 'GIN', 'Liberia': 'LBR', 'Djibouti': 'DJI', 'Iran': 'IRN', 'Madagascar': 'MDG', 'Lebanon': 'LBN'}
+    saved_dict = {'Mauritania': 'MRT', 'Lesotho': 'LSO', 'Somalia': 'SOM', 'Nigeria': 'NGA', 'Tanzania': 'TZA', 
+                  'Zambia': 'ZMB', 'Burundi': 'BDI', 'Afghanistan': 'AFG', 'Mali': 'MLI', 'Niger': 'NER', 'Malawi': 'MWI', 
+                  'Congo': 'ZAR', 'Cabo Verde': 'CPV', 'Sudan': 'SDN', 'Pakistan': 'PAK', 'Burkina Faso': 'BFA', 
+                  'Rwanda': 'RWA', 'Kenya': 'KEN', 'Senegal': 'SEN', 'Cameroon': 'CMR', 'Sierra Leone': 'SLE', 
+                  'Iraq': 'IRQ', 'Uganda': 'UGA', 'Mozambique': 'MOZ', 'Zimbabwe': 'ZWE', 
+                  'Central African Republic': 'CAF', 'Ethiopia': 'ETH', 'Guinea': 'GIN', 'Liberia': 'LBR', 
+                  'Djibouti': 'DJI', 'Iran': 'IRN', 'Madagascar': 'MDG', 'Lebanon': 'LBN'}
 
     if country in saved_dict.keys():
         country = saved_dict[country]
@@ -110,6 +120,8 @@ def select_plot_temperature_and_precipitation(input_data, country, year1, year2)
     input_data['YearMonth'] = YearMonth
     input_data = input_data[['pr', 'tas', 'country', 'YearMonth']]
     return input_data
+
+select_plot_temperature_and_precipitation(df_weather, 'Mauritania', 1999, 2017)
 
 # werking
 # select_plot_temperature_and_precipitation(df_weather, 'Mauritania', 1985, 2030)
@@ -192,3 +204,67 @@ def possible_range(data1, data2):
 # data1 = select_plot_migration_movements1(df_migration, 'Zimbabwe', 1990, 2018)['Timestamp']
 # data2 = select_plot_foodprices_average(df_foodprices, 'Zimbabwe', 'Cowpeas', 1990, 2018)['year']
 # possible_range(data1, data2)
+
+import holoviews as hv
+from bokeh.io import show, output_file
+from bokeh.models import FactorRange
+from bokeh.plotting import figure
+import bokeh.layouts
+from bokeh.layouts import column
+hv.extension('bokeh', 'matplotlib')
+
+def normalise(input_data):
+
+    values = []
+    
+    for value in input_data:
+         values.append(value)
+            
+    Min = min(values)
+    Max = max(values)
+        
+    output_data = []
+    
+    for value in input_data:
+        output_data.append((value - Min)/(Max - Min))
+    
+    input_data['Normalized_data'] = output_data
+
+    return input_data
+
+
+
+
+def bar_graph(input_data, country, year1, year2, target_data1, target_data2):
+    
+    frame = select_plot_temperature_and_precipitation(input_data, country, year1, year2)
+
+    df1 = normalise(frame[target_data1])
+    df2 = normalise(frame[target_data2])
+    
+    #print(df1)
+    
+    for cell in df1:
+        if type(cell) == list:
+            
+            data_inject1 = cell
+            break
+            
+    for cell in df2:
+
+        if type(cell) == list:
+            
+            data_inject2 = cell
+            break
+
+    # output size = 250
+    # opts Curve (color='red')
+    
+    bars = hv.Bars(data_inject1, "{}".format(country), 'precipitation and temperature', label = 'precipitation')
+    line = hv.Curve(data_inject2, "{}".format(country), 'precipitation and temperature',label = 'temperature')
+    
+    # function to call food data 
+    
+    plot = bars * line  
+    
+    return plot
