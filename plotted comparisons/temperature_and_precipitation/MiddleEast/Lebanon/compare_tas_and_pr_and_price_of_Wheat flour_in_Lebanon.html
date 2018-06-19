@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bokeh Plot</title>
+        
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css" type="text/css" />
+        
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+    </head>
+    <body>
+        
+        <div class="bk-root">
+            <div class="bk-plotdiv" id="8956bba1-dde2-4a2a-856b-9b71f71cbd72"></div>
+        </div>
+        
+        <script type="application/json" id="18f31071-fb9e-48d1-9170-821ea87755b3">
+          {"e00f0821-cc24-4600-986e-8212e29b3d55":{"roots":{"references":[{"attributes":{},"id":"1e724e35-95cf-47c9-8268-d820301f2f49","type":"BasicTicker"},{"attributes":{},"id":"d4caad17-8b08-47aa-8b7c-1663c7a0d4ad","type":"Selection"},{"attributes":{"data_source":{"id":"149d1b48-ae45-431b-8bd9-6b247849aab8","type":"ColumnDataSource"},"glyph":{"id":"b4d6dcd8-c0d0-4fcc-8b11-162b45507618","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"495993d7-38ed-4a5a-b2ba-28a0dca1d300","type":"Line"},"selection_glyph":null,"view":{"id":"b0949aac-1e0b-4d4a-9a6b-52b038d936b5","type":"CDSView"}},"id":"3c063499-f06b-41e2-92ca-69b65983b12c","type":"GlyphRenderer"},{"attributes":{"callback":null},"id":"50569b4e-fe66-4ee7-b764-f76d6abb30b8","type":"DataRange1d"},{"attributes":{"source":{"id":"d3fa9e4c-e104-466a-9fa6-7ed77bde18bb","type":"ColumnDataSource"}},"id":"7cba2446-c4d9-4ea6-b1ae-8461d2f53213","type":"CDSView"},{"attributes":{"dimension":1,"plot":{"id":"5e6564ad-3ebf-4ba8-8b5a-ca81e916f7e9","subtype":"Figure","type":"Plot"},"ticker":{"id":"d1f8af08-3072-4286-9c3c-b44bc6000689","type":"BasicTicker"}},"id":"dcd06714-97b9-414e-bf02-20855cba2489","type":"Grid"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAB8n0BVVVVVVXyfQKuqqqqqfJ9AAAAAAAB9n0BVVVVVVX2fQKuqqqqqfZ9AAAAAAAB+n0BVVVVVVX6fQKuqqqqqfp9AAAAAAAB/n0BVVVVVVX+fQKuqqqqqf59A","dtype":"float64","shape":[12]},"y":{"__ndarray__":"AAAAAAAAAACkEtfqq1KyP1SCTVTbBdE/Fv5+LF5X1j/+bSOu0DDkP/lSkkKMAeY/GkvDwBWh7T8AAAAAAADwP3Chk27aEe4/Sx791Y3U5T8mf+AnMOHVPw4c9Cs02K8/","dtype":"float64","shape":[12]}},"selected":{"id":"d4caad17-8b08-47aa-8b7c-1663c7a0d4ad","type":"Selection"},"selection_policy":{"id":"4dc6f8de-b2e6-4c87-97c9-2d932c5f5971","type":"UnionRenderers"}},"id":"d3fa9e4c-e104-466a-9fa6-7ed77bde18bb","type":"ColumnDataSource"},{"attributes":{"axis_label":"Temperature, precipitation and foodprices of Wheat flour","formatter":{"id":"21edfd5e-60b5-4d47-9f5b-77c9d50a85df","type":"BasicTickFormatter"},"plot":{"id":"5e6564ad-3ebf-4ba8-8b5a-ca81e916f7e9","subtype":"Figure","type":"Plot"},"ticker":{"id":"d1f8af08-3072-4286-9c3c-b44bc6000689","type":"BasicTicker"}},"id":"1e4e995e-69e5-42d1-a886-e4218041b4c9","type":"LinearAxis"},{"attributes":{},"id":"4183f424-36b6-4949-bdf9-146a22145245","type":"BasicTickFormatter"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"c6c141a9-04a0-4891-bc85-18be1b563fe6","type":"Line"},{"attributes":{},"id":"abfa5c20-14cc-4243-8bdd-2c9d94af15df","type":"LinearScale"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAB8n0BVVVVVVXyfQKuqqqqqfJ9AAAAAAAB9n0BVVVVVVX2fQKuqqqqqfZ9AAAAAAAB+n0BVVVVVVX6fQKuqqqqqfp9AAAAAAAB/n0BVVVVVVX+fQKuqqqqqf59AAAAAAACAn0BVVVVVVYCfQKuqqqqqgJ9AAAAAAACBn0BVVVVVVYGfQKuqqqqqgZ9AAAAAAACCn0BVVVVVVYKfQKuqqqqqgp9AAAAAAACDn0BVVVVVVYOfQKuqqqqqg59A","dtype":"float64","shape":[24]},"y":{"__ndarray__":"iIPx51w14j8CglSv8XTnP73mIjDNBdU/vQv/uAcH3D8AAAAAAADwPyO1565nANw/UbpITEq87z90K2PXxiHoP/IQpUi2a+8/M5/0Mf547j/go1ViajzbP12I6EcBYdU/90IUYKdDzD84bToipdbmP0v+gvbGfd8/u9sclsIg1z/NZgqatpC3Pxm+P7mclrY/AAAAAAAAAACWKlY1AGDIP4cAUzYFoq8/EPmqfxEN0z9vrZbLhb++P+VCHuXXw9w/","dtype":"float64","shape":[24]}},"selected":{"id":"eab0ab41-1a34-4d11-8f4f-7e717dc5bf24","type":"Selection"},"selection_policy":{"id":"6a3245b5-bb76-442f-beac-341b395a4339","type":"UnionRenderers"}},"id":"149d1b48-ae45-431b-8bd9-6b247849aab8","type":"ColumnDataSource"},{"attributes":{},"id":"6046f6df-d782-458d-8816-1d17aaa3fb5e","type":"WheelZoomTool"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"990b94ee-138b-44a5-9740-4473ff536eda","type":"PanTool"},{"id":"6046f6df-d782-458d-8816-1d17aaa3fb5e","type":"WheelZoomTool"},{"id":"b6729d1f-a283-47bf-97eb-0acc7457b69d","type":"BoxZoomTool"},{"id":"1845a027-ac97-44ae-b59a-fe456e29bdc1","type":"SaveTool"},{"id":"a45632f6-2752-4af2-a207-1f9bc5e9bcd9","type":"ResetTool"},{"id":"83c89bff-d1da-4cd6-9875-19e74f60eea2","type":"HelpTool"}]},"id":"bdc2a577-1bb0-4d4a-bfa1-67214e138adc","type":"Toolbar"},{"attributes":{},"id":"4dc6f8de-b2e6-4c87-97c9-2d932c5f5971","type":"UnionRenderers"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"plot":null,"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"a033b39e-fff8-4b21-9ddd-4d7b090467ac","type":"BoxAnnotation"},{"attributes":{},"id":"a45632f6-2752-4af2-a207-1f9bc5e9bcd9","type":"ResetTool"},{"attributes":{"background_fill_alpha":{"value":0.1},"background_fill_color":{"value":"lightblue"},"below":[{"id":"683b2c3c-751d-4ec7-8517-7deb75ab7b7a","type":"LinearAxis"}],"left":[{"id":"1e4e995e-69e5-42d1-a886-e4218041b4c9","type":"LinearAxis"}],"plot_height":650,"plot_width":1000,"renderers":[{"id":"683b2c3c-751d-4ec7-8517-7deb75ab7b7a","type":"LinearAxis"},{"id":"84e80093-4399-41ac-b79d-8724c1e00adb","type":"Grid"},{"id":"1e4e995e-69e5-42d1-a886-e4218041b4c9","type":"LinearAxis"},{"id":"dcd06714-97b9-414e-bf02-20855cba2489","type":"Grid"},{"id":"a033b39e-fff8-4b21-9ddd-4d7b090467ac","type":"BoxAnnotation"},{"id":"3c063499-f06b-41e2-92ca-69b65983b12c","type":"GlyphRenderer"},{"id":"4a8b4454-7cad-4cb1-8c54-7d43fe40fa5d","type":"GlyphRenderer"}],"title":{"id":"eaa8e3c5-ebf7-4135-b1a8-185432aa2a72","type":"Title"},"toolbar":{"id":"bdc2a577-1bb0-4d4a-bfa1-67214e138adc","type":"Toolbar"},"toolbar_location":"above","x_range":{"id":"145743a4-c285-4a02-82fd-82df10adf9a7","type":"DataRange1d"},"x_scale":{"id":"4203aa94-5766-4348-96c6-f269a06baf39","type":"LinearScale"},"y_range":{"id":"50569b4e-fe66-4ee7-b764-f76d6abb30b8","type":"DataRange1d"},"y_scale":{"id":"abfa5c20-14cc-4243-8bdd-2c9d94af15df","type":"LinearScale"}},"id":"5e6564ad-3ebf-4ba8-8b5a-ca81e916f7e9","subtype":"Figure","type":"Plot"},{"attributes":{"plot":{"id":"5e6564ad-3ebf-4ba8-8b5a-ca81e916f7e9","subtype":"Figure","type":"Plot"},"ticker":{"id":"1e724e35-95cf-47c9-8268-d820301f2f49","type":"BasicTicker"}},"id":"84e80093-4399-41ac-b79d-8724c1e00adb","type":"Grid"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"495993d7-38ed-4a5a-b2ba-28a0dca1d300","type":"Line"},{"attributes":{"overlay":{"id":"a033b39e-fff8-4b21-9ddd-4d7b090467ac","type":"BoxAnnotation"}},"id":"b6729d1f-a283-47bf-97eb-0acc7457b69d","type":"BoxZoomTool"},{"attributes":{},"id":"1845a027-ac97-44ae-b59a-fe456e29bdc1","type":"SaveTool"},{"attributes":{},"id":"990b94ee-138b-44a5-9740-4473ff536eda","type":"PanTool"},{"attributes":{},"id":"83c89bff-d1da-4cd6-9875-19e74f60eea2","type":"HelpTool"},{"attributes":{"source":{"id":"149d1b48-ae45-431b-8bd9-6b247849aab8","type":"ColumnDataSource"}},"id":"b0949aac-1e0b-4d4a-9a6b-52b038d936b5","type":"CDSView"},{"attributes":{},"id":"d1f8af08-3072-4286-9c3c-b44bc6000689","type":"BasicTicker"},{"attributes":{"x":{"field":"x"},"y":{"field":"y"}},"id":"b4d6dcd8-c0d0-4fcc-8b11-162b45507618","type":"Line"},{"attributes":{"line_color":"red","x":{"field":"x"},"y":{"field":"y"}},"id":"00091785-30fb-4724-9530-0bbea81378e8","type":"Line"},{"attributes":{},"id":"21edfd5e-60b5-4d47-9f5b-77c9d50a85df","type":"BasicTickFormatter"},{"attributes":{},"id":"6a3245b5-bb76-442f-beac-341b395a4339","type":"UnionRenderers"},{"attributes":{"align":"center","plot":null,"text":"Correlation of tas and pr and the price of Wheat flour in Lebanon","text_font_size":{"value":"25px"}},"id":"eaa8e3c5-ebf7-4135-b1a8-185432aa2a72","type":"Title"},{"attributes":{"axis_label":"Year","formatter":{"id":"4183f424-36b6-4949-bdf9-146a22145245","type":"BasicTickFormatter"},"plot":{"id":"5e6564ad-3ebf-4ba8-8b5a-ca81e916f7e9","subtype":"Figure","type":"Plot"},"ticker":{"id":"1e724e35-95cf-47c9-8268-d820301f2f49","type":"BasicTicker"}},"id":"683b2c3c-751d-4ec7-8517-7deb75ab7b7a","type":"LinearAxis"},{"attributes":{},"id":"eab0ab41-1a34-4d11-8f4f-7e717dc5bf24","type":"Selection"},{"attributes":{},"id":"4203aa94-5766-4348-96c6-f269a06baf39","type":"LinearScale"},{"attributes":{"data_source":{"id":"d3fa9e4c-e104-466a-9fa6-7ed77bde18bb","type":"ColumnDataSource"},"glyph":{"id":"00091785-30fb-4724-9530-0bbea81378e8","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"c6c141a9-04a0-4891-bc85-18be1b563fe6","type":"Line"},"selection_glyph":null,"view":{"id":"7cba2446-c4d9-4ea6-b1ae-8461d2f53213","type":"CDSView"}},"id":"4a8b4454-7cad-4cb1-8c54-7d43fe40fa5d","type":"GlyphRenderer"},{"attributes":{"callback":null},"id":"145743a4-c285-4a02-82fd-82df10adf9a7","type":"DataRange1d"}],"root_ids":["5e6564ad-3ebf-4ba8-8b5a-ca81e916f7e9"]},"title":"Bokeh Application","version":"0.12.16"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('18f31071-fb9e-48d1-9170-821ea87755b3').textContent;
+                  var render_items = [{"docid":"e00f0821-cc24-4600-986e-8212e29b3d55","elementid":"8956bba1-dde2-4a2a-856b-9b71f71cbd72","modelid":"5e6564ad-3ebf-4ba8-8b5a-ca81e916f7e9"}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    </body>
+</html>
