@@ -47,3 +47,7 @@ ul.posts {
 ul.posts li {
     list-style: none;
 }
+header{
+  font-size: 80px;
+  text-align: center;
+}
