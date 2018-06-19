@@ -31,13 +31,13 @@ title: Dataprocessing Groep24
 ## Grafiekprobeersels en geleuter
 hallo beste meneertj/mevrouwtj ik zie dat je mijn grafieken hebt gevonden ik weet nog niet hoe je onze database/scripts koppelt aan deze grafiek noch hoe ik het interactive kan maken. Ik zal mijn best doen om dit wel te kunnen en dan zien we hopelijk resultaat. groetjs
 <script src="https://d3js.org/d3.v4.min.js"></script>
-<div id="graph" class="aGraph" style="position:absolute;top:0px;left:0; float:left;"></div>
+<div id="graph" class="aGraph" style="width:200px;height:200px;position:absolute;top:0px;left:0; float:left;"></div>
 <script>
 	// define dimensions of graph
 	var m = [80, 80, 80, 80]; // margins
 	var w = 1000 - m[1] - m[3]; // width
 	var h = 400 - m[0] - m[2]; // height
-	
+
 	// create a simple data array that we'll plot with a line (this array represents only the Y values, X will just be the index location)
 	var data = [3, 6, 2, 7, 5, 2, 0, 3, 8, 9, 2, 5, 9, 3, 6, 3, 6, 2, 7, 5, 2, 1, 3, 8, 9, 2, 5, 9, 2, 7];
 	// X scale will fit all values from data[] within pixels 0-w
