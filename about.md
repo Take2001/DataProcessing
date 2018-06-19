@@ -85,8 +85,7 @@ d3.csv("testdata_website.csv", function(error, data) {
 <script>
 function myFunction(){
 	var person = prompt("Hier met die voornaam", "LOSER");
-
-	if (person =! null){
+	if (person != null){
 		document.getElementById("demo2").innerHTML=
 		"Hello " + person + "! wassbrackin B";
 	}
