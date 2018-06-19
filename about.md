@@ -80,6 +80,14 @@ d3.csv("testdata_website.csv", function(error, data) {
 <button type="button" onclick='document.getElementById("demo").innerHTML = "Ik stel mijn taken uit"'>KLIKKEN SNEL</button>
 <button type="button" onclick="document.getElementById('demo').style.fontSize='35px'">verander grootte</button>
 <button type="button" onclick="document.getElementById('demo').style.color='red'">verander kleur</button>
-<button type="button" onlick="document.getElementById('demo').src='https://www.goedkoopsteautoverzekering.net/wp-content/themes/goedkoopsteautoverzekering/assets/img/happy-man.png'">blije man</button>
-<img id="myImage" src="https://www.goedkoopsteautoverzekering.net/wp-content/themes/goedkoopsteautoverzekering/assets/img/happy-man.png" style="width:400px">
-<button type="button" onclick="document.getElementById('demo').src='https://st2.depositphotos.com/6828566/9644/i/950/depositphotos_96446422-stockafbeelding-gelaatsuitdrukking-van-een-boze-man.jpg'">boze man</button>
+<button type="button" onclick="myFunction()">try</button>
+<p id="demo2"></p>
+<script>
+function myFunction(){
+	var person = prompt("Hier met die voornaam", "LOSER");
+	if (person =! null){
+		document.getElementById("demo2").innerHTML=
+		"Hello" + person + "wassbrackin B";
+	}
+}
+</script>
