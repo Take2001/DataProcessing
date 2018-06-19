@@ -79,3 +79,4 @@ d3.csv("testdata_website.csv", function(error, data) {
 <p id="demo">Ik oefen javascript</p>
 <button type="button" onclick='document.getElementById("demo").innerHTML = "Ik stel mijn taken uit"'>KLIKKEN SNEL</button>
 <button type="button" onclick="document.getElementById('demo').style.fontSize='35px'">verander grootte</button>
+<button type="button" onclick="document.getElementById('demo').style.color='red'">verander kleur</button>
