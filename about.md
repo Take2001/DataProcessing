@@ -82,4 +82,4 @@ d3.csv("testdata_website.csv", function(error, data) {
 <button type="button" onclick="document.getElementById('demo').style.color='red'">verander kleur</button>
 <button type="button" onlick="document.getElementById('demo').src='https://www.goedkoopsteautoverzekering.net/wp-content/themes/goedkoopsteautoverzekering/assets/img/happy-man.png'">blije man</button>
 <img id="myImage" src="https://www.goedkoopsteautoverzekering.net/wp-content/themes/goedkoopsteautoverzekering/assets/img/happy-man.png" style="width:400px">
-<button type="button" onclick="document.getElementById('demo').src='http://www.stickpng.com/assets/images/58909b725236a4e0f6e2f976.png'">boze man</button>
+<button type="button" onclick="document.getElementById('demo').src='https://st2.depositphotos.com/6828566/9644/i/950/depositphotos_96446422-stockafbeelding-gelaatsuitdrukking-van-een-boze-man.jpg'">boze man</button>
