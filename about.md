@@ -75,6 +75,6 @@ d3.csv("testdata_website.csv", function(error, data) {
 
 });
 
-<script>
+</script>
 <p id="demo">Ik oefen javascript</p>
 <button type="button" onclick='document.getElementById("demo").innerHTML = "Ik stel mijn taken uit"'>KLIKKEN SNEL</button>
