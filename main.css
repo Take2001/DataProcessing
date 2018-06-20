@@ -51,3 +51,16 @@ header{
   font-size: 80px;
   text-align: center;
 }
+
+a{
+  fill:#bbb;
+}
+a:hover{
+  cursor:pointer;
+  fill:red;
+  }
+img{
+  display: none;
+  position: sticky;
+  padding:5px;
+  }
