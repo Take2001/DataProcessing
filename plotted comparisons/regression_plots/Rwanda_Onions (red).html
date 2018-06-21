@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bokeh Plot</title>
+        
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css" type="text/css" />
+        
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+    </head>
+    <body>
+        
+        <div class="bk-root">
+            <div class="bk-plotdiv" id="865751f4-508f-4dea-b46a-1e4959d0c79f"></div>
+        </div>
+        
+        <script type="application/json" id="8aeed8fb-41d0-45fd-9296-0869564ce687">
+          {"2234b342-2ae0-460e-9290-cb919525a051":{"roots":{"references":[{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"3555cee5-755a-43b1-a19c-e1c4edd1c122","type":"Line"},{"attributes":{"line_color":"blue","x":{"field":"x"},"y":{"field":"y"}},"id":"41f6266c-b266-43bf-98f8-9c6742f3e73c","type":"Line"},{"attributes":{},"id":"88870941-043e-4f23-b093-44301a6aa157","type":"Selection"},{"attributes":{"callback":null,"renderers":"auto","tooltips":[["Normalised foodprice","$x{1.11}"],["Refugees to Europe","$y{int}"]]},"id":"3e95b44e-3e9b-4c2b-828d-a166f17016e4","type":"HoverTool"},{"attributes":{},"id":"5c197d29-4811-4a9a-bf69-c825e390125d","type":"UnionRenderers"},{"attributes":{"callback":null},"id":"9f9c05f9-57cd-4ac9-8f6e-ae00f188aad9","type":"DataRange1d"},{"attributes":{"plot":{"id":"45087f21-a997-4b89-9458-7120a83d6882","subtype":"Figure","type":"Plot"},"ticker":{"id":"6f1218ae-013a-480e-9a73-635c6d002ae6","type":"BasicTicker"}},"id":"05d49477-e0d2-46b4-8521-e48d6f2726a5","type":"Grid"},{"attributes":{},"id":"8a0a535e-4a3d-446d-b71b-da2961ebfd08","type":"LinearScale"},{"attributes":{"below":[{"id":"94420171-5293-454f-9508-a5a23745ed46","type":"LinearAxis"}],"left":[{"id":"a8e818d0-980e-47f8-bf0d-09609ddef8c4","type":"LinearAxis"}],"renderers":[{"id":"94420171-5293-454f-9508-a5a23745ed46","type":"LinearAxis"},{"id":"05d49477-e0d2-46b4-8521-e48d6f2726a5","type":"Grid"},{"id":"a8e818d0-980e-47f8-bf0d-09609ddef8c4","type":"LinearAxis"},{"id":"b7d79106-1e74-408c-9193-393d2346d35a","type":"Grid"},{"id":"2c4063ed-4123-43ff-8097-34164b2ec393","type":"GlyphRenderer"},{"id":"fa31b92a-00a0-47f9-86fa-ccb5a83f30fc","type":"GlyphRenderer"}],"title":{"id":"26c273dc-676f-4fca-9510-9c30ea508f1a","type":"Title"},"toolbar":{"id":"83e875e7-98f3-4fa6-af09-ecdcb8726eb4","type":"Toolbar"},"x_range":{"id":"9f9c05f9-57cd-4ac9-8f6e-ae00f188aad9","type":"DataRange1d"},"x_scale":{"id":"8a0a535e-4a3d-446d-b71b-da2961ebfd08","type":"LinearScale"},"y_range":{"id":"1022cbdc-b342-4726-b831-d5accf8a4cbf","type":"DataRange1d"},"y_scale":{"id":"afbd5aa4-5da5-409d-bf6d-f2cbe9f9636a","type":"LinearScale"}},"id":"45087f21-a997-4b89-9458-7120a83d6882","subtype":"Figure","type":"Plot"},{"attributes":{"fill_color":{"value":"red"},"line_color":{"value":"red"},"x":{"field":"x"},"y":{"field":"y"}},"id":"66733558-2363-4eb5-82d2-af4a678c4ec4","type":"Circle"},{"attributes":{"plot":null,"text":"Correlation between Onions (red) and refugees in Rwanda"},"id":"26c273dc-676f-4fca-9510-9c30ea508f1a","type":"Title"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"i4LOoBhkwz/sUzXsx9/TPz6BTDSJPuY/AAAAAAAA8D/PIQxA9aXgP0jhS53N094/OZQwj0ZIsD9oQ7F/AT7KPy90QtXd5dU/dI7g6xCvwj+wJuEH9UzRPzoGoYCFcNM/yh0NZdjy2D+3qirhfJTFP4ZxGrVIFLo/KBXidzhdwT8RIzHx3MTDP8Cj+D4V9cQ/Qnl/JKuTxj9T2jSI0sC/P0/0cEeN7Lo/596vP+frqj/3Ykn+JRGmPwAAAAAAAAAABVdyesq5oz+FsJYUuES1P8cb3qF+s6c/5HfpNPzXpz8EsJWYAo+lP4X8bFuqk8Y/ltrEXbtU2j9qTsNR3XzhP26G8c+/Ddc/nAirtj4B0T/gbi5crzHCP/dfLijyXcQ/5R9lL3xY1j/owh3wOg/VPw==","dtype":"float64","shape":[38]},"y":{"__ndarray__":"km4vU2FpV0As/CnQcBJXQIKNEzIzQFZAmkHKsouZVUAB97KIy59WQEQzu6PitFZA14T9tWyZV0AiIFTvHkxXQOeP3qcnAVdAW0xpcmZsV0AXgxcRbChXQKdp3x4nFldAV/k8CBnnVkCv6RgSCGBXQGS7CkKBhFdAgmsTRwlyV0CJn4MQxGdXQGkphNawYldAVc9pRsZbV0CTBeaXY3hXQHCcznOzgldAaIBqHnOfV0APtrT4oaRXQAVjfmYxvFdAvKlF4yGnV0CN0KkRx45XQJPeyVDjoldA1cgQW7yiV0AhQJLqLKVXQH2GxEnGW1dAxEWkW0rbVkBiOjFYdJFWQDmD6mlI91ZAKvmCwPIqV0BHCuLofW5XQFbL2Es2ZVdAP4IrqFT9VkBlE0jxUAhXQA==","dtype":"float64","shape":[38]}},"selected":{"id":"88870941-043e-4f23-b093-44301a6aa157","type":"Selection"},"selection_policy":{"id":"5c197d29-4811-4a9a-bf69-c825e390125d","type":"UnionRenderers"}},"id":"1355f249-4bc7-4f4e-914a-2bedc48a6ba7","type":"ColumnDataSource"},{"attributes":{"axis_label":"Normalized foodprices","formatter":{"id":"647cc77a-81bd-40eb-bf85-4a2adde374ae","type":"BasicTickFormatter"},"plot":{"id":"45087f21-a997-4b89-9458-7120a83d6882","subtype":"Figure","type":"Plot"},"ticker":{"id":"6f1218ae-013a-480e-9a73-635c6d002ae6","type":"BasicTicker"}},"id":"94420171-5293-454f-9508-a5a23745ed46","type":"LinearAxis"},{"attributes":{},"id":"afbd5aa4-5da5-409d-bf6d-f2cbe9f9636a","type":"LinearScale"},{"attributes":{},"id":"8d0758b3-1946-4226-b8a6-9b11c6584bd3","type":"BasicTicker"},{"attributes":{"axis_label":"Migration movements","formatter":{"id":"f4f1dc61-2dfd-4615-a804-f275fa9b977a","type":"BasicTickFormatter"},"plot":{"id":"45087f21-a997-4b89-9458-7120a83d6882","subtype":"Figure","type":"Plot"},"ticker":{"id":"8d0758b3-1946-4226-b8a6-9b11c6584bd3","type":"BasicTicker"}},"id":"a8e818d0-980e-47f8-bf0d-09609ddef8c4","type":"LinearAxis"},{"attributes":{"source":{"id":"1355f249-4bc7-4f4e-914a-2bedc48a6ba7","type":"ColumnDataSource"}},"id":"ae05f8d5-f198-40cb-80af-4b2bdfc6d5ff","type":"CDSView"},{"attributes":{"callback":null},"id":"1022cbdc-b342-4726-b831-d5accf8a4cbf","type":"DataRange1d"},{"attributes":{"callback":null,"data":{"x":[0.15149219371689457,0.3105335051271243,0.6951337834798677,1.0,0.5202585459638217,0.4816774402711599,0.06360283847659866,0.2050172685144631,0.3421549399006975,0.14596759335937615,0.2703220917652329,0.30374276696611313,0.389822100336883,0.1685939883658045,0.10187200948207051,0.13565736631077496,0.15444528366995106,0.16372933935897827,0.17638148576856777,0.12403598618843974,0.1051719951073704,0.05258104946545732,0.04309958199582369,0.0,0.0385268473120686,0.08307981970455287,0.04629131055758467,0.046569711169226286,0.042106705785812465,0.1763813921370209,0.41142162472844157,0.5464922520572604,0.3602141886422946,0.2657009872310796,0.14214126587909615,0.15911700212450317,0.3491507017938587,0.32905457924702697],"y":[132.0,119.0,111.0,97.0,82.0,82.0,77.0,108.0,108.0,88.0,115.0,106.0,77.0,116.0,134.0,96.0,109.0,116.0,101.0,107.0,86.0,90.0,111.0,82.0,67.0,83.0,94.0,84.0,89.0,98.0,82.0,57.0,46.0,62.0,70.0,77.0,82.0,89.0]},"selected":{"id":"ab8ca678-3340-49d9-ab77-9d7622dfb121","type":"Selection"},"selection_policy":{"id":"fbdc7312-3bf7-47cb-9a64-889ccb64c2da","type":"UnionRenderers"}},"id":"0f3a1fda-660c-4eb9-bb16-01f45ba8a206","type":"ColumnDataSource"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"x":{"field":"x"},"y":{"field":"y"}},"id":"3109632a-d36d-4670-aa46-a86d91fd99c1","type":"Circle"},{"attributes":{"source":{"id":"0f3a1fda-660c-4eb9-bb16-01f45ba8a206","type":"ColumnDataSource"}},"id":"d300a9a4-957f-4b65-b2f8-ecfc6bb25dc3","type":"CDSView"},{"attributes":{},"id":"fbdc7312-3bf7-47cb-9a64-889ccb64c2da","type":"UnionRenderers"},{"attributes":{},"id":"647cc77a-81bd-40eb-bf85-4a2adde374ae","type":"BasicTickFormatter"},{"attributes":{"data_source":{"id":"1355f249-4bc7-4f4e-914a-2bedc48a6ba7","type":"ColumnDataSource"},"glyph":{"id":"41f6266c-b266-43bf-98f8-9c6742f3e73c","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3555cee5-755a-43b1-a19c-e1c4edd1c122","type":"Line"},"selection_glyph":null,"view":{"id":"ae05f8d5-f198-40cb-80af-4b2bdfc6d5ff","type":"CDSView"}},"id":"fa31b92a-00a0-47f9-86fa-ccb5a83f30fc","type":"GlyphRenderer"},{"attributes":{},"id":"6f1218ae-013a-480e-9a73-635c6d002ae6","type":"BasicTicker"},{"attributes":{"data_source":{"id":"0f3a1fda-660c-4eb9-bb16-01f45ba8a206","type":"ColumnDataSource"},"glyph":{"id":"66733558-2363-4eb5-82d2-af4a678c4ec4","type":"Circle"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3109632a-d36d-4670-aa46-a86d91fd99c1","type":"Circle"},"selection_glyph":null,"view":{"id":"d300a9a4-957f-4b65-b2f8-ecfc6bb25dc3","type":"CDSView"}},"id":"2c4063ed-4123-43ff-8097-34164b2ec393","type":"GlyphRenderer"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"3e95b44e-3e9b-4c2b-828d-a166f17016e4","type":"HoverTool"}]},"id":"83e875e7-98f3-4fa6-af09-ecdcb8726eb4","type":"Toolbar"},{"attributes":{},"id":"ab8ca678-3340-49d9-ab77-9d7622dfb121","type":"Selection"},{"attributes":{},"id":"f4f1dc61-2dfd-4615-a804-f275fa9b977a","type":"BasicTickFormatter"},{"attributes":{"dimension":1,"plot":{"id":"45087f21-a997-4b89-9458-7120a83d6882","subtype":"Figure","type":"Plot"},"ticker":{"id":"8d0758b3-1946-4226-b8a6-9b11c6584bd3","type":"BasicTicker"}},"id":"b7d79106-1e74-408c-9193-393d2346d35a","type":"Grid"}],"root_ids":["45087f21-a997-4b89-9458-7120a83d6882"]},"title":"Bokeh Application","version":"0.12.16"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('8aeed8fb-41d0-45fd-9296-0869564ce687').textContent;
+                  var render_items = [{"docid":"2234b342-2ae0-460e-9290-cb919525a051","elementid":"865751f4-508f-4dea-b46a-1e4959d0c79f","modelid":"45087f21-a997-4b89-9458-7120a83d6882"}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    </body>
+</html>

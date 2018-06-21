@@ -8,4 +8,4 @@ def products_country(input_data, country):
         if item not in products:
             products.append(item)
     return(products)
-products_country(df_foodprices, 'Mali')
+# products_country(df_foodprices, 'Mali')
