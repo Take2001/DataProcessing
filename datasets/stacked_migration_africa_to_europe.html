@@ -1,0 +1,969 @@
+
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js" type="text/javascript"></script>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.16.min.js" type="text/javascript"></script>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-tables-0.12.16.min.js" type="text/javascript"></script>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-gl-0.12.16.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.20/require.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" type="text/javascript"></script>
+<script type="text/javascript">function HoloViewsWidget() {
+}
+
+HoloViewsWidget.prototype.init_slider = function(init_val){
+  if(this.load_json) {
+    this.from_json()
+  } else {
+    this.update_cache();
+  }
+}
+
+HoloViewsWidget.prototype.populate_cache = function(idx){
+  this.cache[idx].innerHTML = this.frames[idx];
+  if (this.embed) {
+    delete this.frames[idx];
+  }
+}
+
+HoloViewsWidget.prototype.process_error = function(msg){
+}
+
+HoloViewsWidget.prototype.from_json = function() {
+  var data_url = this.json_path + this.id + '.json';
+  $.getJSON(data_url, $.proxy(function(json_data) {
+    this.frames = json_data;
+    this.update_cache();
+    this.update(0);
+  }, this));
+}
+
+HoloViewsWidget.prototype.dynamic_update = function(current){
+  if (current === undefined) {
+    return
+  }
+  this.current = current;
+  if (this.comm) {
+    var msg = {comm_id: this.id+'_client', content: current}
+    this.comm.send(msg);
+  }
+}
+
+HoloViewsWidget.prototype.update_cache = function(force){
+  var frame_len = Object.keys(this.frames).length;
+  for (var i=0; i<frame_len; i++) {
+    if(!this.load_json || this.dynamic)  {
+      var frame = Object.keys(this.frames)[i];
+    } else {
+      var frame = i;
+    }
+    if(!(frame in this.cache) || force) {
+      if ((frame in this.cache) && force) { this.cache[frame].remove() }
+      var div = document.createElement("div");
+      var parent = document.getElementById("_anim_img"+this.id);
+      div.style.display = "none";
+      parent.appendChild(div)
+      this.cache[frame] = div;
+      var cache_id = "_anim_img"+this.id+"_"+frame;
+      this.populate_cache(frame);
+    }
+  }
+}
+
+HoloViewsWidget.prototype.update = function(current){
+  if(current in this.cache) {
+    for (var index in this.cache) {
+      this.cache[index].style.display = "none";
+    }
+    this.cache[current].style.display = "";
+    this.wait = false;
+  }
+}
+
+HoloViewsWidget.prototype.init_comms = function() {
+  var that = this
+  HoloViews.comm_manager.register_target(this.plot_id, this.id, function (msg) { that.process_msg(msg) })
+  if (!this.cached || this.dynamic) {
+    function ack_callback(msg) {
+      msg = JSON.parse(msg.content.data);
+      var comm_id = msg["comm_id"]
+      var comm_status = HoloViews.comm_status[comm_id];
+      if (that.queue.length > 0) {
+        that.time = Date.now();
+        that.dynamic_update(that.queue[that.queue.length-1]);
+        that.queue = [];
+      } else {
+        that.wait = false;
+      }
+      if ((msg.msg_type == "Ready") && msg.content) {
+        console.log("Python callback returned following output:", msg.content);
+      } else if (msg.msg_type == "Error") {
+        console.log("Python failed with the following traceback:", msg['traceback'])
+      }
+    }
+    var comm = HoloViews.comm_manager.get_client_comm(this.plot_id, this.id+'_client', ack_callback);
+    return comm
+  }
+}
+
+HoloViewsWidget.prototype.process_msg = function(msg) {
+}
+
+function SelectionWidget(frames, id, slider_ids, keyMap, dim_vals, notFound, load_json, mode, cached, json_path, dynamic, plot_id){
+  this.frames = frames;
+  this.id = id;
+  this.plot_id = plot_id;
+  this.slider_ids = slider_ids;
+  this.keyMap = keyMap
+  this.current_frame = 0;
+  this.current_vals = dim_vals;
+  this.load_json = load_json;
+  this.mode = mode;
+  this.notFound = notFound;
+  this.cached = cached;
+  this.dynamic = dynamic;
+  this.cache = {};
+  this.json_path = json_path;
+  this.init_slider(this.current_vals[0]);
+  this.queue = [];
+  this.wait = false;
+  if (!this.cached || this.dynamic) {
+    this.comm = this.init_comms();
+  }
+}
+
+SelectionWidget.prototype = new HoloViewsWidget;
+
+
+SelectionWidget.prototype.get_key = function(current_vals) {
+  var key = "(";
+  for (var i=0; i<this.slider_ids.length; i++)
+  {
+    var val = this.current_vals[i];
+    if (!(typeof val === 'string')) {
+      if (val % 1 === 0) { val = val.toFixed(1); }
+      else { val = val.toFixed(10); val = val.slice(0, val.length-1);}
+    }
+    key += "'" + val + "'";
+    if(i != this.slider_ids.length-1) { key += ', ';}
+    else if(this.slider_ids.length == 1) { key += ',';}
+  }
+  key += ")";
+  return this.keyMap[key];
+}
+
+SelectionWidget.prototype.set_frame = function(dim_val, dim_idx){
+  this.current_vals[dim_idx] = dim_val;
+  var key = this.current_vals;
+  if (!this.dynamic) {
+    key = this.get_key(key)
+  }
+  if (this.dynamic || !this.cached) {
+    if ((this.time !== undefined) && ((this.wait) && ((this.time + 10000) > Date.now()))) {
+      this.queue.push(key);
+      return
+    }
+    this.queue = [];
+    this.time = Date.now();
+    this.current_frame = key;
+    this.wait = true;
+    this.dynamic_update(key)
+  } else if (key !== undefined) {
+    this.update(key)
+  }
+}
+
+
+/* Define the ScrubberWidget class */
+function ScrubberWidget(frames, num_frames, id, interval, load_json, mode, cached, json_path, dynamic, plot_id){
+  this.slider_id = "_anim_slider" + id;
+  this.loop_select_id = "_anim_loop_select" + id;
+  this.id = id;
+  this.plot_id = plot_id;
+  this.interval = interval;
+  this.current_frame = 0;
+  this.direction = 0;
+  this.dynamic = dynamic;
+  this.timer = null;
+  this.load_json = load_json;
+  this.mode = mode;
+  this.cached = cached;
+  this.frames = frames;
+  this.cache = {};
+  this.length = num_frames;
+  this.json_path = json_path;
+  document.getElementById(this.slider_id).max = this.length - 1;
+  this.init_slider(0);
+  this.wait = false;
+  this.queue = [];
+  if (!this.cached || this.dynamic) {
+    this.comm = this.init_comms()
+  }
+}
+
+ScrubberWidget.prototype = new HoloViewsWidget;
+
+ScrubberWidget.prototype.set_frame = function(frame){
+  this.current_frame = frame;
+  var widget = document.getElementById(this.slider_id);
+  if (widget === null) {
+    this.pause_animation();
+    return
+  }
+  widget.value = this.current_frame;
+  if (this.dynamic || !this.cached) {
+    if ((this.time !== undefined) && ((this.wait) && ((this.time + 10000) > Date.now()))) {
+      this.queue.push(frame);
+      return
+    }
+    this.queue = [];
+    this.time = Date.now();
+    this.wait = true;
+    this.dynamic_update(frame)
+  } else {
+    this.update(frame)
+  }
+}
+
+ScrubberWidget.prototype.get_loop_state = function(){
+  var button_group = document[this.loop_select_id].state;
+  for (var i = 0; i < button_group.length; i++) {
+    var button = button_group[i];
+    if (button.checked) {
+      return button.value;
+    }
+  }
+  return undefined;
+}
+
+
+ScrubberWidget.prototype.next_frame = function() {
+  this.set_frame(Math.min(this.length - 1, this.current_frame + 1));
+}
+
+ScrubberWidget.prototype.previous_frame = function() {
+  this.set_frame(Math.max(0, this.current_frame - 1));
+}
+
+ScrubberWidget.prototype.first_frame = function() {
+  this.set_frame(0);
+}
+
+ScrubberWidget.prototype.last_frame = function() {
+  this.set_frame(this.length - 1);
+}
+
+ScrubberWidget.prototype.slower = function() {
+  this.interval /= 0.7;
+  if(this.direction > 0){this.play_animation();}
+  else if(this.direction < 0){this.reverse_animation();}
+}
+
+ScrubberWidget.prototype.faster = function() {
+  this.interval *= 0.7;
+  if(this.direction > 0){this.play_animation();}
+  else if(this.direction < 0){this.reverse_animation();}
+}
+
+ScrubberWidget.prototype.anim_step_forward = function() {
+  if(this.current_frame < this.length - 1){
+    this.next_frame();
+  }else{
+    var loop_state = this.get_loop_state();
+    if(loop_state == "loop"){
+      this.first_frame();
+    }else if(loop_state == "reflect"){
+      this.last_frame();
+      this.reverse_animation();
+    }else{
+      this.pause_animation();
+      this.last_frame();
+    }
+  }
+}
+
+ScrubberWidget.prototype.anim_step_reverse = function() {
+  if(this.current_frame > 0){
+    this.previous_frame();
+  } else {
+    var loop_state = this.get_loop_state();
+    if(loop_state == "loop"){
+      this.last_frame();
+    }else if(loop_state == "reflect"){
+      this.first_frame();
+      this.play_animation();
+    }else{
+      this.pause_animation();
+      this.first_frame();
+    }
+  }
+}
+
+ScrubberWidget.prototype.pause_animation = function() {
+  this.direction = 0;
+  if (this.timer){
+    clearInterval(this.timer);
+    this.timer = null;
+  }
+}
+
+ScrubberWidget.prototype.play_animation = function() {
+  this.pause_animation();
+  this.direction = 1;
+  var t = this;
+  if (!this.timer) this.timer = setInterval(function(){t.anim_step_forward();}, this.interval);
+}
+
+ScrubberWidget.prototype.reverse_animation = function() {
+  this.pause_animation();
+  this.direction = -1;
+  var t = this;
+  if (!this.timer) this.timer = setInterval(function(){t.anim_step_reverse();}, this.interval);
+}
+
+function extend(destination, source) {
+  for (var k in source) {
+    if (source.hasOwnProperty(k)) {
+      destination[k] = source[k];
+    }
+  }
+  return destination;
+}
+
+function update_widget(widget, values) {
+  if (widget.hasClass("ui-slider")) {
+    widget.slider('option', {
+      min: 0,
+      max: values.length-1,
+      dim_vals: values,
+      value: 0,
+      dim_labels: values
+    })
+    widget.slider('option', 'slide').call(widget, event, {value: 0})
+  } else {
+    widget.empty();
+    for (var i=0; i<values.length; i++){
+      widget.append($("<option>", {
+        value: i,
+        text: values[i]
+      }))
+    };
+    widget.data('values', values);
+    widget.data('value', 0);
+    widget.trigger("change");
+  };
+}
+
+function init_slider(id, plot_id, dim, values, next_vals, labels, dynamic, step, value, next_dim,
+                     dim_idx, delay, jQueryUI_CDN, UNDERSCORE_CDN) {
+  // Slider JS Block START
+  function loadcssfile(filename){
+    var fileref=document.createElement("link")
+    fileref.setAttribute("rel", "stylesheet")
+    fileref.setAttribute("type", "text/css")
+    fileref.setAttribute("href", filename)
+    document.getElementsByTagName("head")[0].appendChild(fileref)
+  }
+  loadcssfile("https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css");
+  /* Check if jQuery and jQueryUI have been loaded
+     otherwise load with require.js */
+  var jQuery = window.jQuery,
+    // check for old versions of jQuery
+    oldjQuery = jQuery && !!jQuery.fn.jquery.match(/^1\.[0-4](\.|$)/),
+    jquery_path = '',
+    paths = {},
+    noConflict;
+  var jQueryUI = jQuery.ui;
+  // check for jQuery
+  if (!jQuery || oldjQuery) {
+    // load if it's not available or doesn't meet min standards
+    paths.jQuery = jQuery;
+    noConflict = !!oldjQuery;
+  } else {
+    // register the current jQuery
+    define('jquery', [], function() { return jQuery; });
+  }
+  if (!jQueryUI) {
+    paths.jQueryUI = jQueryUI_CDN.slice(null, -3);
+  } else {
+    define('jQueryUI', [], function() { return jQuery.ui; });
+  }
+  paths.underscore = UNDERSCORE_CDN.slice(null, -3);
+  var jquery_require = {
+    paths: paths,
+    shim: {
+      "jQueryUI": {
+        exports:"$",
+        deps: ['jquery']
+      },
+      "underscore": {
+        exports: '_'
+      }
+    }
+  }
+  require.config(jquery_require);
+  require(["jQueryUI", "underscore"], function(jUI, _){
+    if (noConflict) $.noConflict(true);
+    var vals = values;
+    if (dynamic && vals.constructor === Array) {
+      var default_value = parseFloat(value);
+      var min = parseFloat(vals[0]);
+      var max = parseFloat(vals[vals.length-1]);
+      var wstep = step;
+      var wlabels = [default_value];
+      var init_label = default_value;
+    } else {
+      var min = 0;
+      if (dynamic) {
+        var max = Object.keys(vals).length - 1;
+        var init_label = labels[value];
+        var default_value = values[value];
+      } else {
+        var max = vals.length - 1;
+        var init_label = labels[value];
+        var default_value = value;
+      }
+      var wstep = 1;
+      var wlabels = labels;
+    }
+    function adjustFontSize(text) {
+      var width_ratio = (text.parent().width()/8)/text.val().length;
+      var size = Math.min(0.9, Math.max(0.6, width_ratio))+'em';
+      text.css('font-size', size);
+    }
+    var slider = $('#_anim_widget'+id+'_'+dim);
+    slider.slider({
+      animate: "fast",
+      min: min,
+      max: max,
+      step: wstep,
+      value: default_value,
+      dim_vals: vals,
+      dim_labels: wlabels,
+      next_vals: next_vals,
+      slide: function(event, ui) {
+        var vals = slider.slider("option", "dim_vals");
+        var next_vals = slider.slider("option", "next_vals");
+        var dlabels = slider.slider("option", "dim_labels");
+        if (dynamic) {
+          var dim_val = ui.value;
+          if (vals.constructor === Array) {
+            var label = ui.value;
+          } else {
+            var label = dlabels[ui.value];
+          }
+        } else {
+          var dim_val = vals[ui.value];
+          var label = dlabels[ui.value];
+        }
+        var text = $('#textInput'+id+'_'+dim);
+        text.val(label);
+        adjustFontSize(text);
+        HoloViews.index[plot_id].set_frame(dim_val, dim_idx);
+        if (Object.keys(next_vals).length > 0) {
+          var new_vals = next_vals[dim_val];
+          var next_widget = $('#_anim_widget'+id+'_'+next_dim);
+          update_widget(next_widget, new_vals);
+        }
+      }
+    });
+    slider.keypress(function(event) {
+      if (event.which == 80 || event.which == 112) {
+        var start = slider.slider("option", "value");
+        var stop =  slider.slider("option", "max");
+        for (var i=start; i<=stop; i++) {
+          var delay = i*delay;
+          $.proxy(function doSetTimeout(i) { setTimeout($.proxy(function() {
+            var val = {value:i};
+            slider.slider('value',i);
+            slider.slider("option", "slide")(null, val);
+          }, slider), delay);}, slider)(i);
+        }
+      }
+      if (event.which == 82 || event.which == 114) {
+        var start = slider.slider("option", "value");
+        var stop =  slider.slider("option", "min");
+        var count = 0;
+        for (var i=start; i>=stop; i--) {
+          var delay = count*delay;
+          count = count + 1;
+          $.proxy(function doSetTimeout(i) { setTimeout($.proxy(function() {
+            var val = {value:i};
+            slider.slider('value',i);
+            slider.slider("option", "slide")(null, val);
+          }, slider), delay);}, slider)(i);
+        }
+      }
+    });
+    var textInput = $('#textInput'+id+'_'+dim)
+    textInput.val(init_label);
+    adjustFontSize(textInput);
+  });
+}
+
+function init_dropdown(id, plot_id, dim, vals, value, next_vals, labels, next_dim, dim_idx, dynamic) {
+  var widget = $("#_anim_widget"+id+'_'+dim);
+  widget.data('values', vals)
+  for (var i=0; i<vals.length; i++){
+    if (dynamic) {
+      var val = vals[i];
+    } else {
+      var val = i;
+    }
+    widget.append($("<option>", {
+      value: val,
+      text: labels[i]
+    }));
+  };
+  widget.data("next_vals", next_vals);
+  widget.val(value);
+  widget.on('change', function(event, ui) {
+    if (dynamic) {
+      var dim_val = parseInt(this.value);
+    } else {
+      var dim_val = $.data(this, 'values')[this.value];
+    }
+    var next_vals = $.data(this, "next_vals");
+    if (Object.keys(next_vals).length > 0) {
+      var new_vals = next_vals[dim_val];
+      var next_widget = $('#_anim_widget'+id+'_'+next_dim);
+      update_widget(next_widget, new_vals);
+    }
+    var widgets = HoloViews.index[plot_id]
+    if (widgets) {
+      widgets.set_frame(dim_val, dim_idx);
+    }
+  });
+}
+
+
+if (window.HoloViews === undefined) {
+  window.HoloViews = {}
+  window.PyViz = window.HoloViews
+} else if (window.PyViz === undefined) {
+  window.PyViz = window.HoloViews
+}
+
+
+var _namespace = {
+  init_slider: init_slider,
+  init_dropdown: init_dropdown,
+  comms: {},
+  comm_status: {},
+  index: {},
+  plot_index: {},
+  kernels: {},
+  receivers: {}
+}
+
+for (var k in _namespace) {
+  if (!(k in window.HoloViews)) {
+    window.HoloViews[k] = _namespace[k];
+  }
+}
+
+var JS_MIME_TYPE = 'application/javascript';
+var HTML_MIME_TYPE = 'text/html';
+var EXEC_MIME_TYPE = 'application/vnd.holoviews_exec.v0+json';
+var CLASS_NAME = 'output';
+
+/**
+ * Render data to the DOM node
+ */
+function render(props, node) {
+  var div = document.createElement("div");
+  var script = document.createElement("script");
+  node.appendChild(div);
+  node.appendChild(script);
+}
+
+/**
+ * Handle when a new output is added
+ */
+function handle_add_output(event, handle) {
+  var output_area = handle.output_area;
+  var output = handle.output;
+  if (!output.data.hasOwnProperty(EXEC_MIME_TYPE)) {
+    return
+  }
+  var id = output.metadata[EXEC_MIME_TYPE]["id"];
+  var toinsert = output_area.element.find("." + CLASS_NAME.split(' ')[0]);
+  if (id !== undefined) {
+    var nchildren = toinsert.length;
+    toinsert[nchildren-1].children[0].innerHTML = output.data[HTML_MIME_TYPE];
+    toinsert[nchildren-1].children[1].textContent = output.data[JS_MIME_TYPE];
+    output_area._hv_plot_id = id;
+    if ((window.Bokeh !== undefined) && (id in Bokeh.index)) {
+      HoloViews.plot_index[id] = Bokeh.index[id];
+    } else {
+      HoloViews.plot_index[id] = null;
+    }
+  }
+}
+
+/**
+ * Handle when an output is cleared or removed
+ */
+function handle_clear_output(event, handle) {
+  var id = handle.cell.output_area._hv_plot_id;
+  if ((id === undefined) || !(id in HoloViews.plot_index)) { return; }
+  var comm = window.HoloViews.comm_manager.get_client_comm("hv-extension-comm", "hv-extension-comm", function () {});
+  if (comm !== null) {
+    comm.send({event_type: 'delete', 'id': id});
+  }
+  delete HoloViews.plot_index[id];
+  if ((window.Bokeh !== undefined) & (id in window.Bokeh.index)) {
+    window.Bokeh.index[id].model.document.clear();
+    delete Bokeh.index[id];
+  }
+}
+
+/**
+ * Handle kernel restart event
+ */
+function handle_kernel_cleanup(event, handle) {
+  delete HoloViews.comms["hv-extension-comm"];
+  window.HoloViews.plot_index = {}
+}
+
+/**
+ * Handle update_display_data messages
+ */
+function handle_update_output(event, handle) {
+  handle_clear_output(event, {cell: {output_area: handle.output_area}})
+  handle_add_output(event, handle)
+}
+
+function register_renderer(events, OutputArea) {
+  function append_mime(data, metadata, element) {
+    // create a DOM node to render to
+    var toinsert = this.create_output_subarea(
+    metadata,
+    CLASS_NAME,
+    EXEC_MIME_TYPE
+    );
+    this.keyboard_manager.register_events(toinsert);
+    // Render to node
+    var props = {data: data, metadata: metadata[EXEC_MIME_TYPE]};
+    render(props, toinsert[0]);
+    element.append(toinsert);
+    return toinsert
+  }
+
+  events.on('output_added.OutputArea', handle_add_output);	
+  events.on('output_updated.OutputArea', handle_update_output);
+  events.on('clear_output.CodeCell', handle_clear_output);
+  events.on('delete.Cell', handle_clear_output);
+  events.on('kernel_ready.Kernel', handle_kernel_cleanup);
+
+  OutputArea.prototype.register_mime_type(EXEC_MIME_TYPE, append_mime, {
+    safe: true,
+    index: 0
+  });
+}
+
+if (window.Jupyter !== undefined) {
+  try {
+    var events = require('base/js/events');
+    var OutputArea = require('notebook/js/outputarea').OutputArea;
+    if (OutputArea.prototype.mime_types().indexOf(EXEC_MIME_TYPE) == -1) {
+      register_renderer(events, OutputArea);
+    }
+  } catch(err) {
+  }
+}
+
+// Define Bokeh specific subclasses
+function BokehSelectionWidget() {
+  SelectionWidget.apply(this, arguments);
+}
+
+function BokehScrubberWidget() {
+  ScrubberWidget.apply(this, arguments);
+}
+
+// Let them inherit from the baseclasses
+BokehSelectionWidget.prototype = Object.create(SelectionWidget.prototype);
+BokehScrubberWidget.prototype = Object.create(ScrubberWidget.prototype);
+
+// Define methods to override on widgets
+var BokehMethods = {
+  update_cache : function(){
+    for (var index in this.frames) {
+      this.frames[index] = JSON.parse(this.frames[index]);
+    }
+  },
+  update : function(current){
+    if (current === undefined) {
+      return;
+    }
+    var data = this.frames[current];
+    if (data !== undefined) {
+      if (data.root in HoloViews.plot_index) {
+        var doc = HoloViews.plot_index[data.root].model.document;
+      } else {
+        var doc = Bokeh.index[data.root].model.document;
+      }
+      doc.apply_json_patch(data.content);
+    }
+  },
+  init_comms: function() {
+    if (Bokeh.protocol !== undefined) {
+      this.receiver = new Bokeh.protocol.Receiver()
+    } else {
+      this.receiver = null;
+    }
+    return HoloViewsWidget.prototype.init_comms.call(this);
+  },
+  process_msg : function(msg) {
+    if (this.plot_id in HoloViews.plot_index) {
+      var doc = HoloViews.plot_index[this.plot_id].model.document;
+    } else {
+      var doc = Bokeh.index[this.plot_id].model.document;
+    }
+    if (this.receiver === null) { return }
+    var receiver = this.receiver;
+    if (msg.buffers.length > 0) {
+      receiver.consume(msg.buffers[0].buffer)
+    } else {
+      receiver.consume(msg.content.data)
+    }
+    const comm_msg = receiver.message;
+    if ((comm_msg != null) && (doc != null)) {
+      doc.apply_json_patch(comm_msg.content, comm_msg.buffers)
+    }
+  }
+}
+
+// Extend Bokeh widgets with backend specific methods
+extend(BokehSelectionWidget.prototype, BokehMethods);
+extend(BokehScrubberWidget.prototype, BokehMethods);
+
+window.HoloViews.BokehSelectionWidget = BokehSelectionWidget
+window.HoloViews.BokehScrubberWidget = BokehScrubberWidget
+
+// Define MPL specific subclasses
+function MPLSelectionWidget() {
+  SelectionWidget.apply(this, arguments);
+}
+
+function MPLScrubberWidget() {
+  ScrubberWidget.apply(this, arguments);
+}
+
+// Let them inherit from the baseclasses
+MPLSelectionWidget.prototype = Object.create(SelectionWidget.prototype);
+MPLScrubberWidget.prototype = Object.create(ScrubberWidget.prototype);
+
+// Define methods to override on widgets
+var MPLMethods = {
+  init_slider : function(init_val){
+    if(this.load_json) {
+      this.from_json()
+    } else {
+      this.update_cache();
+    }
+    if (this.dynamic | !this.cached | (this.current_vals === undefined)) {
+      this.update(0)
+    } else {
+      this.set_frame(this.current_vals[0], 0)
+    }
+  },
+  process_msg : function(msg) {
+    var data = msg.content.data;
+    this.frames[this.current] = data;
+    this.update_cache(true);
+    this.update(this.current);
+  }
+}
+// Extend MPL widgets with backend specific methods
+extend(MPLSelectionWidget.prototype, MPLMethods);
+extend(MPLScrubberWidget.prototype, MPLMethods);
+
+window.HoloViews.MPLSelectionWidget = MPLSelectionWidget
+window.HoloViews.MPLScrubberWidget = MPLScrubberWidget
+</script>
+<script type="text/javascript">
+    function JupyterCommManager() {
+    }
+
+    JupyterCommManager.prototype.register_target = function(plot_id, comm_id, msg_handler) {
+      if (window.comm_manager || ((window.Jupyter !== undefined) && (Jupyter.notebook.kernel != null))) {
+        var comm_manager = window.comm_manager || Jupyter.notebook.kernel.comm_manager;
+        comm_manager.register_target(comm_id, function(comm) {
+          comm.on_msg(msg_handler);
+        });
+      } else if ((plot_id in window.PyViz.kernels) && (window.PyViz.kernels[plot_id])) {
+        window.PyViz.kernels[plot_id].registerCommTarget(comm_id, function(comm) {
+          comm.onMsg = msg_handler;
+        });
+      }
+    }
+
+    JupyterCommManager.prototype.get_client_comm = function(plot_id, comm_id, msg_handler) {
+      if (comm_id in window.PyViz.comms) {
+        return window.PyViz.comms[comm_id];
+      } else if (window.comm_manager || ((window.Jupyter !== undefined) && (Jupyter.notebook.kernel != null))) {
+        var comm_manager = window.comm_manager || Jupyter.notebook.kernel.comm_manager;
+        var comm = comm_manager.new_comm(comm_id, {}, {}, {}, comm_id);
+        if (msg_handler) {
+          comm.on_msg(msg_handler);
+        }
+      } else if ((plot_id in window.PyViz.kernels) && (window.PyViz.kernels[plot_id])) {
+        var comm = window.PyViz.kernels[plot_id].connectToComm(comm_id);
+        comm.open();
+        if (msg_handler) {
+          comm.onMsg = msg_handler;
+        }
+      }
+
+      window.PyViz.comms[comm_id] = comm;
+      return comm;
+    }
+
+    window.PyViz.comm_manager = new JupyterCommManager();
+    </script>
+
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css">
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.16.min.css">
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-tables-0.12.16.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+<style>div.hololayout {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+div.holoframe {
+  width: 75%;
+}
+
+div.holowell {
+  display: flex;
+  align-items: center;
+}
+
+form.holoform {
+  background-color: #fafafa;
+  border-radius: 5px;
+  overflow: hidden;
+  padding-left: 0.8em;
+  padding-right: 0.8em;
+  padding-top: 0.4em;
+  padding-bottom: 0.4em;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  border: 1px solid #e3e3e3;
+}
+
+div.holowidgets {
+  padding-right: 0;
+  width: 25%;
+}
+
+div.holoslider {
+  min-height: 0 !important;
+  height: 0.8em;
+  width: 100%;
+}
+
+div.holoformgroup {
+  padding-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+div.hologroup {
+  padding-left: 0;
+  padding-right: 0.8em;
+  width: 100%;
+}
+
+.holoselect {
+  width: 92%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.holotext {
+  padding-left:  0.5em;
+  padding-right: 0;
+  width: 100%;
+}
+
+.holowidgets .ui-resizable-se {
+  visibility: hidden
+}
+
+.holoframe > .ui-resizable-se {
+  visibility: hidden
+}
+
+.holowidgets .ui-resizable-s {
+  visibility: hidden
+}
+
+
+/* CSS rules for noUISlider based slider used by JupyterLab extension  */
+
+.noUi-handle {
+  width: 20px !important;
+  height: 20px !important;
+  left: -5px !important;
+  top: -5px !important;
+}
+
+.noUi-handle:before, .noUi-handle:after {
+  visibility: hidden;
+  height: 0px;
+}
+
+.noUi-target {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+div.bk-hbox {
+    display: flex;
+    justify-content: center;
+}
+
+div.bk-hbox div.bk-plot {
+    padding: 8px;
+}
+
+div.bk-hbox div.bk-data-table {
+    padding: 20px;
+}
+</style><div style='display: table; margin: 0 auto;'>
+
+<div class="bk-root">
+    <div class="bk-plotdiv" id="6949c4c3-59c9-4529-bb31-6ed642d74e5a"></div>
+</div>
+<script type="text/javascript">
+  (function(root) {
+  function embed_document(root) {
+    
+  var docs_json = {"33ff95a7-0ab6-4962-a01b-a34aac043234":{"roots":{"references":[{"attributes":{"data_source":{"id":"0901e9b6-3325-4d9f-a47d-b0bd5d2ad8a2","type":"ColumnDataSource"},"glyph":{"id":"b36963b7-d45f-43ed-a4d5-cd268291e1e0","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"b6fb2aee-ec6b-426a-89e4-9ca5f0858b85","type":"Patch"},"selection_glyph":null,"view":{"id":"4f3d9f1e-3bca-4c12-b249-f7dd46f45afa","type":"CDSView"}},"id":"bd4def7d-114c-42bf-9163-c7fcd81a5fa8","type":"GlyphRenderer"},{"attributes":{"fill_alpha":0.5,"fill_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"b36963b7-d45f-43ed-a4d5-cd268291e1e0","type":"Patch"},{"attributes":{"fill_alpha":0.5,"fill_color":"#1f77b4","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"b6fb2aee-ec6b-426a-89e4-9ca5f0858b85","type":"Patch"},{"attributes":{},"id":"4207714f-8473-4e6d-b48d-0f1df83f3802","type":"Selection"},{"attributes":{},"id":"a3ccaefa-b82a-4816-9b40-81fbf7fd3bd6","type":"UnionRenderers"},{"attributes":{},"id":"d7932814-1e6b-4795-a872-76d8fb332d77","type":"Selection"},{"attributes":{"label":{"value":"Zambia"},"renderers":[{"id":"e8cb9a9e-6ffc-4b45-8d47-e90390bd21b6","type":"GlyphRenderer"}]},"id":"4ebad35b-303c-44cc-af0f-bf1652c3b24f","type":"LegendItem"},{"attributes":{"source":{"id":"0901e9b6-3325-4d9f-a47d-b0bd5d2ad8a2","type":"ColumnDataSource"}},"id":"4f3d9f1e-3bca-4c12-b249-f7dd46f45afa","type":"CDSView"},{"attributes":{},"id":"e734fe1b-1f8b-47d2-8391-2c7f0f872f21","type":"UnionRenderers"},{"attributes":{"label":{"value":"Zimbabwe"},"renderers":[{"id":"bd4def7d-114c-42bf-9163-c7fcd81a5fa8","type":"GlyphRenderer"}]},"id":"dd1582e3-9761-46fb-8d7c-386740d6afa3","type":"LegendItem"},{"attributes":{},"id":"b65e9c91-f9a6-4809-90d3-33a12fbd9aec","type":"Selection"},{"attributes":{},"id":"53ab46ce-8ed4-4fb4-86fd-c3520b8c4b69","type":"Selection"},{"attributes":{},"id":"b9b4c40d-3036-4a16-9e53-bda493ea3f5e","type":"UnionRenderers"},{"attributes":{"fill_alpha":0.5,"fill_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"7bdba129-dfec-42d3-ad08-fcd286e76e43","type":"Patch"},{"attributes":{"source":{"id":"138ec9b5-30af-4047-a85b-464e4faa530e","type":"ColumnDataSource"}},"id":"251a7115-e9e1-4a70-a140-01efd45e2a9d","type":"CDSView"},{"attributes":{},"id":"7b814f16-6676-43bf-84e9-d2c443f523ec","type":"Selection"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"AAAAAAALtkAAAAAAADy0QAAAAAAAdbRAAAAAAAB+tUAAAAAAAFW0QAAAAAAAMrRAAAAAAAB0s0AAAAAAAHGyQAAAAAAA7LNAAAAAAAC1tUAAAAAAAA62QAAAAAAALrZAAAAAAADvtEAAAAAAANSzQAAAAAAAqLVAAAAAAACwtEAAAAAAAIOxQAAAAAAAuK9AAAAAAAAerEAAAAAAANqoQAAAAAAAZKdAAAAAAAC8p0AAAAAAAISnQAAAAAAAOKhAAAAAAADyqEAAAAAAADypQAAAAAAATKlAAAAAAABoqUAAAAAAAFaqQAAAAAAAXqlAAAAAAADqpkAAAAAAAHykQAAAAAAAeqRAAAAAAAAYpUAAAAAAAJyjQAAAAAAAyqJAAAAAAACkokAAAAAAAAaiQAAAAAAAhbdAAAAAAIBDwkAAAAAAAEyhQAAAAAAAbKBAAAAAAAD2oEAAAAAAAFScQAAAAAAAzbNAAAAAAAAztEAAAAAAAMiPQAAAAAAAXK9AAAAAAAAWtUAAAAAAAGKhQAAAAAAAuqJAAAAAAACUq0AAAAAAAOylQAAAAAAAMrJAAAAAAABwj0AAAAAAAOCKQAAAAAAApqVAAAAAAADarUAAAAAAAGiZQAAAAAAAfJtAAAAAAAA4r0AAAAAAAESWQAAAAAAAUJdAAAAAAABQpkAAAAAAALCZQAAAAAAAuJ9AAAAAAADqoUAAAAAAAMCeQAAAAAAAsJdAAAAAAAAsmEAAAAAAANiYQAAAAAAAFJlAAAAAAADQmEAAAAAAAOCYQAAAAAAAHJtAAAAAAAAgnUAAAAAAAJSdQAAAAAAAWJtAAAAAAAC0m0AAAAAAANidQAAAAAAATJxAAAAAAADQnUAAAAAAAISgQAAAAAAAXKBAAAAAAABcn0AAAAAAABKgQAAAAAAAIqBAAAAAAAD4nUAAAAAAAByfQAAAAAAAhJxAAAAAAAD4lUAAAAAAAMyTQAAAAAAAnJFAAAAAAACIjkAAAAAAAPiOQAAAAAAAAItAAAAAAADIiUAAAAAAAGCMQAAAAAAAmI5AAAAAAAD4jEAAAAAAAIiJQAAAAAAAYIlAAAAAAACgiUAAAAAAAMCJQAAAAAAAsIhAAAAAAADYiEAAAAAAALCIQAAAAAAASIdAAAAAAACgiEAAAAAAANCJQAAAAAAAmIhAAAAAAACQikAAAAAAAGiMQAAAAAAA0I5AAAAAAAC8kEAAAAAAAGSQQAAAAAAA8I9AAAAAAACckEAAAAAAANyRQAAAAAAAyJFAAAAAAADgkEAAAAAAAFCSQAAAAAAA2JVAAAAAAABcl0AAAAAAALCXQAAAAAAArJlAAAAAAAB4mUAAAAAAALyYQAAAAAAA5JlAAAAAAAAcmUAAAAAAANyaQAAAAAAAUJxAAAAAAACsmkAAAAAAAHybQAAAAAAAbJ1AAAAAAAD8nUAAAAAAADifQAAAAAAAPqFAAAAAAADAoUAAAAAAABChQAAAAAAAEKJAAAAAAAC2o0AAAAAAAGSjQAAAAAAA/KFAAAAAAAD4n0AAAAAAAASeQAAAAAAA/JxAAAAAAAB4mkAAAAAAgIXAQAAAAAAArK1AAAAAAADEn0AAAAAAANCfQAAAAAAA1J9AAAAAAACAnkAAAAAAAJCgQAAAAAAAMKFAAAAAAABIoUAAAAAAAEakQAAAAAAATqRAAAAAAAAWokAAAAAAAOaiQAAAAAAAhqNAAAAAAACOoUAAAAAAAIyiQAAAAAAAd8ZAAAAAAAA4mkAAAAAAAPKiQAAAAAAAjJhAAAAAAADIn0AAAAAAAGChQAAAAAAAhKBAAAAAAABQnkAAAAAAAOCeQAAAAAAAGKBAAAAAAAAcoEAAAAAAAKSdQAAAAAAAwJxAAAAAAAAcnkAAAAAAAASfQAAAAAAARJtAAAAAAADwmEAAAAAAAHyZQAAAAAAAjJZAAAAAAADUlUAAAAAAAPCWQAAAAAAA7JxAAAAAAACAn0AAAAAAAEybQAAAAAAAdJhAAAAAAACElkAAAAAAAOCUQAAAAAAAOJJAAAAAAADUkUAAAAAAAECSQAAAAAAAIJFAAAAAAACIjkAAAAAAADiOQAAAAAAAOJBAAAAAAABQjkAAAAAAAHB7QAAAAAAA8IVAAAAAAABQmEAAAAAAADyZQAAAAAAAJJdAAAAAAACol0AAAAAAAKyaQAAAAAAAZJ5AAAAAAADAn0AAAAAAAFCgQAAAAAAADKJAAAAAAADKpEAAAAAAAGKmQAAAAAAAWKZAAAAAAAC8qEAAAAAAAOinQAAAAAAAeKRAAAAAAADgokAAAAAAAPyiQAAAAAAATKVAAAAAAABqpUAAAAAAACqnQAAAAAAAOKpAAAAAAADiqEAAAAAAACioQAAAAAAAiKlAAAAAAADwqkAAAAAAAPiqQAAAAAAAPKpAAAAAAAC0qUAAAAAAACCrQAAAAAAA9KxAAAAAAAB2q0AAAAAAAAKpQAAAAAAAkLBAAAAAAABMq0AAAAAAAP7JQAAAAAAAyq9AAAAAAABMr0AAAAAAAKixQAAAAAAAqbFAAAAAAADEsEAAAAAAAESyQAAAAAAA7rJAAAAAAAC6sUAAAAAAAEGyQAAAAAAA3LFAAAAAAAARsUAAAAAAAIWxQAAAAAAAhLFAAAAAAACWsUAAAAAAANO3QAAAAAAAp8RAAAAAAAAKrkAAAAAAAAKvQAAAAAAAkq5AAAAAAADgr0AAAAAAAJuxQAAAAAAAZKNAAAAAAABysEAAAAAAABCiQAAAAAAAqqNAAAAAAAC5sUAAAAAAABaxQAAAAAAAkK9AAAAAAAD8nUAAAAAAAEatQAAAAAAAVK1AAAAAAAACrEAAAAAAADytQAAAAAAAcq5AAAAAAADUrUAAAAAAAHysQAAAAAAAiqtAAAAAAADwrEAAAAAAAFKsQAAAAAAA1qlAAAAAAACcqEAAAAAAAJCmQAAAAAAAwKRAAAAAAAC6o0AAAAAAALKjQAAAAAAAnqRAAAAAAAA4o0AAAAAAAMKgQAAAAAAAYqFAAAAAAACaoUAAAAAAAF6gQAAAAAAAxJ9AAAAAAABgnkAAAAAAACyeQAAAAAAAtJ5AAAAAAAAEnUAAAAAAAKybQAAAAAAA1JxAAAAAAACIm0AAAAAAAGiZQAAAAAAA6JlAAAAAAAD4mUAAAAAAAKSZQAAAAAAADJlAAAAAAAAcnUAAAAAAAAifQAAAAAAAeJxAAAAAAABMm0AAAAAAAEycQAAAAAAAxJ1AAAAAAADwm0AAAAAAAOieQAAAAAAAvqBAAAAAAADioUAAAAAAAI6lQAAAAAAArKZAAAAAAAB6p0AAAAAAALCoQAAAAAAAiKdAAAAAAAAmqUAAAAAAAOSrQAAAAAAAFKxAAAAAAABAq0AAAAAAAEirQAAAAAAAUKxAAAAAAAB8rkAAAAAAAECwQAAAAAAAHbFAAAAAAADIsUAAAAAAAH+xQAAAAAAAPrFAAAAAAACmsEAAAAAAAKCuQAAAAAAAKK1AAAAAAACQr0AAAAAAAHuwQAAAAAAA+rBAAAAAAAD4sEAAAAAAAIatQAAAAAAAaKlAAAAAAACFsUAAAAAAAICpQAAAAAAAxKhAAAAAAABztUAAAAAAAKqoQAAAAAAAqqhAAAAAAADYtEAAAAAAAEqwQAAAAAAAhqFAAAAAAAAmokAAAAAAADe3QAAAAAAAHrBAAAAAAACNs0AAAAAAAASvQAAAAAAAhKxAAAAAAAAYukAAAAAAAJa0QAAAAAAAeKJAAAAAAADuuUAAAAAAAFW+QAAAAAAAMLZAAAAAAAChtUAAAAAAAPOzQAAAAAAANbVAAAAAAIAqyEAAAAAAgH/AQAAAAAAAnq9AAAAAAACurUAAAAAAABG0QAAAAAAAnKNAAAAAAAAgsEAAAAAAANavQAAAAAAANr1AAAAAAABdt0AAAAAAAIKqQAAAAAAAVqpAAAAAAAB2t0AAAAAAAEypQAAAAAAAPKlAAAAAAABJskAAAAAAAMS2QAAAAAAA8b9AAAAAAAC8p0AAAAAAAISxQAAAAAAAX7JAAAAAAABntEAAAAAAAAS3QAAAAAAAZbhAAAAAAAATvEAAAAAAAMW9QAAAAAAAh7pAAAAAAACXu0AAAAAAAMO9QAAAAAAAa75AAAAAAADbvkAAAAAAAAe8QAAAAAAA87lAAAAAAADGu0AAAAAAAES9QAAAAAAA/r1AAAAAAIBiwEAAAAAAABO/QAAAAAAAVLxAAAAAAACbvkA=","dtype":"float64","shape":[400]}},"selected":{"id":"3a0d4830-e35c-4640-99b8-54452b753881","type":"Selection"},"selection_policy":{"id":"bbba26c0-2a6a-43be-9cbf-6343a6e32d21","type":"UnionRenderers"}},"id":"138ec9b5-30af-4047-a85b-464e4faa530e","type":"ColumnDataSource"},{"attributes":{"source":{"id":"102d08eb-bed7-44d5-9941-bea2e34f8f8f","type":"ColumnDataSource"}},"id":"c012b3f8-8f70-4684-b70b-72cff0770167","type":"CDSView"},{"attributes":{"label":{"value":"Nigeria"},"renderers":[{"id":"040bf11f-c2c3-4f49-b80f-c488653585ea","type":"GlyphRenderer"}]},"id":"6926be40-e595-440c-8938-de36783fd04e","type":"LegendItem"},{"attributes":{},"id":"343a99ed-1275-4970-a0c6-7012b179d27f","type":"UnionRenderers"},{"attributes":{},"id":"17fcfc7d-1d5d-483e-8458-57285399dc1c","type":"Selection"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"d7932814-1e6b-4795-a872-76d8fb332d77","type":"Selection"},"selection_policy":{"id":"b9b4c40d-3036-4a16-9e53-bda493ea3f5e","type":"UnionRenderers"}},"id":"0901e9b6-3325-4d9f-a47d-b0bd5d2ad8a2","type":"ColumnDataSource"},{"attributes":{},"id":"3a0d4830-e35c-4640-99b8-54452b753881","type":"Selection"},{"attributes":{"fill_alpha":0.5,"fill_color":"#8c564b","x":{"field":"x"},"y":{"field":"y"}},"id":"a10ff8f7-269f-4865-8858-7a4bd6e5c15b","type":"Patch"},{"attributes":{"label":{"value":"Madagascar"},"renderers":[{"id":"019e0c86-30f4-4aa5-893f-7bb38a8f1276","type":"GlyphRenderer"}]},"id":"b2e50b3c-f324-4408-b841-da8db36b28ae","type":"LegendItem"},{"attributes":{},"id":"9f315e84-34c9-49a4-9a82-15555be49a30","type":"UnionRenderers"},{"attributes":{},"id":"6d6d7e1e-2df7-4c13-96a6-6310a64cf464","type":"Selection"},{"attributes":{},"id":"ae57b243-bd47-423c-8bb0-47a4c8c76f12","type":"UnionRenderers"},{"attributes":{},"id":"2267b6a5-fe8a-476a-912b-83fc6fc9d860","type":"Selection"},{"attributes":{"data_source":{"id":"22957b6f-1d14-40f4-9396-ba51102dc99a","type":"ColumnDataSource"},"glyph":{"id":"34116548-96e4-418b-8cc1-a85ea770236f","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"559364b9-13ce-4aea-968d-190258539dbd","type":"Patch"},"selection_glyph":null,"view":{"id":"1ec6618c-6f2c-4e60-9eed-6bc21eadf645","type":"CDSView"}},"id":"019e0c86-30f4-4aa5-893f-7bb38a8f1276","type":"GlyphRenderer"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"65ee328b-c20b-47c6-91f3-0bfa92343b15","type":"Selection"},"selection_policy":{"id":"ae57b243-bd47-423c-8bb0-47a4c8c76f12","type":"UnionRenderers"}},"id":"fc4e0a41-2480-45ae-9e2c-dc6845d894b4","type":"ColumnDataSource"},{"attributes":{},"id":"3ab2021b-c8dc-4668-bf6f-de7d73d0d868","type":"UnionRenderers"},{"attributes":{},"id":"e2280efc-ffb2-452b-9677-08dc11c18b16","type":"Selection"},{"attributes":{"fill_alpha":0.5,"fill_color":"#d62728","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"559364b9-13ce-4aea-968d-190258539dbd","type":"Patch"},{"attributes":{"label":{"value":"South Sudan"},"renderers":[{"id":"380f8980-fbd0-4e71-b67d-4c89f263b84f","type":"GlyphRenderer"}]},"id":"e2a6bc73-6f1b-45de-8e39-7fe9bbd2e511","type":"LegendItem"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"2267b6a5-fe8a-476a-912b-83fc6fc9d860","type":"Selection"},"selection_policy":{"id":"4a38c7bb-c6f1-4d57-96b8-4ff4ab3cf525","type":"UnionRenderers"}},"id":"5b4ab4e7-8583-48a6-90f8-f06a29fd35e1","type":"ColumnDataSource"},{"attributes":{"fill_alpha":0.5,"fill_color":"#8b8b8b","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"8f24f81a-d2ae-4236-9b21-22bf389e2d44","type":"Patch"},{"attributes":{},"id":"b2a4466c-18a9-4fc1-9caa-0e3394a5df15","type":"UnionRenderers"},{"attributes":{"source":{"id":"fc4e0a41-2480-45ae-9e2c-dc6845d894b4","type":"ColumnDataSource"}},"id":"b327451d-572a-41c5-bc8d-327b2fdcfc91","type":"CDSView"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"6d6d7e1e-2df7-4c13-96a6-6310a64cf464","type":"Selection"},"selection_policy":{"id":"e80d8f4f-3757-479b-99e4-cb77faeb296b","type":"UnionRenderers"}},"id":"41c43e92-341e-41ac-a878-effd0ad1ee7b","type":"ColumnDataSource"},{"attributes":{"label":{"value":"Senegal"},"renderers":[{"id":"e4eea7bb-1a3f-4c3d-865d-a7d497873f5d","type":"GlyphRenderer"}]},"id":"e577ea20-c47b-4e94-a64e-fe1aeed3055f","type":"LegendItem"},{"attributes":{},"id":"491bb89e-0509-497c-a489-b35176610a92","type":"Selection"},{"attributes":{"data_source":{"id":"e7b1ce75-a2a9-4ad1-8f4c-4246487e26c4","type":"ColumnDataSource"},"glyph":{"id":"932cd4a8-ecf8-40fc-9480-d05d30f77066","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"0f392140-7f69-4896-a61b-3d6bf7f71ca0","type":"Patch"},"selection_glyph":null,"view":{"id":"6e4364c7-4ed3-49a4-b8eb-4161ab55caba","type":"CDSView"}},"id":"1952ed0a-5e08-4416-9a5b-2a7e174a5875","type":"GlyphRenderer"},{"attributes":{"label":{"value":"Rwanda"},"renderers":[{"id":"02c18b28-93e7-4579-b33f-1a159640ae9f","type":"GlyphRenderer"}]},"id":"35bb46ad-33b5-41ac-a65a-ddb67c601c7c","type":"LegendItem"},{"attributes":{},"id":"6d711a03-10b3-4148-ba22-c0652d0d2a28","type":"Selection"},{"attributes":{"source":{"id":"457374b5-c322-4b59-ad19-32046a8e26ca","type":"ColumnDataSource"}},"id":"1f429a99-cb50-4b58-a6e9-bf42bcc24d2e","type":"CDSView"},{"attributes":{"source":{"id":"d806c2f7-8a5d-4097-9dcb-0f79db1e6d7d","type":"ColumnDataSource"}},"id":"c7eadc6b-aece-44db-a952-6092ea50ed29","type":"CDSView"},{"attributes":{"fill_alpha":0.5,"fill_color":"#9467bd","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"bed4b6e3-93ce-4e0e-ae70-45b4b07857ed","type":"Patch"},{"attributes":{"label":{"value":"Mali"},"renderers":[{"id":"02a1d631-63a7-4bf1-8c65-63024c71470d","type":"GlyphRenderer"}]},"id":"4650c1e9-d149-47f2-a19d-cdecb719179a","type":"LegendItem"},{"attributes":{"source":{"id":"b6ef5c74-1ff2-4a45-90c2-9f977078a463","type":"ColumnDataSource"}},"id":"e8f6fea0-16fa-4908-944f-51d5d74f27d0","type":"CDSView"},{"attributes":{"label":{"value":"Gambia"},"renderers":[{"id":"71447283-cd45-4a2e-9a29-ed8f16da9d0c","type":"GlyphRenderer"}]},"id":"9b3f5c92-f6ff-4c91-a690-daac77789fcb","type":"LegendItem"},{"attributes":{"source":{"id":"11e18c7e-82a5-4ae0-8883-7c0c8a104be0","type":"ColumnDataSource"}},"id":"2e41387e-5749-42aa-9487-864ce475cfb5","type":"CDSView"},{"attributes":{"data_source":{"id":"d806c2f7-8a5d-4097-9dcb-0f79db1e6d7d","type":"ColumnDataSource"},"glyph":{"id":"e31ad256-cb55-4dac-9d2e-4526cc3e3a55","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"f05f12f8-fe8b-4be6-b33f-c3ded63bea20","type":"Patch"},"selection_glyph":null,"view":{"id":"c7eadc6b-aece-44db-a952-6092ea50ed29","type":"CDSView"}},"id":"5703e8f7-d578-44ae-bab7-cfad5ffeefca","type":"GlyphRenderer"},{"attributes":{},"id":"da082042-19a5-4ea9-b246-2d21b54b2013","type":"UnionRenderers"},{"attributes":{},"id":"26cd9cda-8212-40e7-b46a-3aea3265b045","type":"UnionRenderers"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"79d00d79-01d0-4ab2-a338-1a1775d2f6db","type":"Selection"},"selection_policy":{"id":"689fb61d-902d-49e9-8dee-287dcfc7300d","type":"UnionRenderers"}},"id":"9ace739c-ed90-48ae-9ce8-a05d7249aa2c","type":"ColumnDataSource"},{"attributes":{},"id":"842b4524-06d6-4ea1-a3ec-711adc3c53b5","type":"UnionRenderers"},{"attributes":{"source":{"id":"9ace739c-ed90-48ae-9ce8-a05d7249aa2c","type":"ColumnDataSource"}},"id":"be1c1366-d73c-4af5-b59a-c9eec76a428b","type":"CDSView"},{"attributes":{"fill_alpha":0.5,"fill_color":"#9467bd","x":{"field":"x"},"y":{"field":"y"}},"id":"fb44c9be-3c70-4df6-abe6-ff2dd00f69ef","type":"Patch"},{"attributes":{},"id":"4010b023-854d-421f-b28c-a4c102d5e4f5","type":"Selection"},{"attributes":{"label":{"value":"Lesotho"},"renderers":[{"id":"3d112d88-017a-4fb8-a512-1194feef57fe","type":"GlyphRenderer"}]},"id":"dbfad1d0-3016-4572-8b1c-dba042fdd5c6","type":"LegendItem"},{"attributes":{"fill_alpha":0.5,"fill_color":"#fc4f30","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"81d5c93c-b7bd-4cb7-a851-e69cff5d8e23","type":"Patch"},{"attributes":{"source":{"id":"41c43e92-341e-41ac-a878-effd0ad1ee7b","type":"ColumnDataSource"}},"id":"75863af4-7afb-47a9-ab0c-78d08d6883b2","type":"CDSView"},{"attributes":{"fill_alpha":0.5,"fill_color":"#8b8b8b","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"130abc8f-c17b-41af-855d-967d7bfc0e8a","type":"Patch"},{"attributes":{"label":{"value":"Sudan"},"renderers":[{"id":"c73279da-3b57-40ec-8a00-9e5d7ae2a8a9","type":"GlyphRenderer"}]},"id":"c4d554ec-5088-4108-89b4-7f3bf3710c78","type":"LegendItem"},{"attributes":{"below":[{"id":"fb3dcbeb-9e03-4db5-9e86-b4f4b2918442","type":"LinearAxis"}],"left":[{"id":"2dc5d210-c50f-462a-be2d-d1e79bb27e59","type":"LinearAxis"}],"min_border_bottom":10,"min_border_left":10,"min_border_right":10,"min_border_top":10,"plot_width":1500,"renderers":[{"id":"fb3dcbeb-9e03-4db5-9e86-b4f4b2918442","type":"LinearAxis"},{"id":"519af32b-0362-4fa3-a23b-cb702644e33f","type":"Grid"},{"id":"2dc5d210-c50f-462a-be2d-d1e79bb27e59","type":"LinearAxis"},{"id":"0ad16d89-fe8a-46ff-988d-b4d3c60a62be","type":"Grid"},{"id":"3d95ae79-69e8-46a9-a9ac-ba22f41bf127","type":"BoxAnnotation"},{"id":"1e5755b7-aff8-4e23-bf02-e4c3fd3b175e","type":"Legend"},{"id":"30f3aab4-ca81-4a30-92f0-7fb60ee00195","type":"GlyphRenderer"},{"id":"7a2223f8-60d4-4ac8-b28a-31e08beba409","type":"GlyphRenderer"},{"id":"71447283-cd45-4a2e-9a29-ed8f16da9d0c","type":"GlyphRenderer"},{"id":"5703e8f7-d578-44ae-bab7-cfad5ffeefca","type":"GlyphRenderer"},{"id":"cbef14a3-e051-4338-a6f7-b4eb959b38d7","type":"GlyphRenderer"},{"id":"3d112d88-017a-4fb8-a512-1194feef57fe","type":"GlyphRenderer"},{"id":"4b5e463f-8e41-4afc-abfb-6096b3b875a8","type":"GlyphRenderer"},{"id":"019e0c86-30f4-4aa5-893f-7bb38a8f1276","type":"GlyphRenderer"},{"id":"1873d11a-79fd-4c03-84c3-dea75397df7a","type":"GlyphRenderer"},{"id":"02a1d631-63a7-4bf1-8c65-63024c71470d","type":"GlyphRenderer"},{"id":"888f2e18-aea3-407c-8601-ec069b658299","type":"GlyphRenderer"},{"id":"1952ed0a-5e08-4416-9a5b-2a7e174a5875","type":"GlyphRenderer"},{"id":"af1bac4d-8821-44a3-90b1-83d31ca99f52","type":"GlyphRenderer"},{"id":"040bf11f-c2c3-4f49-b80f-c488653585ea","type":"GlyphRenderer"},{"id":"02c18b28-93e7-4579-b33f-1a159640ae9f","type":"GlyphRenderer"},{"id":"e4eea7bb-1a3f-4c3d-865d-a7d497873f5d","type":"GlyphRenderer"},{"id":"380f8980-fbd0-4e71-b67d-4c89f263b84f","type":"GlyphRenderer"},{"id":"c73279da-3b57-40ec-8a00-9e5d7ae2a8a9","type":"GlyphRenderer"},{"id":"3a8b8702-086a-4936-a276-085f13d2cdc7","type":"GlyphRenderer"},{"id":"e8cb9a9e-6ffc-4b45-8d47-e90390bd21b6","type":"GlyphRenderer"},{"id":"bd4def7d-114c-42bf-9163-c7fcd81a5fa8","type":"GlyphRenderer"},{"id":"1e5755b7-aff8-4e23-bf02-e4c3fd3b175e","type":"Legend"}],"right":[{"id":"1e5755b7-aff8-4e23-bf02-e4c3fd3b175e","type":"Legend"}],"title":{"id":"5df4f8c4-2e16-4f30-8b9a-ee251f9c9067","type":"Title"},"toolbar":{"id":"fdf21289-9457-41d1-9508-5899bef1562a","type":"Toolbar"},"x_range":{"id":"3a4fd0e1-1441-4118-b7ce-80ded19161aa","type":"Range1d"},"x_scale":{"id":"8f62f09e-243f-4bca-9108-937ed5811ceb","type":"LinearScale"},"y_range":{"id":"341593d2-640a-4783-8b64-e3703f69d2de","type":"Range1d"},"y_scale":{"id":"0caaae07-ddc0-4e3f-9ff2-c5fec1c23e47","type":"LinearScale"}},"id":"9b6f51dd-4f2a-45ef-9c2e-24a88201c690","subtype":"Figure","type":"Plot"},{"attributes":{"fill_alpha":0.5,"fill_color":"#6d904f","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"f05f12f8-fe8b-4be6-b33f-c3ded63bea20","type":"Patch"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"e2280efc-ffb2-452b-9677-08dc11c18b16","type":"Selection"},"selection_policy":{"id":"094cca2c-26e1-44ec-80b3-f91c6e82d2eb","type":"UnionRenderers"}},"id":"04fa07aa-f71e-46b7-8429-66c58861eb82","type":"ColumnDataSource"},{"attributes":{"fill_alpha":0.5,"fill_color":"#17becf","x":{"field":"x"},"y":{"field":"y"}},"id":"1b777e7f-b2ff-4de6-b1d1-60a3fe7caeb6","type":"Patch"},{"attributes":{"label":{"value":"Uganda"},"renderers":[{"id":"3a8b8702-086a-4936-a276-085f13d2cdc7","type":"GlyphRenderer"}]},"id":"d403551e-dcc8-4b14-a83f-e1587cd74dad","type":"LegendItem"},{"attributes":{"fill_alpha":0.5,"fill_color":"#1f77b4","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"5719b670-17a9-446e-b45c-151c5a9f5973","type":"Patch"},{"attributes":{},"id":"25cf4255-3aa1-4d47-85ec-16052510f6ce","type":"UnionRenderers"},{"attributes":{"source":{"id":"5b4ab4e7-8583-48a6-90f8-f06a29fd35e1","type":"ColumnDataSource"}},"id":"d2265fb8-876a-49df-86a1-d24496a71142","type":"CDSView"},{"attributes":{},"id":"9e59d791-409b-4be1-a6a7-78a91709da98","type":"Selection"},{"attributes":{"fill_alpha":0.5,"fill_color":"#6d904f","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"06ea175c-cb2d-4ea9-a083-7cae5082bc60","type":"Patch"},{"attributes":{"label":{"value":"Guinea"},"renderers":[{"id":"5703e8f7-d578-44ae-bab7-cfad5ffeefca","type":"GlyphRenderer"}]},"id":"a8dc0690-748e-436a-afe5-037e29b10038","type":"LegendItem"},{"attributes":{},"id":"0acb7df6-81d0-4292-8821-89e1358fb200","type":"UnionRenderers"},{"attributes":{"fill_alpha":0.5,"fill_color":"#17becf","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"e3274c7b-eb7e-4a99-949d-56542e90ef45","type":"Patch"},{"attributes":{"callback":null,"end":19377.0},"id":"341593d2-640a-4783-8b64-e3703f69d2de","type":"Range1d"},{"attributes":{"fill_alpha":0.5,"fill_color":"#e377c2","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"b16fe845-9eb9-4dd5-b94c-47df0120f6d9","type":"Patch"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"5100a3c6-1eee-4b50-8c91-9ab5fc4bfce8","type":"Selection"},"selection_policy":{"id":"9060f195-0603-4818-afe6-22cfb9691bb4","type":"UnionRenderers"}},"id":"434d5822-f201-44b0-bc60-185d8e4709cb","type":"ColumnDataSource"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"AAAAAADxvkAAAAAAAL+8QAAAAAAAeL9AAAAAAICcwEAAAAAAAGu+QAAAAAAApL1AAAAAAABMvEAAAAAAAGe6QAAAAAAAVLxAAAAAAABFv0AAAAAAAN6+QAAAAAAAG75AAAAAAAADvEAAAAAAAPO6QAAAAAAAEr5AAAAAAABavEAAAAAAAL24QAAAAAAAZbdAAAAAAAC0tEAAAAAAAFOzQAAAAAAAKb9AAAAAAIAEw0AAAAAAgCHAQAAAAAAAxLZAAAAAAACeskAAAAAAAAqrQAAAAAAAsbpAAAAAAAB2t0AAAAAAAMS7QAAAAAAAgqpAAAAAAACst0AAAAAAAJW9QAAAAAAAUbBAAAAAAACAsEAAAAAAAECkQAAAAAAAY7RAAAAAAABwrkAAAAAAAD6wQAAAAAAAu8BAAAAAAIBsyEAAAAAAAMa1QAAAAAAAdbRAAAAAAAAotkAAAAAAALi2QAAAAAAA175AAAAAAABoukAAAAAAAEqjQAAAAAAABbVAAAAAAACSukAAAAAAAHitQAAAAAAABLBAAAAAAAAhtEAAAAAAAO2wQAAAAAAASbhAAAAAAABQpEAAAAAAAKijQAAAAAAAUrFAAAAAAACvtUAAAAAAACyqQAAAAAAAaqpAAAAAAABCtkAAAAAAAHyqQAAAAAAAwKtAAAAAAACxskAAAAAAADKrQAAAAAAAtq5AAAAAAAB7sUAAAAAAAICxQAAAAAAA5bBAAAAAAAAesEAAAAAAAPatQAAAAAAAhq9AAAAAAAAZsUAAAAAAALuxQAAAAAAAKLJAAAAAAABZskAAAAAAAJuxQAAAAAAAwbBAAAAAAACAr0AAAAAAAJytQAAAAAAAdKxAAAAAAAAarEAAAAAAAPSsQAAAAAAAwqxAAAAAAAAWqkAAAAAAAIqoQAAAAAAArqlAAAAAAAB4qEAAAAAAAIinQAAAAAAAkKZAAAAAAABCo0AAAAAAAPChQAAAAAAAWqBAAAAAAADcnUAAAAAAAMyfQAAAAAAAoJ5AAAAAAAAsnUAAAAAAAFCeQAAAAAAA6KBAAAAAAAAkoEAAAAAAALSbQAAAAAAA3JtAAAAAAACwnEAAAAAAAKicQAAAAAAA9JtAAAAAAADwnUAAAAAAANSeQAAAAAAA3J1AAAAAAAAwn0AAAAAAAGigQAAAAAAAZKBAAAAAAACCoEAAAAAAADyhQAAAAAAA6KFAAAAAAABqo0AAAAAAAKyjQAAAAAAA8KJAAAAAAADqpEAAAAAAABymQAAAAAAAJqVAAAAAAAA6pUAAAAAAADymQAAAAAAACKhAAAAAAAAsqkAAAAAAAHqrQAAAAAAAUbNAAAAAAADwrEAAAAAAAIqrQAAAAAAAPK5AAAAAAABar0AAAAAAABqwQAAAAAAA9q5AAAAAAACCrUAAAAAAALSuQAAAAAAAcK5AAAAAAAB0oEAAAAAAAICwQAAAAAAAwrFAAAAAAACCskAAAAAAAG6lQAAAAAAA9KNAAAAAAABAsUAAAAAAADalQAAAAAAAqbJAAAAAAADmsEAAAAAAAC2wQAAAAAAAe7BAAAAAAAANsEAAAAAAAB3FQAAAAAAAvLhAAAAAAAClskAAAAAAAOCyQAAAAAAA2rJAAAAAAAA9skAAAAAAADmzQAAAAAAA57NAAAAAAABes0AAAAAAAEy0QAAAAAAAcbNAAAAAAADpsUAAAAAAANeyQAAAAAAAy7JAAAAAAACxsEAAAAAAAO6wQAAAAACAhcpAAAAAAACYrUAAAAAAAOqxQAAAAAAAqqtAAAAAAADkrUAAAAAAAHavQAAAAAAAeK1AAAAAAADgq0AAAAAAAGysQAAAAAAAfK1AAAAAAABIrUAAAAAAAD6sQAAAAAAALKtAAAAAAACyq0AAAAAAAKStQAAAAAAA0qpAAAAAAAAiqUAAAAAAAL6oQAAAAAAA5qVAAAAAAACUpUAAAAAAAEKnQAAAAAAAEKtAAAAAAAD0q0AAAAAAAJapQAAAAAAA7qlAAAAAAACKqEAAAAAAAAqmQAAAAAAAfKRAAAAAAAAApEAAAAAAANaiQAAAAAAAoKBAAAAAAABAnkAAAAAAAMidQAAAAAAAGKBAAAAAAADUnkAAAAAAANiLQAAAAAAAqIxAAAAAAACUn0AAAAAAAHigQAAAAAAAiJ5AAAAAAADonkAAAAAAAAKhQAAAAAAATqNAAAAAAAB2pEAAAAAAAOqkQAAAAAAAnKZAAAAAAAAuqUAAAAAAAIaqQAAAAAAASKpAAAAAAAC0rEAAAAAAALKrQAAAAAAAzKdAAAAAAAAepkAAAAAAAGqmQAAAAAAANqlAAAAAAACaqUAAAAAAAGKrQAAAAAAARK5AAAAAAABWrEAAAAAAAM6rQAAAAAAA6qxAAAAAAAAirkAAAAAAAEauQAAAAAAAIq1AAAAAAACYrEAAAAAAAC6uQAAAAAAAGbBAAAAAAACirkAAAAAAAHysQAAAAAAAV7JAAAAAAAB+rkAAAAAAAMTKQAAAAAAAdbFAAAAAAAAwsUAAAAAAAEWzQAAAAAAAWLNAAAAAAAByskAAAAAAAAC0QAAAAAAAxrRAAAAAAADOs0AAAAAAAFm0QAAAAAAAl7NAAAAAAACWskAAAAAAADWzQAAAAAAAPbNAAAAAAAD8skAAAAAAABG5QAAAAAAAR8VAAAAAAABasEAAAAAAAM6wQAAAAAAAgLBAAAAAAABEsUAAAAAAABezQAAAAAAA+qVAAAAAAACQsUAAAAAAAHakQAAAAAAA8qVAAAAAAADFskAAAAAAAP+xQAAAAAAAxLBAAAAAAAD2oEAAAAAAAO6uQAAAAAAAFq9AAAAAAADWrUAAAAAAAEivQAAAAAAARLBAAAAAAADcr0AAAAAAAMiuQAAAAAAAiqtAAAAAAABts0AAAAAAAIezQAAAAAAA5qtAAAAAAACWqkAAAAAAAGCoQAAAAAAAoKZAAAAAAACSpUAAAAAAAGalQAAAAAAAWqZAAAAAAAAepUAAAAAAACyjQAAAAAAA6qNAAAAAAACYo0AAAAAAAByiQAAAAAAAcqFAAAAAAACyoEAAAAAAAJSgQAAAAAAAmqBAAAAAAADQn0AAAAAAAIyeQAAAAAAAUJ9AAAAAAADknkAAAAAAAESdQAAAAAAAlJ1AAAAAAADMnUAAAAAAABydQAAAAAAAxJxAAAAAAADAoEAAAAAAAGChQAAAAAAA2J5AAAAAAAA8nkAAAAAAAAigQAAAAAAAiKBAAAAAAAAMn0AAAAAAADChQAAAAAAAxKJAAAAAAAAWpEAAAAAAANynQAAAAAAAvqhAAAAAAACKqUAAAAAAAPqqQAAAAAAABqpAAAAAAACSq0AAAAAAADKuQAAAAAAAUq5AAAAAAABirUAAAAAAAPatQAAAAAAAJq9AAAAAAAB6sEAAAAAAAI6xQAAAAAAAcbJAAAAAAAAss0AAAAAAAPKyQAAAAAAAcrJAAAAAAADDsUAAAAAAAEmwQAAAAAAA5K5AAAAAAACksEAAAAAAAHyxQAAAAAAAGrJAAAAAAAAGskAAAAAAAOKvQAAAAAAAyqxAAAAAAACOs0AAAAAAAGytQAAAAAAANqxAAAAAAABCt0AAAAAAAECsQAAAAAAAdKtAAAAAAACGtkAAAAAAAFGyQAAAAAAAWqVAAAAAAADapUAAAAAAAEm5QAAAAAAARLJAAAAAAAA1tUAAAAAAAIWxQAAAAAAAlLBAAAAAAAAavEAAAAAAAH+2QAAAAAAADqZAAAAAAADyu0AAAAAAADzAQAAAAAAAMbhAAAAAAAB/t0AAAAAAABq2QAAAAAAADbhAAAAAAACbyUAAAAAAANzBQAAAAAAAUbJAAAAAAAC9sEAAAAAAAIq1QAAAAAAAeKZAAAAAAAACskAAAAAAAPixQAAAAAAANr9AAAAAAABbuUAAAAAAAIKqQAAAAAAA3sNAAAAAAAB2t0AAAAAAAEW8QAAAAAAA/LxAAAAAAACLs0AAAAAAAMS2QAAAAACAzcVAAAAAAIAEw0AAAAAAgGDKQAAAAAAAU7NAAAAAAAAvtkAAAAAAAO24QAAAAAAAOLpAAAAAAAD4vUAAAAAAgCXAQAAAAAAAMb1AAAAAAAAvvkAAAAAAgIvAQAAAAACANcFAAAAAAIAAwUAAAAAAAMq+QAAAAAAAzr1AAAAAAAAcwEAAAAAAAMTAQAAAAACANcFAAAAAAACtwkAAAAAAgMjBQAAAAAAAYsBAAAAAAIBqwUA=","dtype":"float64","shape":[400]}},"selected":{"id":"7b814f16-6676-43bf-84e9-d2c443f523ec","type":"Selection"},"selection_policy":{"id":"9f315e84-34c9-49a4-9a82-15555be49a30","type":"UnionRenderers"}},"id":"5fc54c79-7791-475a-83ea-aace77801753","type":"ColumnDataSource"},{"attributes":{"data_source":{"id":"04fa07aa-f71e-46b7-8429-66c58861eb82","type":"ColumnDataSource"},"glyph":{"id":"51aedd39-d346-4df7-bdac-cff036e80989","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"f553c56f-284c-4ebb-9144-0510f81d64ee","type":"Patch"},"selection_glyph":null,"view":{"id":"be485bdc-246a-4e12-af2c-43238a073cf7","type":"CDSView"}},"id":"02c18b28-93e7-4579-b33f-1a159640ae9f","type":"GlyphRenderer"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"520e15fc-2649-42c8-bcd0-6fcfd0dac5db","type":"Selection"},"selection_policy":{"id":"3ab2021b-c8dc-4668-bf6f-de7d73d0d868","type":"UnionRenderers"}},"id":"457374b5-c322-4b59-ad19-32046a8e26ca","type":"ColumnDataSource"},{"attributes":{"data_source":{"id":"5b4ab4e7-8583-48a6-90f8-f06a29fd35e1","type":"ColumnDataSource"},"glyph":{"id":"d4b035e7-2cce-403f-9db4-8dedeec84933","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"bed4b6e3-93ce-4e0e-ae70-45b4b07857ed","type":"Patch"},"selection_glyph":null,"view":{"id":"d2265fb8-876a-49df-86a1-d24496a71142","type":"CDSView"}},"id":"4b5e463f-8e41-4afc-abfb-6096b3b875a8","type":"GlyphRenderer"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"6d711a03-10b3-4148-ba22-c0652d0d2a28","type":"Selection"},"selection_policy":{"id":"25cf4255-3aa1-4d47-85ec-16052510f6ce","type":"UnionRenderers"}},"id":"d806c2f7-8a5d-4097-9dcb-0f79db1e6d7d","type":"ColumnDataSource"},{"attributes":{"data_source":{"id":"68905804-1a1d-43f1-a7e4-45dbaf44704b","type":"ColumnDataSource"},"glyph":{"id":"77ddd2c4-a243-415a-9395-b999c0bf29eb","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"c9fdfd70-19d5-4b91-8a5f-b12ad93e44e1","type":"Patch"},"selection_glyph":null,"view":{"id":"94702cf7-dca3-4436-bce7-91fadd5bee2a","type":"CDSView"}},"id":"e8cb9a9e-6ffc-4b45-8d47-e90390bd21b6","type":"GlyphRenderer"},{"attributes":{},"id":"888e3964-dfd2-4526-9b78-90f8d026fbf4","type":"WheelZoomTool"},{"attributes":{},"id":"ef283c43-7cbd-4adf-b6a0-e68d09eeef94","type":"UnionRenderers"},{"attributes":{"fill_alpha":0.5,"fill_color":"#6d904f","x":{"field":"x"},"y":{"field":"y"}},"id":"86434008-0c7c-43ed-a4f8-76ae67f6b0c9","type":"Patch"},{"attributes":{"fill_alpha":0.5,"fill_color":"#17becf","x":{"field":"x"},"y":{"field":"y"}},"id":"7674f6c8-a776-47f6-9cb3-d45cb4a6d9c0","type":"Patch"},{"attributes":{"fill_alpha":0.5,"fill_color":"#8b8b8b","x":{"field":"x"},"y":{"field":"y"}},"id":"a9534170-b8d3-452f-adfa-82b5c3885c9c","type":"Patch"},{"attributes":{"data_source":{"id":"17dbca06-8974-47c4-aca5-7a669312fba5","type":"ColumnDataSource"},"glyph":{"id":"7db5bfa9-c749-4b77-8f55-a010b0d2b5ed","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"ce37f6e7-d6af-49b1-a452-386396e345e5","type":"Patch"},"selection_glyph":null,"view":{"id":"d6b96e1a-2765-47e2-a486-9a8bd97d211e","type":"CDSView"}},"id":"30f3aab4-ca81-4a30-92f0-7fb60ee00195","type":"GlyphRenderer"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"491bb89e-0509-497c-a489-b35176610a92","type":"Selection"},"selection_policy":{"id":"842b4524-06d6-4ea1-a3ec-711adc3c53b5","type":"UnionRenderers"}},"id":"22957b6f-1d14-40f4-9396-ba51102dc99a","type":"ColumnDataSource"},{"attributes":{"fill_alpha":0.5,"fill_color":"#30a2da","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"a4271493-d89d-404c-9d67-ce12b747f27d","type":"Patch"},{"attributes":{},"id":"3d9601a1-44bc-43ff-ad73-353f56fb207d","type":"Selection"},{"attributes":{},"id":"ed45071a-4032-4d17-8934-6a6aedc8952c","type":"BasicTickFormatter"},{"attributes":{"fill_alpha":0.5,"fill_color":"#d62728","x":{"field":"x"},"y":{"field":"y"}},"id":"34116548-96e4-418b-8cc1-a85ea770236f","type":"Patch"},{"attributes":{},"id":"7c57f1e4-6624-482f-ad84-9c1bcff719d4","type":"BasicTickFormatter"},{"attributes":{},"id":"689fb61d-902d-49e9-8dee-287dcfc7300d","type":"UnionRenderers"},{"attributes":{"callback":null,"end":199},"id":"3a4fd0e1-1441-4118-b7ce-80ded19161aa","type":"Range1d"},{"attributes":{"fill_alpha":0.5,"fill_color":"#8b8b8b","x":{"field":"x"},"y":{"field":"y"}},"id":"f9892a6e-82ff-48af-8e84-3c15fa11879f","type":"Patch"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"17fcfc7d-1d5d-483e-8458-57285399dc1c","type":"Selection"},"selection_policy":{"id":"ef283c43-7cbd-4adf-b6a0-e68d09eeef94","type":"UnionRenderers"}},"id":"11e18c7e-82a5-4ae0-8883-7c0c8a104be0","type":"ColumnDataSource"},{"attributes":{"fill_alpha":0.5,"fill_color":"#fc4f30","x":{"field":"x"},"y":{"field":"y"}},"id":"f01cea8f-9819-4c36-8632-571732bae8a5","type":"Patch"},{"attributes":{},"id":"691cb77e-32de-453d-93f7-9aa2ec266790","type":"SaveTool"},{"attributes":{"source":{"id":"04fa07aa-f71e-46b7-8429-66c58861eb82","type":"ColumnDataSource"}},"id":"be485bdc-246a-4e12-af2c-43238a073cf7","type":"CDSView"},{"attributes":{"click_policy":"mute","items":[{"id":"4c51e91c-7685-4dfb-a408-2a515eaa8f41","type":"LegendItem"},{"id":"cba57702-7b27-459a-8beb-3d1cc3e423e1","type":"LegendItem"},{"id":"9b3f5c92-f6ff-4c91-a690-daac77789fcb","type":"LegendItem"},{"id":"a8dc0690-748e-436a-afe5-037e29b10038","type":"LegendItem"},{"id":"9bcc3130-e5b6-4a4a-9213-009b42249612","type":"LegendItem"},{"id":"dbfad1d0-3016-4572-8b1c-dba042fdd5c6","type":"LegendItem"},{"id":"9df0322a-82e7-405f-b7ec-a74ca38f6f2d","type":"LegendItem"},{"id":"b2e50b3c-f324-4408-b841-da8db36b28ae","type":"LegendItem"},{"id":"d8f18bf3-216e-4350-86bd-d3adfddbf21b","type":"LegendItem"},{"id":"4650c1e9-d149-47f2-a19d-cdecb719179a","type":"LegendItem"},{"id":"0e44a79c-c772-47e7-aa98-0c58940e6fb6","type":"LegendItem"},{"id":"0ca2c146-56e8-4a20-b37f-0b3b21565994","type":"LegendItem"},{"id":"f5e4a2c5-cc4c-4556-b5d2-e9c289b2a36c","type":"LegendItem"},{"id":"6926be40-e595-440c-8938-de36783fd04e","type":"LegendItem"},{"id":"35bb46ad-33b5-41ac-a65a-ddb67c601c7c","type":"LegendItem"},{"id":"e577ea20-c47b-4e94-a64e-fe1aeed3055f","type":"LegendItem"},{"id":"e2a6bc73-6f1b-45de-8e39-7fe9bbd2e511","type":"LegendItem"},{"id":"c4d554ec-5088-4108-89b4-7f3bf3710c78","type":"LegendItem"},{"id":"d403551e-dcc8-4b14-a83f-e1587cd74dad","type":"LegendItem"},{"id":"4ebad35b-303c-44cc-af0f-bf1652c3b24f","type":"LegendItem"},{"id":"dd1582e3-9761-46fb-8d7c-386740d6afa3","type":"LegendItem"}],"location":[0,0],"plot":{"id":"9b6f51dd-4f2a-45ef-9c2e-24a88201c690","subtype":"Figure","type":"Plot"}},"id":"1e5755b7-aff8-4e23-bf02-e4c3fd3b175e","type":"Legend"},{"attributes":{"data_source":{"id":"fc4e0a41-2480-45ae-9e2c-dc6845d894b4","type":"ColumnDataSource"},"glyph":{"id":"3a5a6b5e-32f0-4c4d-ade5-9f5821528ed2","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"a4271493-d89d-404c-9d67-ce12b747f27d","type":"Patch"},"selection_glyph":null,"view":{"id":"b327451d-572a-41c5-bc8d-327b2fdcfc91","type":"CDSView"}},"id":"af1bac4d-8821-44a3-90b1-83d31ca99f52","type":"GlyphRenderer"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"b5a00b37-2ad6-44fc-baf7-e8c1f60a5704","type":"Selection"},"selection_policy":{"id":"26cd9cda-8212-40e7-b46a-3aea3265b045","type":"UnionRenderers"}},"id":"b6ef5c74-1ff2-4a45-90c2-9f977078a463","type":"ColumnDataSource"},{"attributes":{"fill_alpha":0.5,"fill_color":"#9467bd","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"7eee1633-8a8d-4af7-a681-bd002bc94dbc","type":"Patch"},{"attributes":{"data_source":{"id":"434d5822-f201-44b0-bc60-185d8e4709cb","type":"ColumnDataSource"},"glyph":{"id":"a10ff8f7-269f-4865-8858-7a4bd6e5c15b","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"c93b43b5-113a-49e7-ae6f-81b7e1811c54","type":"Patch"},"selection_glyph":null,"view":{"id":"5be9a5ef-9883-4d9a-92fe-d18191b627c5","type":"CDSView"}},"id":"888f2e18-aea3-407c-8601-ec069b658299","type":"GlyphRenderer"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"53ab46ce-8ed4-4fb4-86fd-c3520b8c4b69","type":"Selection"},"selection_policy":{"id":"e734fe1b-1f8b-47d2-8391-2c7f0f872f21","type":"UnionRenderers"}},"id":"68905804-1a1d-43f1-a7e4-45dbaf44704b","type":"ColumnDataSource"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"b65e9c91-f9a6-4809-90d3-33a12fbd9aec","type":"Selection"},"selection_policy":{"id":"a3ccaefa-b82a-4816-9b40-81fbf7fd3bd6","type":"UnionRenderers"}},"id":"2901a46c-dba6-4a90-a008-d3d048d04014","type":"ColumnDataSource"},{"attributes":{},"id":"4a38c7bb-c6f1-4d57-96b8-4ff4ab3cf525","type":"UnionRenderers"},{"attributes":{"data_source":{"id":"08cc6be2-912c-47a1-b915-8432a6b88ade","type":"ColumnDataSource"},"glyph":{"id":"999d65ab-faa2-4c03-b780-cadabeed38e5","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"be7ad5a3-8654-4637-b709-e776455e41d6","type":"Patch"},"selection_glyph":null,"view":{"id":"12bf0a26-0cbf-4604-9c99-d55ebd581762","type":"CDSView"}},"id":"71447283-cd45-4a2e-9a29-ed8f16da9d0c","type":"GlyphRenderer"},{"attributes":{},"id":"79d00d79-01d0-4ab2-a338-1a1775d2f6db","type":"Selection"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"691cb77e-32de-453d-93f7-9aa2ec266790","type":"SaveTool"},{"id":"ee7ac99f-0980-45dc-9d09-04b81bd68648","type":"PanTool"},{"id":"888e3964-dfd2-4526-9b78-90f8d026fbf4","type":"WheelZoomTool"},{"id":"3020a040-431c-440f-87a9-9ab023138b25","type":"BoxZoomTool"},{"id":"f7737cb9-6cb6-4210-a430-ec42332f3476","type":"ResetTool"}]},"id":"fdf21289-9457-41d1-9508-5899bef1562a","type":"Toolbar"},{"attributes":{"source":{"id":"22957b6f-1d14-40f4-9396-ba51102dc99a","type":"ColumnDataSource"}},"id":"1ec6618c-6f2c-4e60-9eed-6bc21eadf645","type":"CDSView"},{"attributes":{"fill_alpha":0.5,"fill_color":"#30a2da","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"ce37f6e7-d6af-49b1-a452-386396e345e5","type":"Patch"},{"attributes":{"fill_alpha":0.5,"fill_color":"#e377c2","x":{"field":"x"},"y":{"field":"y"}},"id":"779b448c-c371-498c-8b6c-244f338b849a","type":"Patch"},{"attributes":{"fill_alpha":0.5,"fill_color":"#9467bd","x":{"field":"x"},"y":{"field":"y"}},"id":"d4b035e7-2cce-403f-9db4-8dedeec84933","type":"Patch"},{"attributes":{"data_source":{"id":"11e18c7e-82a5-4ae0-8883-7c0c8a104be0","type":"ColumnDataSource"},"glyph":{"id":"f9892a6e-82ff-48af-8e84-3c15fa11879f","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"130abc8f-c17b-41af-855d-967d7bfc0e8a","type":"Patch"},"selection_glyph":null,"view":{"id":"2e41387e-5749-42aa-9487-864ce475cfb5","type":"CDSView"}},"id":"cbef14a3-e051-4338-a6f7-b4eb959b38d7","type":"GlyphRenderer"},{"attributes":{"fill_alpha":0.5,"fill_color":"#e5ae38","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"be7ad5a3-8654-4637-b709-e776455e41d6","type":"Patch"},{"attributes":{},"id":"bbba26c0-2a6a-43be-9cbf-6343a6e32d21","type":"UnionRenderers"},{"attributes":{"label":{"value":"Niger"},"renderers":[{"id":"af1bac4d-8821-44a3-90b1-83d31ca99f52","type":"GlyphRenderer"}]},"id":"f5e4a2c5-cc4c-4556-b5d2-e9c289b2a36c","type":"LegendItem"},{"attributes":{"source":{"id":"17dbca06-8974-47c4-aca5-7a669312fba5","type":"ColumnDataSource"}},"id":"d6b96e1a-2765-47e2-a486-9a8bd97d211e","type":"CDSView"},{"attributes":{},"id":"65ee328b-c20b-47c6-91f3-0bfa92343b15","type":"Selection"},{"attributes":{},"id":"44f45517-4e66-4ce0-9cc4-91a12777acf0","type":"BasicTicker"},{"attributes":{"dimension":1,"grid_line_color":{"value":null},"plot":{"id":"9b6f51dd-4f2a-45ef-9c2e-24a88201c690","subtype":"Figure","type":"Plot"},"ticker":{"id":"3ee016f2-28a4-4d49-b1d8-629cd98d3374","type":"BasicTicker"}},"id":"0ad16d89-fe8a-46ff-988d-b4d3c60a62be","type":"Grid"},{"attributes":{"data_source":{"id":"8b178d93-6ffa-4a0c-a3ad-95b1a89468a1","type":"ColumnDataSource"},"glyph":{"id":"a9534170-b8d3-452f-adfa-82b5c3885c9c","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"8f24f81a-d2ae-4236-9b21-22bf389e2d44","type":"Patch"},"selection_glyph":null,"view":{"id":"4a95008d-9cc7-408e-a5b1-c781e74c6491","type":"CDSView"}},"id":"380f8980-fbd0-4e71-b67d-4c89f263b84f","type":"GlyphRenderer"},{"attributes":{"label":{"value":"Central African Republic"},"renderers":[{"id":"30f3aab4-ca81-4a30-92f0-7fb60ee00195","type":"GlyphRenderer"}]},"id":"4c51e91c-7685-4dfb-a408-2a515eaa8f41","type":"LegendItem"},{"attributes":{"fill_alpha":0.5,"fill_color":"#e5ae38","x":{"field":"x"},"y":{"field":"y"}},"id":"51aedd39-d346-4df7-bdac-cff036e80989","type":"Patch"},{"attributes":{},"id":"0caaae07-ddc0-4e3f-9ff2-c5fec1c23e47","type":"LinearScale"},{"attributes":{"fill_alpha":0.5,"fill_color":"#bcbd22","x":{"field":"x"},"y":{"field":"y"}},"id":"932cd4a8-ecf8-40fc-9480-d05d30f77066","type":"Patch"},{"attributes":{"data_source":{"id":"9ace739c-ed90-48ae-9ce8-a05d7249aa2c","type":"ColumnDataSource"},"glyph":{"id":"7bdba129-dfec-42d3-ad08-fcd286e76e43","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"5719b670-17a9-446e-b45c-151c5a9f5973","type":"Patch"},"selection_glyph":null,"view":{"id":"be1c1366-d73c-4af5-b59a-c9eec76a428b","type":"CDSView"}},"id":"1873d11a-79fd-4c03-84c3-dea75397df7a","type":"GlyphRenderer"},{"attributes":{"source":{"id":"e7b1ce75-a2a9-4ad1-8f4c-4246487e26c4","type":"ColumnDataSource"}},"id":"6e4364c7-4ed3-49a4-b8eb-4161ab55caba","type":"CDSView"},{"attributes":{"label":{"value":"Malawi"},"renderers":[{"id":"1873d11a-79fd-4c03-84c3-dea75397df7a","type":"GlyphRenderer"}]},"id":"d8f18bf3-216e-4350-86bd-d3adfddbf21b","type":"LegendItem"},{"attributes":{"fill_alpha":0.5,"fill_color":"#e5ae38","x":{"field":"x"},"y":{"field":"y"}},"id":"999d65ab-faa2-4c03-b780-cadabeed38e5","type":"Patch"},{"attributes":{"grid_line_color":{"value":null},"plot":{"id":"9b6f51dd-4f2a-45ef-9c2e-24a88201c690","subtype":"Figure","type":"Plot"},"ticker":{"id":"44f45517-4e66-4ce0-9cc4-91a12777acf0","type":"BasicTicker"}},"id":"519af32b-0362-4fa3-a23b-cb702644e33f","type":"Grid"},{"attributes":{"fill_alpha":0.5,"fill_color":"#17becf","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"d1e80114-56e9-4d09-a8f6-47268c89604c","type":"Patch"},{"attributes":{"axis_label":"Refugees","axis_label_text_font_size":{"value":"10pt"},"bounds":"auto","formatter":{"id":"7c57f1e4-6624-482f-ad84-9c1bcff719d4","type":"BasicTickFormatter"},"major_label_orientation":"horizontal","plot":{"id":"9b6f51dd-4f2a-45ef-9c2e-24a88201c690","subtype":"Figure","type":"Plot"},"ticker":{"id":"3ee016f2-28a4-4d49-b1d8-629cd98d3374","type":"BasicTicker"}},"id":"2dc5d210-c50f-462a-be2d-d1e79bb27e59","type":"LinearAxis"},{"attributes":{"fill_alpha":0.5,"fill_color":"#30a2da","x":{"field":"x"},"y":{"field":"y"}},"id":"3a5a6b5e-32f0-4c4d-ade5-9f5821528ed2","type":"Patch"},{"attributes":{},"id":"10a2eb21-10c3-4d5a-9d10-d6950ef2f7be","type":"UnionRenderers"},{"attributes":{"axis_label":"Year","axis_label_text_font_size":{"value":"10pt"},"bounds":"auto","formatter":{"id":"ed45071a-4032-4d17-8934-6a6aedc8952c","type":"BasicTickFormatter"},"major_label_orientation":"horizontal","plot":{"id":"9b6f51dd-4f2a-45ef-9c2e-24a88201c690","subtype":"Figure","type":"Plot"},"ticker":{"id":"44f45517-4e66-4ce0-9cc4-91a12777acf0","type":"BasicTicker"}},"id":"fb3dcbeb-9e03-4db5-9e86-b4f4b2918442","type":"LinearAxis"},{"attributes":{"data_source":{"id":"138ec9b5-30af-4047-a85b-464e4faa530e","type":"ColumnDataSource"},"glyph":{"id":"f01cea8f-9819-4c36-8632-571732bae8a5","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"81d5c93c-b7bd-4cb7-a851-e69cff5d8e23","type":"Patch"},"selection_glyph":null,"view":{"id":"251a7115-e9e1-4a70-a140-01efd45e2a9d","type":"CDSView"}},"id":"040bf11f-c2c3-4f49-b80f-c488653585ea","type":"GlyphRenderer"},{"attributes":{"data_source":{"id":"41c43e92-341e-41ac-a878-effd0ad1ee7b","type":"ColumnDataSource"},"glyph":{"id":"7674f6c8-a776-47f6-9cb3-d45cb4a6d9c0","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"e3274c7b-eb7e-4a99-949d-56542e90ef45","type":"Patch"},"selection_glyph":null,"view":{"id":"75863af4-7afb-47a9-ab0c-78d08d6883b2","type":"CDSView"}},"id":"3d112d88-017a-4fb8-a512-1194feef57fe","type":"GlyphRenderer"},{"attributes":{"source":{"id":"8b178d93-6ffa-4a0c-a3ad-95b1a89468a1","type":"ColumnDataSource"}},"id":"4a95008d-9cc7-408e-a5b1-c781e74c6491","type":"CDSView"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"AAAAAIBqwUAAAAAAAGLAQAAAAACAyMFAAAAAAACtwkAAAAAAgDXBQAAAAAAAxMBAAAAAAAAcwEAAAAAAAM69QAAAAAAAyr5AAAAAAIAAwUAAAAAAgDXBQAAAAACAi8BAAAAAAAAvvkAAAAAAADG9QAAAAACAJcBAAAAAAAD4vUAAAAAAADi6QAAAAAAA7bhAAAAAAAAvtkAAAAAAAFOzQAAAAACAYMpAAAAAAIAEw0AAAAAAgM3FQAAAAAAAxLZAAAAAAACLs0AAAAAAAPy8QAAAAAAARbxAAAAAAAB2t0AAAAAAAN7DQAAAAAAAgqpAAAAAAABbuUAAAAAAADa/QAAAAAAA+LFAAAAAAAACskAAAAAAAHimQAAAAAAAirVAAAAAAAC9sEAAAAAAAFGyQAAAAAAA3MFAAAAAAACbyUAAAAAAAA24QAAAAAAAGrZAAAAAAAB/t0AAAAAAADG4QAAAAAAAPMBAAAAAAADyu0AAAAAAAA6mQAAAAAAAf7ZAAAAAAAAavEAAAAAAAJSwQAAAAAAAhbFAAAAAAAA1tUAAAAAAAESyQAAAAAAASblAAAAAAADapUAAAAAAAFqlQAAAAAAAUbJAAAAAAACGtkAAAAAAAHSrQAAAAAAAQKxAAAAAAABCt0AAAAAAADasQAAAAAAAbK1AAAAAAACOs0AAAAAAAMqsQAAAAAAA4q9AAAAAAAAGskAAAAAAABqyQAAAAAAAfLFAAAAAAACksEAAAAAAAOSuQAAAAAAASbBAAAAAAADDsUAAAAAAAHKyQAAAAAAA8rJAAAAAAAAss0AAAAAAAHGyQAAAAAAAjrFAAAAAAAB6sEAAAAAAACavQAAAAAAA9q1AAAAAAABirUAAAAAAAFKuQAAAAAAAMq5AAAAAAACSq0AAAAAAAAaqQAAAAAAA+qpAAAAAAACKqUAAAAAAAL6oQAAAAAAA3KdAAAAAAAAWpEAAAAAAAMSiQAAAAAAAMKFAAAAAAAAMn0AAAAAAAIigQAAAAAAACKBAAAAAAAA8nkAAAAAAANieQAAAAAAAYKFAAAAAAADAoEAAAAAAAMScQAAAAAAAHJ1AAAAAAADMnUAAAAAAAJSdQAAAAAAARJ1AAAAAAADknkAAAAAAAFCfQAAAAAAAjJ5AAAAAAADQn0AAAAAAAJqgQAAAAAAAlKBAAAAAAACyoEAAAAAAAHKhQAAAAAAAHKJAAAAAAACYo0AAAAAAAOqjQAAAAAAALKNAAAAAAAAepUAAAAAAAFqmQAAAAAAAZqVAAAAAAACSpUAAAAAAAKCmQAAAAAAAYKhAAAAAAACWqkAAAAAAAOarQAAAAAAAh7NAAAAAAABts0AAAAAAAIqrQAAAAAAAyK5AAAAAAADcr0AAAAAAAESwQAAAAAAASK9AAAAAAADWrUAAAAAAABavQAAAAAAA7q5AAAAAAAD2oEAAAAAAAMSwQAAAAAAA/7FAAAAAAADFskAAAAAAAPKlQAAAAAAAdqRAAAAAAACQsUAAAAAAAPqlQAAAAAAAF7NAAAAAAABEsUAAAAAAAICwQAAAAAAAzrBAAAAAAABasEAAAAAAAEfFQAAAAAAAEblAAAAAAAD8skAAAAAAAD2zQAAAAAAANbNAAAAAAACWskAAAAAAAJezQAAAAAAAWbRAAAAAAADOs0AAAAAAAMa0QAAAAAAAALRAAAAAAAByskAAAAAAAFizQAAAAAAARbNAAAAAAAAwsUAAAAAAAHWxQAAAAAAAxMpAAAAAAAB+rkAAAAAAAFeyQAAAAAAAfKxAAAAAAACirkAAAAAAABmwQAAAAAAALq5AAAAAAACYrEAAAAAAACKtQAAAAAAARq5AAAAAAAAirkAAAAAAAOqsQAAAAAAAzqtAAAAAAABWrEAAAAAAAESuQAAAAAAAYqtAAAAAAACaqUAAAAAAADapQAAAAAAAaqZAAAAAAAAepkAAAAAAAMynQAAAAAAAsqtAAAAAAAC0rEAAAAAAAEiqQAAAAAAAhqpAAAAAAAAuqUAAAAAAAJymQAAAAAAA6qRAAAAAAAB2pEAAAAAAAE6jQAAAAAAAAqFAAAAAAADonkAAAAAAAIieQAAAAAAAeKBAAAAAAACUn0AAAAAAAKiMQAAAAAAAqIxAAAAAAACUn0AAAAAAAHigQAAAAAAAiJ5AAAAAAADonkAAAAAAAAKhQAAAAAAATqNAAAAAAAB2pEAAAAAAAOqkQAAAAAAAnKZAAAAAAAAuqUAAAAAAAIaqQAAAAAAASKpAAAAAAAC0rEAAAAAAALKrQAAAAAAAzKdAAAAAAAAepkAAAAAAAGqmQAAAAAAANqlAAAAAAACaqUAAAAAAAGKrQAAAAAAARK5AAAAAAABWrEAAAAAAAM6rQAAAAAAA6qxAAAAAAAAirkAAAAAAAEauQAAAAAAAIq1AAAAAAACYrEAAAAAAAC6uQAAAAAAAGbBAAAAAAACirkAAAAAAAHysQAAAAAAAV7JAAAAAAAB+rkAAAAAAAMTKQAAAAAAAdbFAAAAAAAAwsUAAAAAAAEWzQAAAAAAAWLNAAAAAAAByskAAAAAAAAC0QAAAAAAAxrRAAAAAAADOs0AAAAAAAFm0QAAAAAAAl7NAAAAAAACWskAAAAAAADWzQAAAAAAAPbNAAAAAAAD8skAAAAAAABG5QAAAAAAAR8VAAAAAAABasEAAAAAAAM6wQAAAAAAAgLBAAAAAAABEsUAAAAAAABezQAAAAAAA+qVAAAAAAACQsUAAAAAAAHakQAAAAAAA8qVAAAAAAADFskAAAAAAAP+xQAAAAAAAxLBAAAAAAAD2oEAAAAAAAO6uQAAAAAAAFq9AAAAAAADWrUAAAAAAAEivQAAAAAAARLBAAAAAAADcr0AAAAAAAMiuQAAAAAAAiqtAAAAAAABts0AAAAAAAIezQAAAAAAA5qtAAAAAAACWqkAAAAAAAGCoQAAAAAAAoKZAAAAAAACSpUAAAAAAAGalQAAAAAAAWqZAAAAAAAAepUAAAAAAACyjQAAAAAAA6qNAAAAAAACYo0AAAAAAAByiQAAAAAAAcqFAAAAAAACyoEAAAAAAAJSgQAAAAAAAmqBAAAAAAADQn0AAAAAAAIyeQAAAAAAAUJ9AAAAAAADknkAAAAAAAESdQAAAAAAAlJ1AAAAAAADMnUAAAAAAABydQAAAAAAAxJxAAAAAAADAoEAAAAAAAGChQAAAAAAA2J5AAAAAAAA8nkAAAAAAAAigQAAAAAAAiKBAAAAAAAAMn0AAAAAAADChQAAAAAAAxKJAAAAAAAAWpEAAAAAAANynQAAAAAAAvqhAAAAAAACKqUAAAAAAAPqqQAAAAAAABqpAAAAAAACSq0AAAAAAADKuQAAAAAAAUq5AAAAAAABirUAAAAAAAPatQAAAAAAAJq9AAAAAAAB6sEAAAAAAAI6xQAAAAAAAcbJAAAAAAAAss0AAAAAAAPKyQAAAAAAAcrJAAAAAAADDsUAAAAAAAEmwQAAAAAAA5K5AAAAAAACksEAAAAAAAHyxQAAAAAAAGrJAAAAAAAAGskAAAAAAAOKvQAAAAAAAyqxAAAAAAACOs0AAAAAAAGytQAAAAAAANqxAAAAAAABCt0AAAAAAAECsQAAAAAAAdKtAAAAAAACGtkAAAAAAAFGyQAAAAAAAWqVAAAAAAADapUAAAAAAAEm5QAAAAAAARLJAAAAAAAA1tUAAAAAAAIWxQAAAAAAAlLBAAAAAAAAbvEAAAAAAAIC2QAAAAAAAEKZAAAAAAAD2u0AAAAAAgD/AQAAAAAAAN7hAAAAAAACJt0AAAAAAACO2QAAAAAAAD7hAAAAAAICcyUAAAAAAAN/BQAAAAAAAWbJAAAAAAADEsEAAAAAAAJe1QAAAAAAAnKZAAAAAAAAQskAAAAAAAAOyQAAAAAAAPL9AAAAAAABfuUAAAAAAAJaqQAAAAAAA5sNAAAAAAACCt0AAAAAAAFC8QAAAAAAAEr1AAAAAAACds0AAAAAAANK2QAAAAACA1sVAAAAAAIAPw0AAAAAAgHLKQAAAAAAAeLNAAAAAAABBtkAAAAAAAAC5QAAAAAAAWrpAAAAAAAAXvkAAAAAAgDLAQAAAAAAAR71AAAAAAABJvkAAAAAAgJrAQAAAAAAAP8FAAAAAAIAEwUAAAAAAANO+QAAAAAAA271AAAAAAIAiwEAAAAAAgMvAQAAAAAAAPcFAAAAAAAC3wkAAAAAAgNvBQAAAAAAAdsBAAAAAAIB4wUA=","dtype":"float64","shape":[400]}},"selected":{"id":"4207714f-8473-4e6d-b48d-0f1df83f3802","type":"Selection"},"selection_policy":{"id":"343a99ed-1275-4970-a0c6-7012b179d27f","type":"UnionRenderers"}},"id":"8b178d93-6ffa-4a0c-a3ad-95b1a89468a1","type":"ColumnDataSource"},{"attributes":{"fill_alpha":0.5,"fill_color":"#d62728","x":{"field":"x"},"y":{"field":"y"}},"id":"77ddd2c4-a243-415a-9395-b999c0bf29eb","type":"Patch"},{"attributes":{"fill_alpha":0.5,"fill_color":"#6d904f","x":{"field":"x"},"y":{"field":"y"}},"id":"e31ad256-cb55-4dac-9d2e-4526cc3e3a55","type":"Patch"},{"attributes":{"fill_alpha":0.5,"fill_color":"#e5ae38","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"f553c56f-284c-4ebb-9144-0510f81d64ee","type":"Patch"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"4010b023-854d-421f-b28c-a4c102d5e4f5","type":"Selection"},"selection_policy":{"id":"da082042-19a5-4ea9-b246-2d21b54b2013","type":"UnionRenderers"}},"id":"08cc6be2-912c-47a1-b915-8432a6b88ade","type":"ColumnDataSource"},{"attributes":{},"id":"474b6d1d-b3b8-4685-9a95-0e14c7ecd39e","type":"Selection"},{"attributes":{"source":{"id":"08cc6be2-912c-47a1-b915-8432a6b88ade","type":"ColumnDataSource"}},"id":"12bf0a26-0cbf-4604-9c99-d55ebd581762","type":"CDSView"},{"attributes":{"source":{"id":"434d5822-f201-44b0-bc60-185d8e4709cb","type":"ColumnDataSource"}},"id":"5be9a5ef-9883-4d9a-92fe-d18191b627c5","type":"CDSView"},{"attributes":{"fill_alpha":0.5,"fill_color":"#fc4f30","x":{"field":"x"},"y":{"field":"y"}},"id":"cd868365-603f-486b-92da-86f81847486e","type":"Patch"},{"attributes":{},"id":"5100a3c6-1eee-4b50-8c91-9ab5fc4bfce8","type":"Selection"},{"attributes":{"fill_alpha":0.5,"fill_color":"#30a2da","x":{"field":"x"},"y":{"field":"y"}},"id":"7db5bfa9-c749-4b77-8f55-a010b0d2b5ed","type":"Patch"},{"attributes":{},"id":"094cca2c-26e1-44ec-80b3-f91c6e82d2eb","type":"UnionRenderers"},{"attributes":{},"id":"3ee016f2-28a4-4d49-b1d8-629cd98d3374","type":"BasicTicker"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"3d9601a1-44bc-43ff-ad73-353f56fb207d","type":"Selection"},"selection_policy":{"id":"10a2eb21-10c3-4d5a-9d10-d6950ef2f7be","type":"UnionRenderers"}},"id":"102d08eb-bed7-44d5-9941-bea2e34f8f8f","type":"ColumnDataSource"},{"attributes":{"label":{"value":"Kenya"},"renderers":[{"id":"cbef14a3-e051-4338-a6f7-b4eb959b38d7","type":"GlyphRenderer"}]},"id":"9bcc3130-e5b6-4a4a-9213-009b42249612","type":"LegendItem"},{"attributes":{"fill_alpha":0.5,"fill_color":"#bcbd22","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"0f392140-7f69-4896-a61b-3d6bf7f71ca0","type":"Patch"},{"attributes":{"label":{"value":"Mozambique"},"renderers":[{"id":"1952ed0a-5e08-4416-9a5b-2a7e174a5875","type":"GlyphRenderer"}]},"id":"0ca2c146-56e8-4a20-b37f-0b3b21565994","type":"LegendItem"},{"attributes":{"fill_alpha":0.5,"fill_color":"#d62728","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"c9fdfd70-19d5-4b91-8a5f-b12ad93e44e1","type":"Patch"},{"attributes":{"data_source":{"id":"457374b5-c322-4b59-ad19-32046a8e26ca","type":"ColumnDataSource"},"glyph":{"id":"779b448c-c371-498c-8b6c-244f338b849a","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"b16fe845-9eb9-4dd5-b94c-47df0120f6d9","type":"Patch"},"selection_glyph":null,"view":{"id":"1f429a99-cb50-4b58-a6e9-bf42bcc24d2e","type":"CDSView"}},"id":"02a1d631-63a7-4bf1-8c65-63024c71470d","type":"GlyphRenderer"},{"attributes":{},"id":"8f62f09e-243f-4bca-9108-937ed5811ceb","type":"LinearScale"},{"attributes":{"label":{"value":"Liberia"},"renderers":[{"id":"4b5e463f-8e41-4afc-abfb-6096b3b875a8","type":"GlyphRenderer"}]},"id":"9df0322a-82e7-405f-b7ec-a74ca38f6f2d","type":"LegendItem"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"plot":null,"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"3d95ae79-69e8-46a9-a9ac-ba22f41bf127","type":"BoxAnnotation"},{"attributes":{"data_source":{"id":"5fc54c79-7791-475a-83ea-aace77801753","type":"ColumnDataSource"},"glyph":{"id":"86434008-0c7c-43ed-a4f8-76ae67f6b0c9","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"06ea175c-cb2d-4ea9-a083-7cae5082bc60","type":"Patch"},"selection_glyph":null,"view":{"id":"17358ba9-dd8a-4537-ae3e-41bdee8ef89b","type":"CDSView"}},"id":"e4eea7bb-1a3f-4c3d-865d-a7d497873f5d","type":"GlyphRenderer"},{"attributes":{"data_source":{"id":"2901a46c-dba6-4a90-a008-d3d048d04014","type":"ColumnDataSource"},"glyph":{"id":"fb44c9be-3c70-4df6-abe6-ff2dd00f69ef","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"7eee1633-8a8d-4af7-a681-bd002bc94dbc","type":"Patch"},"selection_glyph":null,"view":{"id":"5132e96a-3201-4289-a69c-7b38a701e3e3","type":"CDSView"}},"id":"3a8b8702-086a-4936-a276-085f13d2cdc7","type":"GlyphRenderer"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"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","dtype":"float64","shape":[400]}},"selected":{"id":"9e59d791-409b-4be1-a6a7-78a91709da98","type":"Selection"},"selection_policy":{"id":"b2a4466c-18a9-4fc1-9caa-0e3394a5df15","type":"UnionRenderers"}},"id":"e7b1ce75-a2a9-4ad1-8f4c-4246487e26c4","type":"ColumnDataSource"},{"attributes":{},"id":"520e15fc-2649-42c8-bcd0-6fcfd0dac5db","type":"Selection"},{"attributes":{"data_source":{"id":"102d08eb-bed7-44d5-9941-bea2e34f8f8f","type":"ColumnDataSource"},"glyph":{"id":"cd868365-603f-486b-92da-86f81847486e","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"44948de9-bf51-474f-ad0b-49db93c07574","type":"Patch"},"selection_glyph":null,"view":{"id":"c012b3f8-8f70-4684-b70b-72cff0770167","type":"CDSView"}},"id":"7a2223f8-60d4-4ac8-b28a-31e08beba409","type":"GlyphRenderer"},{"attributes":{"callback":null,"data":{"x":[199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199],"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACJAAAAAAAAANUAAAAAAAAAxQAAAAAAAADNAAAAAAACAQEAAAAAAAABIQAAAAAAAAEpAAAAAAAAAR0AAAAAAAABLQAAAAAAAQFNAAAAAAADAVUAAAAAAAIBVQAAAAAAAgFVAAAAAAAAAVEAAAAAAAEBQQAAAAAAAAElAAAAAAACARkAAAAAAAABKQAAAAAAAAEtAAAAAAACAREAAAAAAAIBDQAAAAAAAgEdAAAAAAACARkAAAAAAAABDQAAAAAAAgENAAAAAAACAR0AAAAAAAABKQAAAAAAAgEFAAAAAAAAAQUAAAAAAAEBRQAAAAAAAQFdAAAAAAACAVkAAAAAAAIBYQAAAAAAAAFpAAAAAAACAXEAAAAAAAMBfQAAAAAAAQFtAAAAAAAAAW0AAAAAAAEBbQAAAAAAAgFZAAAAAAACAU0AAAAAAAEBRQAAAAAAAAE9AAAAAAAAAS0AAAAAAAIBNQAAAAAAAQFBAAAAAAADAUEAAAAAAAIBRQAAAAAAAwFJAAAAAAACAVUAAAAAAAIBXQAAAAAAAgFdAAAAAAABAV0AAAAAAAABUQAAAAAAAgEZAAAAAAAAAQkAAAAAAAIBQQAAAAAAAwFFAAAAAAACATkAAAAAAAABQQAAAAAAAwFFAAAAAAACATkAAAAAAAIBEQAAAAAAAgEJAAAAAAAAAPkAAAAAAAABBQAAAAAAAAEdAAAAAAAAARUAAAAAAAAA/QAAAAAAAAEVAAAAAAAAASkAAAAAAAIBBQAAAAAAAgEBAAAAAAAAAQ0AAAAAAAAA0QAAAAAAAADFAAAAAAAAAOUAAAAAAAAA7QAAAAAAAADpAAAAAAAAANEAAAAAAAAA4QAAAAAAAAEZAAAAAAAAAREAAAAAAAABDQAAAAAAAAE1AAAAAAAAATkAAAAAAAABFQAAAAAAAgEBAAAAAAACAREAAAAAAAAA+QAAAAAAAADpAAAAAAACAQEAAAAAAAABAQAAAAAAAAD9AAAAAAAAAQUAAAAAAAABAQAAAAAAAgEJAAAAAAACASkAAAAAAAABHQAAAAAAAgENAAAAAAACAREAAAAAAAABDQAAAAAAAgENAAAAAAAAAPkAAAAAAAAA7QAAAAAAAgENAAAAAAACAQkAAAAAAAIBAQAAAAAAAAEJAAAAAAAAAQ0AAAAAAAAA/QAAAAAAAADRAAAAAAAAANkAAAAAAAAA4QAAAAAAAADNAAAAAAAAAM0AAAAAAAAA9QAAAAAAAgEZAAAAAAAAARUAAAAAAAABBQAAAAAAAAERAAAAAAACAQkAAAAAAAAA9QAAAAAAAADpAAAAAAAAAN0AAAAAAAAA0QAAAAAAAAD9AAAAAAACAQUAAAAAAAAAzQAAAAAAAAD1AAAAAAAAAPEAAAAAAAAAyQAAAAAAAADtAAAAAAAAAPkAAAAAAAAA7QAAAAAAAADVAAAAAAAAAMEAAAAAAAAAuQAAAAAAAAC5AAAAAAAAAKEAAAAAAAAAuQAAAAAAAACpAAAAAAAAAMUAAAAAAAAA0QAAAAAAAACZAAAAAAAAAKEAAAAAAAAAmQAAAAAAAACpAAAAAAAAAJkAAAAAAAAAuQAAAAAAAADRAAAAAAAAAKEAAAAAAAAAiQAAAAAAAACBAAAAAAAAALEAAAAAAAAAsQAAAAAAAADBAAAAAAAAAO0AAAAAAAAA3QAAAAAAAADBAAAAAAAAAM0AAAAAAAAAxQAAAAAAAADBAAAAAAAAALkAAAAAAAAAsQAAAAAAAADFAAAAAAAAAMEAAAAAAAAA0QAAAAAAAAEJAAAAAAACAQEAAAAAAAABDQAAAAAAAgEdAAAAAAACATkAAAAAAAABWQAAAAAAAQFVAAAAAAAAAVkAAAAAAAABXQAAAAAAAwFlAAAAAAAAAYEAAAAAAAMBeQAAAAAAAgGBAAAAAAAAAZUAAAAAAACBmQAAAAAAAoGNAAAAAAADAYkAAAAAAACBkQAAAAAAAgGVAAAAAAAAAaEAAAAAAAIBqQAAAAAAAYGZAAAAAAADAY0AAAAAAAEBjQAAAAAAAoGFAAAAAAADgY0AAAAAAAGBkQAAAAAAAQGFAAAAAAAAgYUAAAAAAACBlQAAAAAAAQGVAAAAAAAAAaEA=","dtype":"float64","shape":[400]}},"selected":{"id":"474b6d1d-b3b8-4685-9a95-0e14c7ecd39e","type":"Selection"},"selection_policy":{"id":"0acb7df6-81d0-4292-8821-89e1358fb200","type":"UnionRenderers"}},"id":"17dbca06-8974-47c4-aca5-7a669312fba5","type":"ColumnDataSource"},{"attributes":{},"id":"ee7ac99f-0980-45dc-9d09-04b81bd68648","type":"PanTool"},{"attributes":{"fill_alpha":0.5,"fill_color":"#8c564b","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"c93b43b5-113a-49e7-ae6f-81b7e1811c54","type":"Patch"},{"attributes":{},"id":"f7737cb9-6cb6-4210-a430-ec42332f3476","type":"ResetTool"},{"attributes":{"source":{"id":"5fc54c79-7791-475a-83ea-aace77801753","type":"ColumnDataSource"}},"id":"17358ba9-dd8a-4537-ae3e-41bdee8ef89b","type":"CDSView"},{"attributes":{"plot":null,"text":"Migratiestromen van Afrika naar Europa","text_color":{"value":"black"}},"id":"5df4f8c4-2e16-4f30-8b9a-ee251f9c9067","type":"Title"},{"attributes":{"source":{"id":"2901a46c-dba6-4a90-a008-d3d048d04014","type":"ColumnDataSource"}},"id":"5132e96a-3201-4289-a69c-7b38a701e3e3","type":"CDSView"},{"attributes":{"label":{"value":"Djibouti"},"renderers":[{"id":"7a2223f8-60d4-4ac8-b28a-31e08beba409","type":"GlyphRenderer"}]},"id":"cba57702-7b27-459a-8beb-3d1cc3e423e1","type":"LegendItem"},{"attributes":{"source":{"id":"68905804-1a1d-43f1-a7e4-45dbaf44704b","type":"ColumnDataSource"}},"id":"94702cf7-dca3-4436-bce7-91fadd5bee2a","type":"CDSView"},{"attributes":{"overlay":{"id":"3d95ae79-69e8-46a9-a9ac-ba22f41bf127","type":"BoxAnnotation"}},"id":"3020a040-431c-440f-87a9-9ab023138b25","type":"BoxZoomTool"},{"attributes":{},"id":"e80d8f4f-3757-479b-99e4-cb77faeb296b","type":"UnionRenderers"},{"attributes":{"label":{"value":"Mauritania"},"renderers":[{"id":"888f2e18-aea3-407c-8601-ec069b658299","type":"GlyphRenderer"}]},"id":"0e44a79c-c772-47e7-aa98-0c58940e6fb6","type":"LegendItem"},{"attributes":{},"id":"9060f195-0603-4818-afe6-22cfb9691bb4","type":"UnionRenderers"},{"attributes":{"fill_alpha":0.5,"fill_color":"#fc4f30","line_alpha":1,"line_color":"black","x":{"field":"x"},"y":{"field":"y"}},"id":"44948de9-bf51-474f-ad0b-49db93c07574","type":"Patch"},{"attributes":{},"id":"b5a00b37-2ad6-44fc-baf7-e8c1f60a5704","type":"Selection"},{"attributes":{"data_source":{"id":"b6ef5c74-1ff2-4a45-90c2-9f977078a463","type":"ColumnDataSource"},"glyph":{"id":"1b777e7f-b2ff-4de6-b1d1-60a3fe7caeb6","type":"Patch"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"d1e80114-56e9-4d09-a8f6-47268c89604c","type":"Patch"},"selection_glyph":null,"view":{"id":"e8f6fea0-16fa-4908-944f-51d5d74f27d0","type":"CDSView"}},"id":"c73279da-3b57-40ec-8a00-9e5d7ae2a8a9","type":"GlyphRenderer"}],"root_ids":["9b6f51dd-4f2a-45ef-9c2e-24a88201c690"]},"title":"Bokeh Application","version":"0.12.16"}};
+  var render_items = [{"docid":"33ff95a7-0ab6-4962-a01b-a34aac043234","elementid":"6949c4c3-59c9-4529-bb31-6ed642d74e5a","modelid":"9b6f51dd-4f2a-45ef-9c2e-24a88201c690"}];
+  root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
+
+  }
+  if (root.Bokeh !== undefined) {
+    embed_document(root);
+  } else {
+    var attempts = 0;
+    var timer = setInterval(function(root) {
+      if (root.Bokeh !== undefined) {
+        embed_document(root);
+        clearInterval(timer);
+      }
+      attempts++;
+      if (attempts > 100) {
+        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+        clearInterval(timer);
+      }
+    }, 10, root)
+  }
+})(window);
+</script>
+</div>
