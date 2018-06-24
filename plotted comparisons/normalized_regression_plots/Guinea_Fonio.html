@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bokeh Plot</title>
+        
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css" type="text/css" />
+        
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+    </head>
+    <body>
+        
+        <div class="bk-root">
+            <div class="bk-plotdiv" id="f3b8b404-253d-4d3a-ade0-c2fc3a43b508"></div>
+        </div>
+        
+        <script type="application/json" id="48bc2292-c000-43d8-95ed-aac69c7665c9">
+          {"b9e6f55b-f5f0-4d31-a7b0-26ed01b6e0f1":{"roots":{"references":[{"attributes":{},"id":"cfffe945-6375-41cf-9c7d-27ea49797951","type":"BasicTickFormatter"},{"attributes":{"line_color":"blue","x":{"field":"x"},"y":{"field":"y"}},"id":"05cc9466-eab4-4464-a7ac-c22cf105d3b4","type":"Line"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAA8D8=","dtype":"float64","shape":[1]},"y":{"__ndarray__":"AAAAAAAAAAA=","dtype":"float64","shape":[1]}},"selected":{"id":"5079922c-9115-4279-852a-9e7db03825f6","type":"Selection"},"selection_policy":{"id":"630f47d7-6bd8-4727-b284-f7a0282503aa","type":"UnionRenderers"}},"id":"051e1ca3-f5df-45c8-9cae-9af9d3fca6f3","type":"ColumnDataSource"},{"attributes":{"source":{"id":"589767ff-24db-4580-a475-fc4c01a419e0","type":"ColumnDataSource"}},"id":"96d217fd-4270-4928-93b6-3fbb223265b9","type":"CDSView"},{"attributes":{},"id":"5f8ee187-51f7-43e8-9f81-08e81d9d0d4c","type":"BasicTicker"},{"attributes":{},"id":"5aa9c22e-3db6-4174-8257-75212c84fc2b","type":"BasicTickFormatter"},{"attributes":{"items":[{"id":"4aa6aa82-2a31-4cc1-8c71-e5fa7070cc6f","type":"LegendItem"}],"plot":{"id":"792691f2-63bd-4286-afd2-0b728c3a798b","subtype":"Figure","type":"Plot"}},"id":"3f6d9fe9-fcf3-4c0d-9584-bffecf5cff30","type":"Legend"},{"attributes":{"source":{"id":"051e1ca3-f5df-45c8-9cae-9af9d3fca6f3","type":"ColumnDataSource"}},"id":"b31850c8-10b0-4ccb-b1f9-0a88a0a8b384","type":"CDSView"},{"attributes":{"data_source":{"id":"051e1ca3-f5df-45c8-9cae-9af9d3fca6f3","type":"ColumnDataSource"},"glyph":{"id":"05cc9466-eab4-4464-a7ac-c22cf105d3b4","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"956aa150-a54a-4f00-9f51-bf253f49d151","type":"Line"},"selection_glyph":null,"view":{"id":"b31850c8-10b0-4ccb-b1f9-0a88a0a8b384","type":"CDSView"}},"id":"6f4492bf-1858-4069-a7d1-b22a7057256b","type":"GlyphRenderer"},{"attributes":{"callback":null,"data":{"x":[1.0],"y":[0.0]},"selected":{"id":"0ad02ccc-3d11-40c7-87d1-125445f1e8af","type":"Selection"},"selection_policy":{"id":"eeaa245f-8f15-47ba-bca6-d9db51f675cc","type":"UnionRenderers"}},"id":"589767ff-24db-4580-a475-fc4c01a419e0","type":"ColumnDataSource"},{"attributes":{"axis_label":"Normalized foodprices","formatter":{"id":"5aa9c22e-3db6-4174-8257-75212c84fc2b","type":"BasicTickFormatter"},"plot":{"id":"792691f2-63bd-4286-afd2-0b728c3a798b","subtype":"Figure","type":"Plot"},"ticker":{"id":"5f8ee187-51f7-43e8-9f81-08e81d9d0d4c","type":"BasicTicker"}},"id":"7fbfad32-e51d-4053-898c-2547523fb275","type":"LinearAxis"},{"attributes":{},"id":"5079922c-9115-4279-852a-9e7db03825f6","type":"Selection"},{"attributes":{"fill_color":{"value":"red"},"line_color":{"value":"red"},"x":{"field":"x"},"y":{"field":"y"}},"id":"19d0db3b-5e53-4576-a67f-039fc33d7e4c","type":"Circle"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"d7be0dba-2080-4730-8bd8-610c27fb68ec","type":"HoverTool"}]},"id":"0ede4bb7-3cff-4901-9f1a-585f2952dde4","type":"Toolbar"},{"attributes":{},"id":"c0d7b3ff-522c-409e-aa01-bbdd5b256b45","type":"LinearScale"},{"attributes":{"callback":null},"id":"e951b1e4-0892-4905-8fa6-b820e03d7b4f","type":"DataRange1d"},{"attributes":{},"id":"630f47d7-6bd8-4727-b284-f7a0282503aa","type":"UnionRenderers"},{"attributes":{"dimension":1,"plot":{"id":"792691f2-63bd-4286-afd2-0b728c3a798b","subtype":"Figure","type":"Plot"},"ticker":{"id":"43140b2c-705f-43b7-a30f-a0c27ecbc139","type":"BasicTicker"}},"id":"4843dd48-184c-4fc9-9374-9d907f95f91f","type":"Grid"},{"attributes":{"callback":null,"renderers":"auto","tooltips":[["Normalised foodprice","$x{1.11}"],["Refugees to Europe","$y{int}"]]},"id":"d7be0dba-2080-4730-8bd8-610c27fb68ec","type":"HoverTool"},{"attributes":{"axis_label":"Migration movements","formatter":{"id":"cfffe945-6375-41cf-9c7d-27ea49797951","type":"BasicTickFormatter"},"plot":{"id":"792691f2-63bd-4286-afd2-0b728c3a798b","subtype":"Figure","type":"Plot"},"ticker":{"id":"43140b2c-705f-43b7-a30f-a0c27ecbc139","type":"BasicTicker"}},"id":"b71f73cf-8c30-4f88-bdc7-9dc84485fb02","type":"LinearAxis"},{"attributes":{"plot":{"id":"792691f2-63bd-4286-afd2-0b728c3a798b","subtype":"Figure","type":"Plot"},"ticker":{"id":"5f8ee187-51f7-43e8-9f81-08e81d9d0d4c","type":"BasicTicker"}},"id":"2cc22250-0d01-4255-8a28-eb644cdde4f1","type":"Grid"},{"attributes":{},"id":"43140b2c-705f-43b7-a30f-a0c27ecbc139","type":"BasicTicker"},{"attributes":{"below":[{"id":"7fbfad32-e51d-4053-898c-2547523fb275","type":"LinearAxis"}],"left":[{"id":"b71f73cf-8c30-4f88-bdc7-9dc84485fb02","type":"LinearAxis"}],"renderers":[{"id":"7fbfad32-e51d-4053-898c-2547523fb275","type":"LinearAxis"},{"id":"2cc22250-0d01-4255-8a28-eb644cdde4f1","type":"Grid"},{"id":"b71f73cf-8c30-4f88-bdc7-9dc84485fb02","type":"LinearAxis"},{"id":"4843dd48-184c-4fc9-9374-9d907f95f91f","type":"Grid"},{"id":"3f6d9fe9-fcf3-4c0d-9584-bffecf5cff30","type":"Legend"},{"id":"60c7cf4b-552f-495e-8f97-b716d7a3fc3d","type":"GlyphRenderer"},{"id":"6f4492bf-1858-4069-a7d1-b22a7057256b","type":"GlyphRenderer"}],"title":{"id":"f1baf6cc-371e-4ac6-8ada-464e40633389","type":"Title"},"toolbar":{"id":"0ede4bb7-3cff-4901-9f1a-585f2952dde4","type":"Toolbar"},"x_range":{"id":"a3527d77-43e7-40cc-aad5-411b6cc7004a","type":"DataRange1d"},"x_scale":{"id":"c0d7b3ff-522c-409e-aa01-bbdd5b256b45","type":"LinearScale"},"y_range":{"id":"e951b1e4-0892-4905-8fa6-b820e03d7b4f","type":"DataRange1d"},"y_scale":{"id":"a830086b-86ca-45d6-8fa2-d3ed972070c9","type":"LinearScale"}},"id":"792691f2-63bd-4286-afd2-0b728c3a798b","subtype":"Figure","type":"Plot"},{"attributes":{"callback":null},"id":"a3527d77-43e7-40cc-aad5-411b6cc7004a","type":"DataRange1d"},{"attributes":{"label":{"value":"RMSE = 0.0"},"renderers":[{"id":"60c7cf4b-552f-495e-8f97-b716d7a3fc3d","type":"GlyphRenderer"}]},"id":"4aa6aa82-2a31-4cc1-8c71-e5fa7070cc6f","type":"LegendItem"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"956aa150-a54a-4f00-9f51-bf253f49d151","type":"Line"},{"attributes":{"plot":null,"text":"Correlation between Fonio and refugees in Guinea"},"id":"f1baf6cc-371e-4ac6-8ada-464e40633389","type":"Title"},{"attributes":{"data_source":{"id":"589767ff-24db-4580-a475-fc4c01a419e0","type":"ColumnDataSource"},"glyph":{"id":"19d0db3b-5e53-4576-a67f-039fc33d7e4c","type":"Circle"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"bf8ee057-43db-431b-a289-0c642cc30740","type":"Circle"},"selection_glyph":null,"view":{"id":"96d217fd-4270-4928-93b6-3fbb223265b9","type":"CDSView"}},"id":"60c7cf4b-552f-495e-8f97-b716d7a3fc3d","type":"GlyphRenderer"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"x":{"field":"x"},"y":{"field":"y"}},"id":"bf8ee057-43db-431b-a289-0c642cc30740","type":"Circle"},{"attributes":{},"id":"0ad02ccc-3d11-40c7-87d1-125445f1e8af","type":"Selection"},{"attributes":{},"id":"a830086b-86ca-45d6-8fa2-d3ed972070c9","type":"LinearScale"},{"attributes":{},"id":"eeaa245f-8f15-47ba-bca6-d9db51f675cc","type":"UnionRenderers"}],"root_ids":["792691f2-63bd-4286-afd2-0b728c3a798b"]},"title":"Bokeh Application","version":"0.12.16"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('48bc2292-c000-43d8-95ed-aac69c7665c9').textContent;
+                  var render_items = [{"docid":"b9e6f55b-f5f0-4d31-a7b0-26ed01b6e0f1","elementid":"f3b8b404-253d-4d3a-ade0-c2fc3a43b508","modelid":"792691f2-63bd-4286-afd2-0b728c3a798b"}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    </body>
+</html>
