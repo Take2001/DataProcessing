@@ -1,0 +1,153 @@
+<script src="https://www.amcharts.com/lib/3/ammap.js"></script>
+<script src="https://www.amcharts.com/lib/3/maps/js/worldLow.js"></script>
+<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+
+<div id="chartdiv" style="width: 60%;"></div>
+
+<style>
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+  }
+
+  #chartdiv {
+    width: 60%;
+    height: 100%;
+  }
+
+  #info {
+      /* border: none; */
+      top: 0%;
+      height: 99%;
+      width: 49%;
+      position: absolute;
+      left: 50%;
+      bottom: 20%;
+  }
+
+  </style>
+
+<!-- Chart code -->
+<iframe id="info"src="slideshow_blank.html"></iframe>
+
+<script>
+products={
+  "AF":[ "",'Bread','Exchange rate','Fuel (diesel)','Livestock (sheep, one-year-old alive female)','Rice (low quality)','Wage (non-qualified labour, non-agricultural)','Wage (qualified labour)','Wheat'],
+   "MG":['','Fuel (diesel)','Fuel (kerosene)','Fuel (petrol-gasoline)','Oil (vegetable)','Rice (local)','Rice (paddy)','Sugar','Wheat flour', 'Fuel (diesel)'],
+   "CF":['','Beans (niebe)','Groundnuts (unshelled)','Maize','Meat (beef)','Millet','Oil (groundnut)', 'Oil (palm)','Rice', 'Sesame', 'Sorghum', 'Wheat flour'],
+   "GM":['','Apples (red)','Bananas','Beans (dry)','Bread','Cabbage','Carrots','Cashew','Cassava','Coffee (instant)','Eggs','Fish (bonga)','Fish (dry)','Fonio','Fuel (diesel)','Fuel (kerosene)','Fuel (petrol-gasoline)','Garlic','Groundnuts (shelled)','Groundnuts (unshelled)','Maize','Maize (local)','Maize flour','Meat (beef)','Meat (chicken)','Meat (mutton)','Milk','Milk (powder)','Millet','Oil (groundnut)','Oil (palm)','Oil (vegetable)','Onions','Oranges (big size)','Peas (green,dry)','Potatoes (Irish)','Rice (basmati, broken)','Rice (long grain, imported)','Rice (medium grain, imported)','Rice (paddy, long grain, local)','Rice (small grain, imported)','Salt','Sorghum','Sugar','Sweet potatoes','Tea','Tomatoes'],
+   "GN":['','Beans (niebe, white)','Bread','Cassava meal (attieke)','Cassava meal (gari)','Fish','Fish (smoked)','Fonio','Groundnuts (shelled)','Maize','Meat (beef)','Oil (palm)','Oil (vegetable)','Potatoes','Rice (imported)','Rice (local)','Salt','Sugar','Tomatoes','Tomatoes (paste)'],
+   "IQ":['','Bread (khoboz)', 'Oil (vegetable)', 'Rice', 'Sugar', 'Wheat flour'] ,
+   "IR":['','Eggs', 'Lentils', 'Oil (vegetable)', 'Rice (local)', 'Sugar'],
+   "KE":['','Beans (dry)','Bread','Fuel (diesel)','Fuel (kerosene)','Fuel (petrol-gasoline)','Maize (white)','Milk (cow, pasteurized)','Oil (vegetable)','Potatoes (Irish)','Sorghum'] ,
+   "LB":['','Beans (white)','Bread (pita)','Bulgur','Cabbage','Cheese (picon)','Chickpeas','Cucumbers (greenhouse)','Eggs','Fish (sardine, canned)','Fish (tuna, canned)','Lentils','Lettuce','Meat (beef, canned)','Meat (chicken, whole)','Milk (powder)','Oil (sunflower)','Pasta','Rice (imported, Egyptian)','Salt','Spinach','Sugar','Tomatoes (paste)', 'Wheat flour'],
+   "LR":['','Cassava (fresh)','Cocoa','Cowpeas','Exchange rate','Fuel (diesel)','Fuel (petrol-gasoline)','Oil (palm)','Rice (imported)','Rice (white, imported)','Wage (non-qualified labour, agricultural)','Wage (non-qualified labour, non-agricultural)'],
+   "LS":['','Beans (sugar-red)','Bread (brown)','Maize meal','Oil (sunflower)','Peas (split, dry)','Wheat flour'],
+   "ML":['','Beans (niebe)','Fonio','Maize','Millet','Rice (imported)','Rice (local)','Rice (paddy)','Sorghum'],
+   "MZ":['','Beans (butter)','Beans (catarino)','Beans (dry)','Beans (magnum)','Cassava flour','Cowpeas','Groundnuts (Mix)','Groundnuts (large, shelled)','Groundnuts (small, shelled)','Maize (white)','Maize meal (white, first grade)','Maize meal (white, with bran)','Maize meal (white, without bran) ','Oil (vegetable, imported)','Oil (vegetable, local)','Rice (imported)','Rice (local)','Sugar (brown, imported)','Sugar (brown, local)','Wheat flour (local)'],
+   "NE":['','Beans (niebe)','Maize','Millet','Rice (imported)','Rice (local)','Sorghum'],
+   "NG":['','Beans (niebe)','Bread','Cowpeas (brown)','Cowpeas (white)','Fuel (diesel)','Fuel (petrol-gasoline)','Gari (white)','Gari (yellow)','Groundnuts (shelled)','Maize','Maize (white)','Maize (yellow)','Millet','Oil (palm)','Rice (imported)','Rice (local)','Sorghum','Sorghum (brown)','Sorghum (white)','Wheat','Yam','Yam (Abuja)'],
+   "PK":['','Beans(mash)','Eggs','Fuel (diesel)','Fuel (petrol-gasoline)','Ghee (artificial)','Lentils (masur)','Lentils (moong)','Milk','Oil (cooking)','Poultry','Rice (basmati, broken)','Rice (coarse)','Salt','Sugar','Wage (non-qualified labour, non-agricultural)','Wheat','Wheat flour'],
+   "RW":['','Apples (red)','Avocados','Bananas','Beans (dry)','Beans (green, fresh)','Cabbage','Carrots','Cassava','Cassava flour','Cassava leaves','Cauliflower','Charcoal','Chili (red)','Cucumbers (greenhouse)','Eggplants','Eggs','Garlic','Groundnuts (shelled)','Guava','Livestock (Goat)','Livestock (Sheep)','Livestock (cattle)','Livestock (hen)','Livestock (pig)','Maize','Maize flour','Maize flour (imported)','Mangoes','Meat (beef)','Meat (goat)','Meat (mutton)','Meat (pork)','Milk','Onions (red)','Onions (white)','Oranges (big size)','Papaya','Passion fruit','Peas (dry)','Peas (fresh)','Peppers (green)','Potatoes (Irish)','Rice','Rice (imported, Indian)','Rice (imported, Tanzanian)','Rice (local)','Sorghum','Sorghum flour','Soybeans','Spinach','Sweet potatoes','Tomatoes','Wheat','Wheat flour','Zucchini'],
+   "SD":['','Millet', 'Sorghum', 'Sorghum (food aid)', 'Wheat'],
+   "SN":['','Maize (imported)','Maize (local)','Millet','Rice (imported)','Rice (local)','Sorghum'],
+   "SS":['','Beans (red)','Cassava','Cassava (dry)','Exchange rate','Exchange rate (unofficial)','Fuel (diesel)','Fuel (petrol-gasoline)','Groundnuts (shelled)','Maize (white)','Millet (white)','Oil (vegetable)','Sesame','Sorghum (white)','Wheat flour'],
+   "UG":['','Beans','Cassava flour','Maize (white)','Maize flour','Millet','Oil (vegetable)','Sorghum'],
+   "ZM":['','Beans (dry)','Cassava meal','Groundnuts (shelled)','Maize (white)','Maize meal (white, breakfast)','Maize meal (white, roller)','Millet','Rice (local)','Sorghum'],
+   "ZW":['','Beans','Cowpeas','Groundnuts (shelled)','Maize','Maize meal (white, fortified)','Maize meal (white, roller)','Millet','Oil (vegetable)','Oil (vegetable, fortified)','Sorghum','Sugar (white, fortified)','Wheat','Wheat flour (fortified)']
+};
+
+var map = AmCharts.makeChart("chartdiv", {
+    "type": "map",
+    "theme": "light",
+    "dataProvider": {
+      "map": "worldLow",
+      "zoomLevel": 2.7,
+      "zoomLongitude": 35.0174,
+      "zoomLatitude": 3.1076,
+      "areas": [
+        { "id": "AE", "color": "darkgrey" },
+        { "id": "AF", "autoZoom": true, "selectedColor": "#CC0000","info": "Afghanistan goooooo" },
+        { "id": "AO", "color": "darkgrey" },
+        { "id": "BF", "color": "darkgrey" },
+        { "id": "BI", "color": "darkgrey" },
+        { "id": "BJ", "color": "darkgrey" },
+        { "id": "BW", "color": "darkgrey" },
+        { "id": "CD", "color": "darkgrey" },
+        { "id": "CF", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "CG", "color": "darkgrey" },
+        { "id": "CI", "color": "darkgrey" },
+        { "id": "CM", "color": "darkgrey" },
+        { "id": "DJ", "color": "darkgrey" },
+        { "id": "DZ", "color": "darkgrey" },
+        { "id": "EG", "color": "darkgrey" },
+        { "id": "ER", "color": "darkgrey" },
+        { "id": "ET", "color": "darkgrey" },
+        { "id": "GA", "color": "darkgrey" },
+        { "id": "GH", "color": "darkgrey" },
+        { "id": "GM", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "GN", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "GQ", "color": "darkgrey" },
+        { "id": "GW", "color": "darkgrey" },
+        { "id": "IL", "color": "darkgrey" },
+        { "id": "IQ", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "IR", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "JO", "color": "darkgrey" },
+        { "id": "KE", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "KW", "color": "darkgrey" },
+        { "id": "LB", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "LR", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "LS", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "LY", "color": "darkgrey" },
+        { "id": "MA", "color": "darkgrey" },
+        { "id": "MG", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "ML", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "MR", "color": "darkgrey" },
+        { "id": "MW", "color": "darkgrey" },
+        { "id": "MZ", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "NA", "color": "darkgrey" },
+        { "id": "NE", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "NG", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "OM", "color": "darkgrey" },
+        { "id": "PK", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "PS", "color": "darkgrey" },
+        { "id": "RW", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "SA", "color": "darkgrey" },
+        { "id": "SD", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "SL", "color": "darkgrey" },
+        { "id": "SN", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "SO", "color": "darkgrey" },
+        { "id": "SS", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "SZ", "color": "darkgrey" },
+        { "id": "SY", "color": "darkgrey" },
+        { "id": "TD", "color": "darkgrey" },
+        { "id": "TG", "color": "darkgrey" },
+        { "id": "TN", "color": "darkgrey" },
+        { "id": "TZ", "color": "darkgrey" },
+        { "id": "UG", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "ZA", "color": "darkgrey" },
+        { "id": "ZM", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "ZW", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "EH", "color": "darkgrey" },
+        { "id": "YE", "color": "darkgrey" }
+      ]
+    },
+
+    "areasSettings": {
+      "unlistedAreasAlpha": 0
+    },
+    "zoomControl": {
+      "minZoomLevel": 2.7
+    },
+
+  });
+
+  map.addListener("clickMapObject", function(event) {
+    var x = event.mapObject.id;
+
+  document.getElementById("info").src = x + ".html";
+});
+
+
+</script>
