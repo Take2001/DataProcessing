@@ -1,7 +1,4 @@
 * {box-sizing: border-box}
-a{
-  color:blue;
-}
 body {font-family: Verdana, sans-serif; margin:0}
 .mySlides {display: none}
 iframe{
