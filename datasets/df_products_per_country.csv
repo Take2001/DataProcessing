@@ -1,0 +1,79 @@
+,country,product,value
+0,Afghanistan,Bread,20
+1,Afghanistan,Wheat,20
+2,Afghanistan,Rice,20
+3,Afghanistan,Wage,20
+4,Afghanistan,"Livestock",20
+6,Afghanistan,Exchange rate,20
+8,Iraq,Rice,20
+9,Iraq,Wheat flour,20
+10,Iraq,Sugar,20
+11,Iraq,Bread,20
+12,Iraq,Oil,20
+13,Lebanon,Wheat flour,20
+14,Lebanon,Beans,20
+15,Lebanon,Eggs,20
+16,Lebanon,Sugar,20
+17,Lebanon,Lentils,20
+18,Lebanon,Pasta,20
+19,Lebanon,"Meat",20
+20,Lebanon,Cabbage,20
+21,Lebanon,Oil,20
+22,Lebanon,Salt,20
+23,Lebanon,Cucumbers,20
+24,Lebanon,Milk,20
+25,Lebanon,Chickpeas,20
+26,Lebanon,Bulgur,20
+27,Lebanon,"Rice",20
+28,Lebanon,Tomatoes,20
+29,Lebanon,Lettuce,20
+30,Lebanon,Cheese,20
+31,Lebanon,"Meat",20
+32,Lebanon,"Fish",20
+34,Lebanon,Bread,20
+35,Lebanon,Spinach,20
+36,State of Palestine,Bread,20
+37,State of Palestine,Wheat flour,20
+38,State of Palestine,Eggs,20
+39,State of Palestine,Meat,20
+40,State of Palestine,Sugar,20
+41,State of Palestine,Lentils,20
+43,State of Palestine,Salt,20
+44,State of Palestine,"Rice",20
+45,State of Palestine,Apples,20
+46,State of Palestine,Bananas,20
+47,State of Palestine,Cauliflower,20
+48,State of Palestine,Cucumbers,20
+49,State of Palestine,Fish,20
+50,State of Palestine,"Meat",20
+51,State of Palestine,Milk,20
+52,State of Palestine,Oil,20
+53,State of Palestine,"Onions",20
+54,State of Palestine,Oranges,20
+55,State of Palestine,Potatoes,20
+56,State of Palestine,Tomatoes,20
+57,State of Palestine,Chickpeas,20
+58,State of Palestine,Tea,20
+60,State of Palestine,Oil,20
+61,State of Palestine,Labaneh,20
+62,State of Palestine,Yogurt,20
+63,State of Palestine,Cheese,20
+64,State of Palestine,Milk,20
+65,State of Palestine,Fish,20
+66,State of Palestine,Water,20
+67,State of Palestine,Wheat,20
+68,Pakistan,Wheat flour,20
+69,Pakistan,Rice,20
+70,Pakistan,Lentils,20
+71,Pakistan,Milk,20
+72,Pakistan,Oil,20
+73,Pakistan,Wheat,20
+74,Pakistan,Eggs,20
+75,Pakistan,Sugar,20
+76,Pakistan,Ghee,20
+77,Pakistan,"Rice",20
+78,Pakistan,Poultry,20
+79,Pakistan,Salt,20
+82,Pakistan,Lentils,20
+83,Pakistan,Beans,20
+84,Pakistan,"Wage",20
