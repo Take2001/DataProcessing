@@ -1,5 +1,4 @@
 ---
-layout: default
 title: Dataprocessing Groep24
 ---
 # Introductie
@@ -10,3 +9,6 @@ Om de data weer te geven hebben we twee interactieve kaarten gemaakt. Een kaart 
 # Resultaten
 
 # fijne groetjes
+<html>
+<iframe src="github page/interactive_map.html"></iframe>
+</html>
