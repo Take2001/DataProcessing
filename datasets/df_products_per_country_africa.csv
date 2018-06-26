@@ -1,0 +1,300 @@
+,country,product,value
+0,Central African Republic,Maize,20
+1,Central African Republic,Rice,20
+2,Central African Republic,Wheat flour,20
+3,Central African Republic,Oil (palm),20
+4,Central African Republic,Sorghum,20
+5,Central African Republic,Millet,20
+6,Central African Republic,Groundnuts (unshelled),20
+7,Central African Republic,Beans (niebe),20
+8,Central African Republic,Meat (beef),20
+9,Central African Republic,Sesame,20
+10,Central African Republic,Oil (groundnut),20
+11,Central African Republic,Cassava (cossette),20
+12,Djibouti,Bread,20
+13,Djibouti,Wheat flour,20
+14,Djibouti,Rice (imported),20
+15,Djibouti,Sorghum,20
+16,Djibouti,Beans (white),20
+17,Djibouti,Millet,20
+18,Djibouti,Oil (vegetable),20
+19,Djibouti,Sugar,20
+20,Djibouti,Pasta,20
+21,Djibouti,Sorghum (white),20
+22,Djibouti,Sorghum (red),20
+23,Djibouti,Fuel (kerosene),20
+24,Gambia,Maize (local),20
+25,Gambia,Sorghum,20
+26,Gambia,Millet,20
+27,Gambia,Groundnuts (unshelled),20
+28,Gambia,Groundnuts (shelled),20
+29,Gambia,"Rice (long grain, imported)",20
+30,Gambia,"Rice (medium grain, imported)",20
+31,Gambia,"Rice (small grain, imported)",20
+32,Gambia,Maize,20
+33,Gambia,Bread,20
+34,Gambia,Oil (palm),20
+35,Gambia,Cassava,20
+36,Gambia,Maize flour,20
+37,Gambia,Milk,20
+38,Gambia,Sweet potatoes,20
+39,Gambia,Eggs,20
+40,Gambia,Meat (chicken),20
+41,Gambia,Oil (vegetable),20
+42,Gambia,Sugar,20
+43,Gambia,Fonio,20
+44,Gambia,Garlic,20
+45,Gambia,Tomatoes,20
+46,Gambia,"Rice (paddy, long grain, local)",20
+47,Gambia,"Rice (basmati, broken)",20
+48,Gambia,Meat (beef),20
+49,Gambia,Potatoes (Irish),20
+50,Gambia,Fish (bonga),20
+51,Gambia,Carrots,20
+52,Gambia,Cashew,20
+53,Gambia,Fish (dry),20
+54,Gambia,Onions,20
+55,Gambia,Cabbage,20
+56,Gambia,Meat (mutton),20
+57,Gambia,Salt,20
+58,Gambia,Coffee (instant),20
+59,Gambia,"Peas (green, dry)",20
+60,Gambia,Apples (red),20
+61,Gambia,Milk (powder),20
+62,Gambia,Oranges (big size),20
+63,Gambia,Bananas,20
+64,Gambia,Beans (dry),20
+65,Gambia,Tea,20
+66,Gambia,Fuel (kerosene),20
+67,Gambia,Fuel (diesel),20
+68,Gambia,Fuel (petrol-gasoline),20
+69,Gambia,Oil (groundnut),20
+70,Guinea,Oil (palm),20
+71,Guinea,Rice (local),20
+72,Guinea,Maize,20
+73,Guinea,Bread,20
+74,Guinea,Rice (imported),20
+75,Guinea,Potatoes,20
+76,Guinea,Oil (vegetable),20
+77,Guinea,Sugar,20
+78,Guinea,Fonio,20
+79,Guinea,Tomatoes,20
+80,Guinea,Groundnuts (shelled),20
+81,Guinea,Fish,20
+82,Guinea,Meat (beef),20
+83,Guinea,Salt,20
+84,Guinea,Fish (smoked),20
+85,Guinea,Tomatoes (paste),20
+86,Guinea,Cassava meal (gari),20
+87,Guinea,"Beans (niebe, white)",20
+88,Guinea,Cassava meal (attieke),20
+89,Kenya,Bread,20
+90,Kenya,Sorghum,20
+91,Kenya,Maize (white),20
+92,Kenya,Oil (vegetable),20
+93,Kenya,Potatoes (Irish),20
+94,Kenya,Beans (dry),20
+95,Kenya,Fuel (kerosene),20
+96,Kenya,Fuel (diesel),20
+97,Kenya,Fuel (petrol-gasoline),20
+98,Kenya,"Milk (cow, pasteurized)",20
+99,Lesotho,Maize meal,20
+100,Lesotho,Wheat flour,20
+101,Lesotho,Bread (brown),20
+102,Lesotho,"Peas (split, dry)",20
+103,Lesotho,Oil (sunflower),20
+104,Lesotho,Beans (sugar-red),20
+105,Liberia,Oil (palm),20
+106,Liberia,Rice (imported),20
+107,Liberia,Cowpeas,20
+108,Liberia,Fuel (diesel),20
+109,Liberia,Fuel (petrol-gasoline),20
+110,Liberia,Cassava (fresh),20
+111,Liberia,Exchange rate,20
+112,Liberia,"Rice (white, imported)",20
+113,Liberia,"Wage (non-qualified labour, non-agricultural)",20
+114,Liberia,Cocoa,20
+115,Liberia,"Wage (non-qualified labour, agricultural)",20
+116,Madagascar,Rice (local),20
+117,Madagascar,Wheat flour,20
+118,Madagascar,Oil (vegetable),20
+119,Madagascar,Sugar,20
+120,Madagascar,Rice (paddy),20
+121,Madagascar,Fuel (kerosene),20
+122,Madagascar,Fuel (diesel),20
+123,Madagascar,Fuel (petrol-gasoline),20
+124,Malawi,Beans,20
+125,Malawi,Maize,20
+126,Malawi,Rice,20
+127,Malawi,Cassava,20
+128,Malawi,Groundnuts (shelled),20
+129,Mali,Maize,20
+130,Mali,Sorghum,20
+131,Mali,Millet,20
+132,Mali,Rice (imported),20
+133,Mali,Rice (local),20
+134,Mali,Fonio,20
+135,Mali,Beans (niebe),20
+136,Mali,Rice (paddy),20
+137,Mauritania,Rice (imported),20
+138,Mauritania,Rice (local),20
+139,Mauritania,Wheat,20
+140,Mauritania,Oil (vegetable),20
+141,Mauritania,Sugar,20
+142,Mauritania,Sorghum (taghalit),20
+143,Mozambique,Rice (imported),20
+144,Mozambique,Maize (white),20
+145,Mozambique,Rice (local),20
+146,Mozambique,"Oil (vegetable, imported)",20
+147,Mozambique,Wheat flour (local),20
+148,Mozambique,Cowpeas,20
+149,Mozambique,"Maize meal (white, first grade)",20
+150,Mozambique,"Oil (vegetable, local)",20
+151,Mozambique,"Sugar (brown, imported)",20
+152,Mozambique,"Sugar (brown, local)",20
+153,Mozambique,Beans (dry),20
+154,Mozambique,Groundnuts (Mix),20
+155,Mozambique,Beans (butter),20
+156,Mozambique,"Groundnuts (large, shelled)",20
+157,Mozambique,"Groundnuts (small, shelled)",20
+158,Mozambique,Beans (catarino),20
+159,Mozambique,"Maize meal (white, without bran) ",20
+160,Mozambique,Beans (magnum),20
+161,Mozambique,"Maize meal (white, with bran)",20
+162,Mozambique,Cassava flour,20
+163,Niger,Maize,20
+164,Niger,Rice (imported),20
+165,Niger,Sorghum,20
+166,Niger,Millet,20
+167,Niger,Beans (niebe),20
+168,Niger,Rice (local),20
+169,Nigeria,Maize,20
+170,Nigeria,Rice (imported),20
+171,Nigeria,Sorghum,20
+172,Nigeria,Millet,20
+173,Nigeria,Wheat,20
+174,Nigeria,Beans (niebe),20
+175,Nigeria,Bread,20
+176,Nigeria,Oil (palm),20
+177,Nigeria,Maize (white),20
+178,Nigeria,Rice (local),20
+179,Nigeria,Yam,20
+180,Nigeria,Groundnuts (shelled),20
+181,Nigeria,Sorghum (white),20
+182,Nigeria,Maize (yellow),20
+183,Nigeria,Fuel (diesel),20
+184,Nigeria,Fuel (petrol-gasoline),20
+185,Nigeria,Cowpeas (white),20
+186,Nigeria,Cowpeas (brown),20
+187,Nigeria,Sorghum (brown),20
+188,Nigeria,Gari (yellow),20
+189,Nigeria,Gari (white),20
+190,Nigeria,Yam (Abuja),20
+191,Rwanda,Maize,20
+192,Rwanda,Rice,20
+193,Rwanda,Wheat flour,20
+194,Rwanda,Sorghum,20
+195,Rwanda,Cassava,20
+196,Rwanda,Rice (local),20
+197,Rwanda,Cassava flour,20
+198,Rwanda,Maize flour,20
+199,Rwanda,Maize flour (imported),20
+200,Rwanda,Milk,20
+201,Rwanda,Wheat,20
+202,Rwanda,Sweet potatoes,20
+203,Rwanda,Chili (red),20
+204,Rwanda,Eggs,20
+205,Rwanda,Garlic,20
+206,Rwanda,Onions (red),20
+207,Rwanda,Tomatoes,20
+208,Rwanda,Groundnuts (shelled),20
+209,Rwanda,Meat (beef),20
+210,Rwanda,Potatoes (Irish),20
+211,Rwanda,Carrots,20
+212,Rwanda,Cabbage,20
+213,Rwanda,Oranges (big size),20
+214,Rwanda,Soybeans,20
+215,Rwanda,"Rice (imported, Indian)",20
+216,Rwanda,Sorghum flour,20
+217,Rwanda,Bananas,20
+218,Rwanda,Beans (dry),20
+219,Rwanda,Peppers (green),20
+220,Rwanda,"Rice (imported, Tanzanian)",20
+221,Rwanda,Livestock (Goat),20
+222,Rwanda,Spinach,20
+223,Rwanda,Guava,20
+224,Rwanda,Papaya,20
+225,Rwanda,Mangoes,20
+226,Rwanda,Eggplants,20
+227,Rwanda,Charcoal,20
+228,Rwanda,Passion fruit,20
+229,Rwanda,Zucchini,20
+230,Rwanda,Livestock (hen),20
+231,Rwanda,Avocados,20
+232,Rwanda,Cassava leaves,20
+233,Rwanda,Peas (fresh),20
+234,Rwanda,Peas (dry),20
+235,Rwanda,Onions (white),20
+236,Rwanda,Meat (pork),20
+237,Rwanda,Meat (mutton),20
+238,Rwanda,Livestock (cattle),20
+239,Rwanda,Livestock (Sheep),20
+240,Rwanda,Livestock (pig),20
+241,Rwanda,Meat (goat),20
+242,Rwanda,Cucumbers (greenhouse),20
+243,Rwanda,"Beans (green, fresh)",20
+244,Rwanda,Apples (red),20
+245,Rwanda,Cauliflower,20
+246,Senegal,Maize (local),20
+247,Senegal,Rice (imported),20
+248,Senegal,Sorghum,20
+249,Senegal,Millet,20
+250,Senegal,Maize (imported),20
+251,Senegal,Rice (local),20
+252,South Sudan,Fuel (diesel),20
+253,South Sudan,Fuel (petrol-gasoline),20
+254,South Sudan,Exchange rate,20
+255,South Sudan,Exchange rate (unofficial),20
+256,South Sudan,Wheat flour,20
+257,South Sudan,Maize (white),20
+258,South Sudan,Beans (red),20
+259,South Sudan,Oil (vegetable),20
+260,South Sudan,Groundnuts (shelled),20
+261,South Sudan,Sorghum (white),20
+262,South Sudan,Millet (white),20
+263,South Sudan,Sesame,20
+264,South Sudan,Cassava,20
+265,South Sudan,Cassava (dry),20
+266,Sudan,Sorghum,20
+267,Sudan,Millet,20
+268,Sudan,Wheat,20
+269,Sudan,Sorghum (food aid),20
+270,Uganda,Beans,20
+271,Uganda,Sorghum,20
+272,Uganda,Maize (white),20
+273,Uganda,Millet,20
+274,Uganda,Cassava flour,20
+275,Uganda,Maize flour,20
+276,Uganda,Oil (vegetable),20
+277,Zambia,Sorghum,20
+278,Zambia,Maize (white),20
+279,Zambia,Rice (local),20
+280,Zambia,Groundnuts (shelled),20
+281,Zambia,Cassava meal,20
+282,Zambia,Beans (dry),20
+283,Zambia,"Maize meal (white, roller)",20
+284,Zambia,"Maize meal (white, breakfast)",20
+285,Zambia,Millet,20
+286,Zimbabwe,Beans,20
+287,Zimbabwe,Maize,20
+288,Zimbabwe,Sorghum,20
+289,Zimbabwe,Millet,20
+290,Zimbabwe,Wheat,20
+291,Zimbabwe,Oil (vegetable),20
+292,Zimbabwe,Groundnuts (shelled),20
+293,Zimbabwe,Cowpeas,20
+294,Zimbabwe,"Maize meal (white, roller)",20
+295,Zimbabwe,"Oil (vegetable, fortified)",20
+296,Zimbabwe,"Maize meal (white, fortified)",20
+297,Zimbabwe,Wheat flour (fortified),20
+298,Zimbabwe,"Sugar (white, fortified)",20
