@@ -15,7 +15,7 @@ Om de data weer te geven hebben we twee interactieve kaarten gemaakt. Een kaart 
 <a href="github pages/interactive_map"> Klik hier voor de kaart over voedselprijzen.</a>
 
 # Resultaten
-<iframe src="github page/interactive_map_pr_tas"></iframe>
+<iframe src="github page/interactive_maps_pr_tas.html"></iframe>
 # Top 3 meest interessante bevindingen
 
-![Rijstprijs tegenover vluchtelingen uit nigeria](plotted comparisons/regression_plots/Nigeria/Nigeria_Rice (local).html)
+![Rijstprijs tegenover vluchtelingen uit nigeria](/plotted comparisons/regression_plots/Nigeria/Nigeria_Rice (local).html)
