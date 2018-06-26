@@ -1,3 +1,8 @@
+---
+layout: default
+title: Dataprocessing Groep24
+---
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
