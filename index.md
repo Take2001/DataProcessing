@@ -3,8 +3,8 @@ title: Dataprocessing Groep24
 ---
 <style>
 iframe{
-  width: 832px;
-  height: 600px;
+  width: 900px;
+  height: 650px;
   border: none;
 }
 </style>
