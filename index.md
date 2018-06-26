@@ -16,4 +16,3 @@ Om de data weer te geven hebben we twee interactieve kaarten gemaakt. Een kaart 
 </style>
 <iframe src="github page/interactive_map_pr"></iframe>
 # fijne groetjes
-<iframe src="github page/interactive_map_pr"></iframe>

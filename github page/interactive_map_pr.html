@@ -1,19 +1,15 @@
 <script src="https://www.amcharts.com/lib/3/ammap.js"></script>
 <script src="https://www.amcharts.com/lib/3/maps/js/worldLow.js"></script>
-<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>	
+<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<div class="navbar">
-    <a href="#home">Home</a>
+<div id="yearcount1"> 1991
+
 </div>
 
-<div id="yearcount1"> 1991
-  
-</div>
-  
 <div id="chartdiv"></div>
 
 <style>
@@ -26,7 +22,7 @@
     #yearcount1{
       text-align: center;
       font-size: 20px;
-      font-style: italic;
+      font-family: Helvetica;
       color: white;
 
       background-color: rgb(55, 69, 145);
@@ -45,14 +41,6 @@
         position: absolute;
         left: 50%;
         bottom: 20%;
-        border: 1px solid black;
-        }
-
-    .navbar {
-        overflow: hidden;
-        background-color: rgb(55, 69, 145);
-        font-family: Arial;
-        border-bottom: 1px solid black; 
         }
 
 /* Links inside the navbar */
@@ -73,7 +61,7 @@
 
 /* Dropdown button */
     .dropdown .dropbtn {
-        font-size: 16px; 
+        font-size: 16px;
         border: none;
         outline: none;
         color: white;
@@ -82,7 +70,7 @@
         font: inherit; /* Important for vertical align on mobile phones */
         margin: 0; /* Important for vertical align on mobile phones */
         }
-        
+
 
 /* Add a red background color to navbar links on hover */
     .navbar a:hover, .dropdown:hover .dropbtn {
@@ -174,9 +162,9 @@
     var isBootstrapEvent = false;
     if (window.jQuery) {
         var all = jQuery('*');
-        jQuery.each(['hide.bs.dropdown', 
-            'hide.bs.collapse', 
-            'hide.bs.modal', 
+        jQuery.each(['hide.bs.dropdown',
+            'hide.bs.collapse',
+            'hide.bs.modal',
             'hide.bs.tooltip',
             'hide.bs.popover'], function(index, eventName) {
             all.on(eventName, function( event ) {
@@ -200,9 +188,9 @@
 
 
 <script>
-  
 
-  
+
+
 
 var map = AmCharts.makeChart("chartdiv", {
  type: "map",
@@ -335,7 +323,7 @@ var interval, myVar = 1;
 function myStartFunction() {
     alertFunc(myVar + 1991);
     setDataset(myVar);
-    if (myVar < 23) myVar++; 
+    if (myVar < 23) myVar++;
     else myVar = 0;
 
 
