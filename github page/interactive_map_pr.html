@@ -1,156 +1,44 @@
 <script src="https://www.amcharts.com/lib/3/ammap.js"></script>
 <script src="https://www.amcharts.com/lib/3/maps/js/worldLow.js"></script>
-<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
-<html>
+<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>	
+
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
-        html, body {
-            width: 100%;
-            height: 100%;
-            margin: 0px;
-            }
-        iframe{
-          width: 832px;
-          height: 600px;
-          border: none;
-        }
-        #yearcount1{
-          text-align: center;
-          font-size: 20px;
-          font-family: Helvetica;
-          color: white;
-          background-image: linear-gradient(120deg, #155799, #159957);
-          opacity: 0.7;
-        }
-
-        #chartdiv {
-            width: 416px;
-            height: 70%;
-            }
-
-        #info {
-            top: 7%;
-            height: 92%;
-            width: 49.865%;
-            position: absolute;
-            left: 50%;
-            bottom: 20%;
-            }
-
-    /* The dropdown container */
-        .dropdown {
-            float: right;
-            overflow: hidden;
-            }
-
-    /* Dropdown button */
-        .dropdown .dropbtn {
-            font-size: 16px;
-            border: none;
-            outline: none;
-            color: white;
-            padding: 14px 16px;
-            background-color: inherit;
-            font: inherit; /* Important for vertical align on mobile phones */
-            margin: 0; /* Important for vertical align on mobile phones */
-            }
-
-    /* Dropdown content (hidden by default) */
-        .dropdown-content {
-            position: absolute;
-            background-color: #f9f9f9;
-            width: 50%;
-            right: 0%;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-            height: 0;
-            overflow:hidden;
-            -webkit-transition:height 100ms ease-in;
-            -moz-transition:height 100ms ease-in;
-            -o-transition:height 100ms ease-in;
-            transition:height 100ms ease-in;
-            }
-
-    /* Show the dropdown menu on hover */
-        .dropdown:hover .dropdown-content {
-            display: block;
-            top: 7.3%;
-            height: 64%;
-            }
-
-    /* Create three equal columns that floats next to each other */
-        .column {
-            float: left;
-            width:30.2%;
-            padding: 10px;
-            background-color: rgb(144, 160, 250);
-            height: 100%;
-            }
-
-    /* Style links inside the columns */
-        .column a {
-            float: none;
-            color: black;
-            padding: 16px;
-            text-decoration: none;
-            display: block;
-            text-align: left;
-            }
-
-
-    /* Clear floats after the columns */
-        .row:after {
-            content: "";
-            display: table;
-            clear: both;
-            }
-
-            .column input {
-            float: none;
-            text-decoration: none;
-            display: block;
-            text-align: left;
-            background-color: rgb(55, 69, 145);
-            border: none;
-            font-size: 28px;
-            color: #FFFFFF;
-            height: 50px;
-            width: 200px;
-            text-align: center;
-            text-decoration: none;
-            cursor: pointer;
-            }
-
-    /* Add a background color on hover */
-        .column input:hover {
-            background-color: rgb(65, 155, 68);
-            }
-
-          }
-        input {
-            width:120px;
-            font-size: 15px;
-            padding: 4px 8px;
-          }
-
-    </style>
+            html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0px;
+                }
+        
+        
+            #chartdiv {
+                width: 416px;
+                height: 70%;
+                }
+        
+        
+        </style>
 </head>
-<body>
+
+
 <div id="yearcount1"> 1991
-
+  
 </div>
-
+  
 <div id="chartdiv"></div>
+
+
 
 <script>
   (function() {
     var isBootstrapEvent = false;
     if (window.jQuery) {
         var all = jQuery('*');
-        jQuery.each(['hide.bs.dropdown',
-            'hide.bs.collapse',
-            'hide.bs.modal',
+        jQuery.each(['hide.bs.dropdown', 
+            'hide.bs.collapse', 
+            'hide.bs.modal', 
             'hide.bs.tooltip',
             'hide.bs.popover'], function(index, eventName) {
             all.on(eventName, function( event ) {
@@ -172,11 +60,10 @@
 </script>
 
 
-
 <script>
+  
 
-
-
+  
 
 var map = AmCharts.makeChart("chartdiv", {
  type: "map",
@@ -188,6 +75,7 @@ var map = AmCharts.makeChart("chartdiv", {
   zoomLevel: 3.6,
   zoomLongitude: 28.0174,
   zoomLatitude: 3.1076,
+
   areas:  [ {
     "id": "AF",
     "value": 36.9314533333
@@ -290,14 +178,20 @@ var map = AmCharts.makeChart("chartdiv", {
 } ]
  },
 
-
+zoomControl: {
+    "buttonSize": 0,
+    "buttonIconColor": "white",
+},
+zoomOnDoubleClick: false,
  valueLegend: {
-   right: 10,
-   minValue: "little",
-   maxValue: "a lot!"
+   left: 0,
+   bottom:15,
+   minValue: "5 ml",
+   maxValue: "200 ml"
  }
 
 });
+
 
   function setDataset(i) {
       map.dataProvider.areas = dataSets[Number(i)];
@@ -309,7 +203,7 @@ var interval, myVar = 1;
 function myStartFunction() {
     alertFunc(myVar + 1991);
     setDataset(myVar);
-    if (myVar < 23) myVar++;
+    if (myVar < 23) myVar++; 
     else myVar = 0;
 
 
@@ -2750,5 +2644,3 @@ var dataSets = [
 
 
 </script>
-</body>
-</html>
