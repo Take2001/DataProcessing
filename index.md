@@ -13,10 +13,10 @@ Om de data weer te geven hebben we twee interactieve kaarten gemaakt. Een kaart 
 <html>
 <style>
   iframe{
-    width: 800px;
-    height: 800px;
+    width: 832px;
+    height: 832px;
 
   }
-</style
-<iframe src="github page/interactive_map.html"></iframe>
+</style>
+<iframe src="github page/interactive_map"></iframe>
 </html>
