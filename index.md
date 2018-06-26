@@ -16,4 +16,4 @@ Om de data weer te geven hebben we twee interactieve kaarten gemaakt. Een kaart 
 
 # Resultaten
 <iframe src="github page/interactive_map_pr"></iframe>
-# fijne groetjes
+# Top 3 meest interessante bevindingen
