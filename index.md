@@ -17,7 +17,6 @@ title: Dataprocessing Groep24
     <div class="navbar">
             <a href="#home">Home</a>
     </div>
-    <div class="blok">
       <h1>Dataprocessing foodprices groep 24</h1>
       <h2>Inleiding</h2>
       In dit onderzoek hebben we gekeken naar de verhoudingen tussen voedselprijzen en
@@ -37,6 +36,5 @@ title: Dataprocessing Groep24
       <h2>Interessante bevindingen</h2>
       het meest interessante wat we hebben gevonden is dat vluchtelingen niet vluchten
       als er geen oorlog is!!!!!
-    </div>
   </body>
 </html>
