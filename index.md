@@ -1,6 +1,13 @@
 ---
 title: Dataprocessing Groep24
 ---
+<style>
+iframe{
+  width: 832px;
+  height: 600px;
+  border: none;
+}
+</style>
 # Introductie
 we hebben ons bezig gehouden met vluchtelingen, voedselprijzen, neerslag en temperatuur. De vraag was of deze drie datasets invloed hadden op elkaar en of we oplossingen konden vinden om  de vluchtelingenstromen te verminderen.
 # Interactieve kaarten
