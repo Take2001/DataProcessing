@@ -7,26 +7,23 @@
     <style>
             html, body {
                 width: 100%;
+                height: 100%;
                 margin: 0px;
                 }
-
+        
             #chartdiv {
                 width: 416px;
                 height: 70%;
                 }
-            #yearcount1 {
-                background-image: linear-gradient(120deg, #155799, #159957);
-                font-family: Helvetica;
-                color:white;
-            }
+        
         </style>
 </head>
 
 
 <div id="yearcount1"> 1991
-
+  
 </div>
-
+  
 <div id="chartdiv"></div>
 
 
@@ -36,9 +33,9 @@
     var isBootstrapEvent = false;
     if (window.jQuery) {
         var all = jQuery('*');
-        jQuery.each(['hide.bs.dropdown',
-            'hide.bs.collapse',
-            'hide.bs.modal',
+        jQuery.each(['hide.bs.dropdown', 
+            'hide.bs.collapse', 
+            'hide.bs.modal', 
             'hide.bs.tooltip',
             'hide.bs.popover'], function(index, eventName) {
             all.on(eventName, function( event ) {
@@ -63,12 +60,9 @@
 
 <script>
 
-
-
-
 var map = AmCharts.makeChart("chartdiv", {
  type: "map",
- colorSteps: 15,
+ colorSteps: 10,
 
  dataProvider: {
   map: "worldLow",
@@ -76,6 +70,12 @@ var map = AmCharts.makeChart("chartdiv", {
   zoomLongitude: 28.0174,
   zoomLatitude: 3.1076,
   areas:  [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 13.118033333333333
 }, {
@@ -276,6 +276,12 @@ var map = AmCharts.makeChart("chartdiv", {
 } ]
  },
 
+areasSettings: {
+    color: "#FFCC00",
+    colorSolid: "#990000",
+    rollOverColor: "red",
+    autoZoom: false
+},
 zoomControl: {
     "buttonSize": 0,
     "buttonIconColor": "white",
@@ -284,9 +290,16 @@ zoomOnDoubleClick: false,
  valueLegend: {
    right: 0,
    bottom:15,
-   minValue: "10 graden",
-   maxValue: "30 graden"
+   minValue: "10°C",
+   maxValue: "30°C"
  }
+
+});
+
+map.addListener("clickMapObject", function(event) {
+    country = event.mapObject.id;
+
+    document.getElementById("info").src="gerard-joling.jpg";
 
 });
 
@@ -300,7 +313,7 @@ var interval, myVar = 1;
 function myStartFunction() {
     alertFunc(myVar + 1991);
     setDataset(myVar);
-    if (myVar < 23) myVar++;
+    if (myVar < 23) myVar++; 
     else myVar = 0;
 
 
@@ -315,6 +328,12 @@ function alertFunc(param1) {
 
 var dataSets = [
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 13.118033333333333
 }, {
@@ -515,6 +534,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 12.655889166666668
 }, {
@@ -715,6 +740,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 12.905315
 }, {
@@ -915,6 +946,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 13.142707500000002
 }, {
@@ -1115,6 +1152,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 13.124963333333335
 }, {
@@ -1315,6 +1358,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 12.6280025
 }, {
@@ -1515,6 +1564,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 12.898770833333332
 }, {
@@ -1715,6 +1770,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 13.215791666666668
 }, {
@@ -1915,6 +1976,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 14.030992499999998
 }, {
@@ -2115,6 +2182,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 13.668284166666664
 }, {
@@ -2315,6 +2388,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 14.442664166666667
 }, {
@@ -2515,6 +2594,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 14.252154166666667
 }, {
@@ -2715,6 +2800,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 13.714791666666667
 }, {
@@ -2915,6 +3006,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 14.59566166666667
 }, {
@@ -3115,6 +3212,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 13.9710975
 }, {
@@ -3315,6 +3418,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 14.611314166666665
 }, {
@@ -3515,6 +3624,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 13.970069166666667
 }, {
@@ -3715,6 +3830,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 14.12876666666667
 }, {
@@ -3915,6 +4036,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 14.088180833333332
 }, {
@@ -4115,6 +4242,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 14.489468333333335
 }, {
@@ -4315,6 +4448,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 14.071193333333332
 }, {
@@ -4515,6 +4654,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 13.309705
 }, {
@@ -4715,6 +4860,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 14.189569166666667
 }, {
@@ -4915,6 +5066,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 10
+}, {
+    "id": "BE",
+    "value": 30
+}, {
     "id": "AF",
     "value": 13.966331666666667
 }, {

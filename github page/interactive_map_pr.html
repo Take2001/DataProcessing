@@ -1,6 +1,6 @@
 <script src="https://www.amcharts.com/lib/3/ammap.js"></script>
 <script src="https://www.amcharts.com/lib/3/maps/js/worldLow.js"></script>
-<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>	
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,31 +8,27 @@
     <style>
             html, body {
                 width: 100%;
-                margin:0;
+                height: 100%;
+                margin: 0px;
                 }
-
-
+        
+        
             #chartdiv {
                 width: 416px;
                 height: 70%;
                 }
-          #yearcount1 {
-              background-image: linear-gradient(120deg, #155799, #159957);
-              font-family: Helvetica;
-              color:white;
-          }
 
+        
+        
         </style>
 </head>
-<div class="kd" height:>
 
-</div>
 
-<div id="yearcount1"> 1991
-
-</div>
-
+<div id="yearcount1"> 1991</div>
+  
 <div id="chartdiv"></div>
+
+
 
 
 
@@ -41,9 +37,9 @@
     var isBootstrapEvent = false;
     if (window.jQuery) {
         var all = jQuery('*');
-        jQuery.each(['hide.bs.dropdown',
-            'hide.bs.collapse',
-            'hide.bs.modal',
+        jQuery.each(['hide.bs.dropdown', 
+            'hide.bs.collapse', 
+            'hide.bs.modal', 
             'hide.bs.tooltip',
             'hide.bs.popover'], function(index, eventName) {
             all.on(eventName, function( event ) {
@@ -66,13 +62,14 @@
 
 
 <script>
+    
+  
 
-
-
+  
 
 var map = AmCharts.makeChart("chartdiv", {
  type: "map",
- colorSteps: 10,
+ colorSteps: 15,
  theme: "light",
 
  dataProvider: {
@@ -82,6 +79,12 @@ var map = AmCharts.makeChart("chartdiv", {
   zoomLatitude: 3.1076,
 
   areas:  [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 36.931453333333344
 }, {
@@ -287,14 +290,21 @@ zoomControl: {
     "buttonIconColor": "white",
 },
 zoomOnDoubleClick: false,
- valueLegend: {
-   left: 0,
-   bottom:15,
-   minValue: "5 ml",
-   maxValue: "200 ml"
+    valueLegend: {
+    minValue: "0 ml",
+    maxValue: "250 ml",
+    left: 0,
+    bottom:15,
  }
 
 });
+
+        map.addListener("clickMapObject", function(event) {
+            country = event.mapObject.id;
+
+            document.getElementById("img").src="form.html";
+
+        });
 
 
   function setDataset(i) {
@@ -307,7 +317,7 @@ var interval, myVar = 1;
 function myStartFunction() {
     alertFunc(myVar + 1991);
     setDataset(myVar);
-    if (myVar < 23) myVar++;
+    if (myVar < 23) myVar++; 
     else myVar = 0;
 
 
@@ -322,6 +332,12 @@ function alertFunc(param1) {
 
 var dataSets = [
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 36.931453333333344
 }, {
@@ -522,6 +538,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 35.95758583333333
 }, {
@@ -722,6 +744,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 27.31793
 }, {
@@ -922,6 +950,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 27.69200916666667
 }, {
@@ -1122,6 +1156,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 24.636796666666665
 }, {
@@ -1322,6 +1362,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 25.61634666666667
 }, {
@@ -1522,6 +1568,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 28.322820000000004
 }, {
@@ -1722,6 +1774,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 28.5077925
 }, {
@@ -1922,6 +1980,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 25.06246583333333
 }, {
@@ -2122,6 +2186,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 17.4683775
 }, {
@@ -2322,6 +2392,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 14.5263025
 }, {
@@ -2522,6 +2598,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 24.319800833333336
 }, {
@@ -2722,6 +2804,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 26.982437500000003
 }, {
@@ -2922,6 +3010,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 23.369001666666666
 }, {
@@ -3122,6 +3216,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 28.97298083333333
 }, {
@@ -3322,6 +3422,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 26.44774583333333
 }, {
@@ -3522,6 +3628,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 24.180692500000006
 }, {
@@ -3722,6 +3834,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 19.469345833333332
 }, {
@@ -3922,6 +4040,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 30.51663833333333
 }, {
@@ -4122,6 +4246,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 23.13391583333333
 }, {
@@ -4322,6 +4452,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 26.46844833333334
 }, {
@@ -4522,6 +4658,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 32.350046666666664
 }, {
@@ -4722,6 +4864,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 27.175007500000003
 }, {
@@ -4922,6 +5070,12 @@ var dataSets = [
 } ],
 
 [ {
+    "id": "NL",
+    "value": 0
+}, {
+    "id": "BE",
+    "value": 250
+}, {
     "id": "AF",
     "value": 24.75773833333333
 }, {
