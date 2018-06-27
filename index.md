@@ -6,6 +6,7 @@ iframe{
   width: 1200px;
   height: 650px;
   border: none;
+  overflow: hidden;
 }
 </style>
 # Introductie
