@@ -16,8 +16,10 @@ Om de data weer te geven hebben we twee interactieve kaarten gemaakt. Een kaart 
 
 # Resultaten
 <div id="idiv" style="height:550px; width:500px;">
-<iframe src="github page/interactive_maps_pr_tas.html" scrolling="no" style="overflow:hidden"></iframe>
+<iframe src="github page/interactive_maps_pr_tas.html" scrolling="no" style="overflow:hidden;"></iframe>
 </div>
 # Top 3 meest interessante bevindingen
-
+<div id="intmap" style="height:650px; width:832px;">
+<iframe src="github page/interactive_map.html" style="overflow:hidden;"></iframe>
+</div>
 ![Rijstprijs tegenover vluchtelingen uit nigeria](/plotted comparisons/regression_plots/Nigeria/Nigeria_Rice (local).html)
