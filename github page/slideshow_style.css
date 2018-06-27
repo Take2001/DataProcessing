@@ -3,8 +3,8 @@ body {font-family: Verdana, sans-serif; margin:0}
 .mySlides {display: none}
 
 iframe{
-  height: 650px;
-  width: 650px;
+  height: 416px;
+  width: 416px;
 }
 
 /* Slideshow container */
