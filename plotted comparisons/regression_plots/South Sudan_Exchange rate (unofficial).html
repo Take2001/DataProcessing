@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bokeh Plot</title>
+        
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css" type="text/css" />
+        
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+    </head>
+    <body>
+        
+        <div class="bk-root">
+            <div class="bk-plotdiv" id="cb36c444-9007-418b-bfc2-a4ba0aa0be94"></div>
+        </div>
+        
+        <script type="application/json" id="4cba1838-31a7-4241-b2db-cf90db0b29a2">
+          {"3688765e-9a12-4523-946e-ac902bfce92c":{"roots":{"references":[{"attributes":{},"id":"a3ab86cf-31f1-482c-a357-e599cfe37514","type":"BasicTickFormatter"},{"attributes":{},"id":"0fb87601-bae0-4c61-b25c-d86d3413313d","type":"LinearScale"},{"attributes":{},"id":"97c0f037-11a9-4d62-9f17-d1aa08e10236","type":"LinearScale"},{"attributes":{"plot":null,"text":"Correlation between Exchange rate (unofficial) and refugees in South Sudan"},"id":"406792df-2017-471f-a754-8b4057f4ff7c","type":"Title"},{"attributes":{"callback":null},"id":"34327bdb-8700-404c-ad3f-cd4a8400a2bd","type":"DataRange1d"},{"attributes":{"axis_label":"Migration movements","formatter":{"id":"efa93768-a94e-4070-8bbc-19c9e254dd0a","type":"BasicTickFormatter"},"plot":{"id":"830e8ce8-897b-463d-b25d-509f11941881","subtype":"Figure","type":"Plot"},"ticker":{"id":"c598bd5d-3301-4b1c-818c-482d3402c9e4","type":"BasicTicker"}},"id":"f844844c-a9d0-441e-8529-c85261854c17","type":"LinearAxis"},{"attributes":{"callback":null},"id":"46183d66-e55d-46e5-928c-6dcba8e47c0a","type":"DataRange1d"},{"attributes":{"dimension":1,"plot":{"id":"830e8ce8-897b-463d-b25d-509f11941881","subtype":"Figure","type":"Plot"},"ticker":{"id":"c598bd5d-3301-4b1c-818c-482d3402c9e4","type":"BasicTicker"}},"id":"475aad2a-c96f-4db9-8feb-79a74c3ed697","type":"Grid"},{"attributes":{"below":[{"id":"843a49f6-ab51-4727-bc69-70d663154625","type":"LinearAxis"}],"left":[{"id":"f844844c-a9d0-441e-8529-c85261854c17","type":"LinearAxis"}],"plot_height":416,"plot_width":416,"renderers":[{"id":"843a49f6-ab51-4727-bc69-70d663154625","type":"LinearAxis"},{"id":"e83f0c74-10ab-41cf-a6a8-7318dc7ae8e4","type":"Grid"},{"id":"f844844c-a9d0-441e-8529-c85261854c17","type":"LinearAxis"},{"id":"475aad2a-c96f-4db9-8feb-79a74c3ed697","type":"Grid"}],"title":{"id":"406792df-2017-471f-a754-8b4057f4ff7c","type":"Title"},"toolbar":{"id":"9e53c736-8292-4def-aec6-b6f0887e1e79","type":"Toolbar"},"x_range":{"id":"34327bdb-8700-404c-ad3f-cd4a8400a2bd","type":"DataRange1d"},"x_scale":{"id":"0fb87601-bae0-4c61-b25c-d86d3413313d","type":"LinearScale"},"y_range":{"id":"46183d66-e55d-46e5-928c-6dcba8e47c0a","type":"DataRange1d"},"y_scale":{"id":"97c0f037-11a9-4d62-9f17-d1aa08e10236","type":"LinearScale"}},"id":"830e8ce8-897b-463d-b25d-509f11941881","subtype":"Figure","type":"Plot"},{"attributes":{},"id":"c598bd5d-3301-4b1c-818c-482d3402c9e4","type":"BasicTicker"},{"attributes":{"callback":null,"renderers":"auto","tooltips":[["Normalised foodprice","$x{1.11}"],["Refugees to Europe","$y{int}"]]},"id":"88a70d8f-2f62-4564-bdd2-058b12212bd0","type":"HoverTool"},{"attributes":{"axis_label":"Normalized foodprices","formatter":{"id":"a3ab86cf-31f1-482c-a357-e599cfe37514","type":"BasicTickFormatter"},"plot":{"id":"830e8ce8-897b-463d-b25d-509f11941881","subtype":"Figure","type":"Plot"},"ticker":{"id":"854e12e5-bef8-4dc2-979d-25fbf2d73a02","type":"BasicTicker"}},"id":"843a49f6-ab51-4727-bc69-70d663154625","type":"LinearAxis"},{"attributes":{"plot":{"id":"830e8ce8-897b-463d-b25d-509f11941881","subtype":"Figure","type":"Plot"},"ticker":{"id":"854e12e5-bef8-4dc2-979d-25fbf2d73a02","type":"BasicTicker"}},"id":"e83f0c74-10ab-41cf-a6a8-7318dc7ae8e4","type":"Grid"},{"attributes":{},"id":"854e12e5-bef8-4dc2-979d-25fbf2d73a02","type":"BasicTicker"},{"attributes":{},"id":"efa93768-a94e-4070-8bbc-19c9e254dd0a","type":"BasicTickFormatter"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"88a70d8f-2f62-4564-bdd2-058b12212bd0","type":"HoverTool"}]},"id":"9e53c736-8292-4def-aec6-b6f0887e1e79","type":"Toolbar"}],"root_ids":["830e8ce8-897b-463d-b25d-509f11941881"]},"title":"Bokeh Application","version":"0.12.16"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('4cba1838-31a7-4241-b2db-cf90db0b29a2').textContent;
+                  var render_items = [{"docid":"3688765e-9a12-4523-946e-ac902bfce92c","elementid":"cb36c444-9007-418b-bfc2-a4ba0aa0be94","modelid":"830e8ce8-897b-463d-b25d-509f11941881"}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    </body>
+</html>

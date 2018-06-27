@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bokeh Plot</title>
+        
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css" type="text/css" />
+        
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+    </head>
+    <body>
+        
+        <div class="bk-root">
+            <div class="bk-plotdiv" id="0220c05c-91b4-46e3-9681-c67ef7b37192"></div>
+        </div>
+        
+        <script type="application/json" id="03f1574a-2493-4a52-ab44-62e28d97f135">
+          {"f7f33294-b233-4bc2-88ed-0878720c6714":{"roots":{"references":[{"attributes":{},"id":"a5108355-2b86-4f7e-977a-a133718b212b","type":"LinearScale"},{"attributes":{},"id":"e0e098fb-8499-4339-9ed0-d11f6faedf7e","type":"BasicTicker"},{"attributes":{},"id":"83aedb2b-bdd4-4754-a403-65b3e4f7735c","type":"LinearScale"},{"attributes":{"below":[{"id":"ad8f2b22-9ee2-4a9b-8d18-648832bf3bb2","type":"LinearAxis"}],"left":[{"id":"9f477f12-64ad-4289-8435-1197bf1f4f76","type":"LinearAxis"}],"plot_height":416,"plot_width":416,"renderers":[{"id":"ad8f2b22-9ee2-4a9b-8d18-648832bf3bb2","type":"LinearAxis"},{"id":"d57e6e14-77f1-40cc-ad40-8d336d727de0","type":"Grid"},{"id":"9f477f12-64ad-4289-8435-1197bf1f4f76","type":"LinearAxis"},{"id":"81384f7d-7535-4a1b-8617-28f0b956907f","type":"Grid"}],"title":{"id":"69011822-3928-4499-9c34-17abfe098176","type":"Title"},"toolbar":{"id":"7f5fefdc-1cf1-4ee1-85bc-64eeac776a90","type":"Toolbar"},"x_range":{"id":"8983ea6b-3529-40ad-9cd6-75675103a415","type":"DataRange1d"},"x_scale":{"id":"83aedb2b-bdd4-4754-a403-65b3e4f7735c","type":"LinearScale"},"y_range":{"id":"385947e7-4cdd-41bc-848b-a4d1b50537db","type":"DataRange1d"},"y_scale":{"id":"a5108355-2b86-4f7e-977a-a133718b212b","type":"LinearScale"}},"id":"90eb500f-87cd-4510-ba7a-530f7519f971","subtype":"Figure","type":"Plot"},{"attributes":{},"id":"41e69b68-7cfa-43fa-8795-10c47ec085b7","type":"BasicTickFormatter"},{"attributes":{"plot":{"id":"90eb500f-87cd-4510-ba7a-530f7519f971","subtype":"Figure","type":"Plot"},"ticker":{"id":"105264d9-0b88-4aef-a60e-455f70ccb5c5","type":"BasicTicker"}},"id":"d57e6e14-77f1-40cc-ad40-8d336d727de0","type":"Grid"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"68963c66-cb50-4dad-ad42-7b1b26ea24c1","type":"HoverTool"}]},"id":"7f5fefdc-1cf1-4ee1-85bc-64eeac776a90","type":"Toolbar"},{"attributes":{"callback":null},"id":"385947e7-4cdd-41bc-848b-a4d1b50537db","type":"DataRange1d"},{"attributes":{},"id":"105264d9-0b88-4aef-a60e-455f70ccb5c5","type":"BasicTicker"},{"attributes":{"axis_label":"Migration movements","formatter":{"id":"0e755e83-33e4-4025-a371-d751926eae67","type":"BasicTickFormatter"},"plot":{"id":"90eb500f-87cd-4510-ba7a-530f7519f971","subtype":"Figure","type":"Plot"},"ticker":{"id":"e0e098fb-8499-4339-9ed0-d11f6faedf7e","type":"BasicTicker"}},"id":"9f477f12-64ad-4289-8435-1197bf1f4f76","type":"LinearAxis"},{"attributes":{"callback":null},"id":"8983ea6b-3529-40ad-9cd6-75675103a415","type":"DataRange1d"},{"attributes":{},"id":"0e755e83-33e4-4025-a371-d751926eae67","type":"BasicTickFormatter"},{"attributes":{"callback":null,"renderers":"auto","tooltips":[["Normalised foodprice","$x{1.11}"],["Refugees to Europe","$y{int}"]]},"id":"68963c66-cb50-4dad-ad42-7b1b26ea24c1","type":"HoverTool"},{"attributes":{"axis_label":"Normalized foodprices","formatter":{"id":"41e69b68-7cfa-43fa-8795-10c47ec085b7","type":"BasicTickFormatter"},"plot":{"id":"90eb500f-87cd-4510-ba7a-530f7519f971","subtype":"Figure","type":"Plot"},"ticker":{"id":"105264d9-0b88-4aef-a60e-455f70ccb5c5","type":"BasicTicker"}},"id":"ad8f2b22-9ee2-4a9b-8d18-648832bf3bb2","type":"LinearAxis"},{"attributes":{"plot":null,"text":"Correlation between Bread and refugees in Afghanistan"},"id":"69011822-3928-4499-9c34-17abfe098176","type":"Title"},{"attributes":{"dimension":1,"plot":{"id":"90eb500f-87cd-4510-ba7a-530f7519f971","subtype":"Figure","type":"Plot"},"ticker":{"id":"e0e098fb-8499-4339-9ed0-d11f6faedf7e","type":"BasicTicker"}},"id":"81384f7d-7535-4a1b-8617-28f0b956907f","type":"Grid"}],"root_ids":["90eb500f-87cd-4510-ba7a-530f7519f971"]},"title":"Bokeh Application","version":"0.12.16"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('03f1574a-2493-4a52-ab44-62e28d97f135').textContent;
+                  var render_items = [{"docid":"f7f33294-b233-4bc2-88ed-0878720c6714","elementid":"0220c05c-91b4-46e3-9681-c67ef7b37192","modelid":"90eb500f-87cd-4510-ba7a-530f7519f971"}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bokeh Plot</title>
+        
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css" type="text/css" />
+        
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+    </head>
+    <body>
+        
+        <div class="bk-root">
+            <div class="bk-plotdiv" id="b52fa7a9-3563-48b5-a932-cad0efa79f29"></div>
+        </div>
+        
+        <script type="application/json" id="ae6c97e1-1fe6-45fa-bc45-71949537a6db">
+          {"c186dace-d67f-4ed2-b379-f56fa101b2e5":{"roots":{"references":[{"attributes":{},"id":"b0433398-df29-4608-ba7e-5793148c8757","type":"BasicTickFormatter"},{"attributes":{},"id":"339a4e11-29b2-4d1c-81ce-622d3183831b","type":"BasicTicker"},{"attributes":{},"id":"c525207e-5f8f-424c-bc36-a2f24d4459dd","type":"LinearScale"},{"attributes":{"callback":null},"id":"e521925e-f7a4-4890-9dea-f5e0a719f348","type":"DataRange1d"},{"attributes":{"below":[{"id":"3e043d5a-5a77-448c-8539-267af25d4366","type":"LinearAxis"}],"left":[{"id":"4dcf79ea-d46e-4cbf-bc15-5b7300eb7256","type":"LinearAxis"}],"plot_height":416,"plot_width":416,"renderers":[{"id":"3e043d5a-5a77-448c-8539-267af25d4366","type":"LinearAxis"},{"id":"66e9c054-ba8d-44d4-b96c-7fef860c0ec9","type":"Grid"},{"id":"4dcf79ea-d46e-4cbf-bc15-5b7300eb7256","type":"LinearAxis"},{"id":"8ead6c1c-f056-4399-8d7d-198cc0286401","type":"Grid"}],"title":{"id":"2d32b7b4-0661-479a-8208-abf32485fc3d","type":"Title"},"toolbar":{"id":"e60a0dff-9801-4115-b57c-f3860a8e6e58","type":"Toolbar"},"x_range":{"id":"e521925e-f7a4-4890-9dea-f5e0a719f348","type":"DataRange1d"},"x_scale":{"id":"ed412bd9-5bf8-487f-9ed5-82260d7e8d35","type":"LinearScale"},"y_range":{"id":"4e2713ea-4d4e-49bf-b123-90c28ca3cadd","type":"DataRange1d"},"y_scale":{"id":"c525207e-5f8f-424c-bc36-a2f24d4459dd","type":"LinearScale"}},"id":"16926487-0b20-4c00-9343-f5902654b9de","subtype":"Figure","type":"Plot"},{"attributes":{},"id":"709fb2c5-1ba9-4304-8041-db51ec169344","type":"BasicTickFormatter"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"ad71d81c-44f4-4eda-a45e-58d4dc03b9b6","type":"HoverTool"}]},"id":"e60a0dff-9801-4115-b57c-f3860a8e6e58","type":"Toolbar"},{"attributes":{"axis_label":"Normalized foodprices","formatter":{"id":"b0433398-df29-4608-ba7e-5793148c8757","type":"BasicTickFormatter"},"plot":{"id":"16926487-0b20-4c00-9343-f5902654b9de","subtype":"Figure","type":"Plot"},"ticker":{"id":"339a4e11-29b2-4d1c-81ce-622d3183831b","type":"BasicTicker"}},"id":"3e043d5a-5a77-448c-8539-267af25d4366","type":"LinearAxis"},{"attributes":{"callback":null},"id":"4e2713ea-4d4e-49bf-b123-90c28ca3cadd","type":"DataRange1d"},{"attributes":{"axis_label":"Migration movements","formatter":{"id":"709fb2c5-1ba9-4304-8041-db51ec169344","type":"BasicTickFormatter"},"plot":{"id":"16926487-0b20-4c00-9343-f5902654b9de","subtype":"Figure","type":"Plot"},"ticker":{"id":"a6d87c15-7db9-44df-a599-e4cfdc36d761","type":"BasicTicker"}},"id":"4dcf79ea-d46e-4cbf-bc15-5b7300eb7256","type":"LinearAxis"},{"attributes":{},"id":"a6d87c15-7db9-44df-a599-e4cfdc36d761","type":"BasicTicker"},{"attributes":{"dimension":1,"plot":{"id":"16926487-0b20-4c00-9343-f5902654b9de","subtype":"Figure","type":"Plot"},"ticker":{"id":"a6d87c15-7db9-44df-a599-e4cfdc36d761","type":"BasicTicker"}},"id":"8ead6c1c-f056-4399-8d7d-198cc0286401","type":"Grid"},{"attributes":{},"id":"ed412bd9-5bf8-487f-9ed5-82260d7e8d35","type":"LinearScale"},{"attributes":{"callback":null,"renderers":"auto","tooltips":[["Normalised foodprice","$x{1.11}"],["Refugees to Europe","$y{int}"]]},"id":"ad71d81c-44f4-4eda-a45e-58d4dc03b9b6","type":"HoverTool"},{"attributes":{"plot":{"id":"16926487-0b20-4c00-9343-f5902654b9de","subtype":"Figure","type":"Plot"},"ticker":{"id":"339a4e11-29b2-4d1c-81ce-622d3183831b","type":"BasicTicker"}},"id":"66e9c054-ba8d-44d4-b96c-7fef860c0ec9","type":"Grid"},{"attributes":{"plot":null,"text":"Correlation between Rice (imported) and refugees in Niger"},"id":"2d32b7b4-0661-479a-8208-abf32485fc3d","type":"Title"}],"root_ids":["16926487-0b20-4c00-9343-f5902654b9de"]},"title":"Bokeh Application","version":"0.12.16"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('ae6c97e1-1fe6-45fa-bc45-71949537a6db').textContent;
+                  var render_items = [{"docid":"c186dace-d67f-4ed2-b379-f56fa101b2e5","elementid":"b52fa7a9-3563-48b5-a932-cad0efa79f29","modelid":"16926487-0b20-4c00-9343-f5902654b9de"}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    </body>
+</html>

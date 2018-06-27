@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bokeh Plot</title>
+        
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css" type="text/css" />
+        
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+    </head>
+    <body>
+        
+        <div class="bk-root">
+            <div class="bk-plotdiv" id="bbd20b27-2100-4615-819d-6e9945377637"></div>
+        </div>
+        
+        <script type="application/json" id="7e29a5b1-535d-4a1b-80a9-c7be14366375">
+          {"fa3f1026-237b-4fc1-b4cc-3f7f5dec4b72":{"roots":{"references":[{"attributes":{"plot":{"id":"2c14455d-7287-475e-86ed-6a2a50efbdc8","subtype":"Figure","type":"Plot"},"ticker":{"id":"dd11da19-56ed-4ff0-b2ea-d402110881cf","type":"BasicTicker"}},"id":"8c51f0ec-02f3-4669-99bf-2a4e20e50887","type":"Grid"},{"attributes":{},"id":"b74ad834-e78f-4f16-b64f-823b4bacd92f","type":"BasicTicker"},{"attributes":{},"id":"2e57b0d4-1662-49a4-b391-5ec3c63fe3f9","type":"LinearScale"},{"attributes":{},"id":"8baf3f95-612e-46b0-9426-dd57d63a3e92","type":"BasicTickFormatter"},{"attributes":{"axis_label":"Migration movements","formatter":{"id":"2aa542eb-a24d-4a5c-a8e0-d2ae3c7a7b4b","type":"BasicTickFormatter"},"plot":{"id":"2c14455d-7287-475e-86ed-6a2a50efbdc8","subtype":"Figure","type":"Plot"},"ticker":{"id":"b74ad834-e78f-4f16-b64f-823b4bacd92f","type":"BasicTicker"}},"id":"c55ba491-af8a-4983-8325-e53d5d4c6e96","type":"LinearAxis"},{"attributes":{},"id":"dd11da19-56ed-4ff0-b2ea-d402110881cf","type":"BasicTicker"},{"attributes":{},"id":"2aa542eb-a24d-4a5c-a8e0-d2ae3c7a7b4b","type":"BasicTickFormatter"},{"attributes":{"callback":null,"renderers":"auto","tooltips":[["Normalised foodprice","$x{1.11}"],["Refugees to Europe","$y{int}"]]},"id":"7f3f1012-26cd-495d-8e01-932077a50cbf","type":"HoverTool"},{"attributes":{"below":[{"id":"e69f180e-5021-4ba3-ab34-7c40d383eaff","type":"LinearAxis"}],"left":[{"id":"c55ba491-af8a-4983-8325-e53d5d4c6e96","type":"LinearAxis"}],"plot_height":416,"plot_width":416,"renderers":[{"id":"e69f180e-5021-4ba3-ab34-7c40d383eaff","type":"LinearAxis"},{"id":"8c51f0ec-02f3-4669-99bf-2a4e20e50887","type":"Grid"},{"id":"c55ba491-af8a-4983-8325-e53d5d4c6e96","type":"LinearAxis"},{"id":"bfde0ba7-90c0-438b-84b2-2c01d59d5bfc","type":"Grid"}],"title":{"id":"de15ee37-98d7-406d-93c5-cab69dc65568","type":"Title"},"toolbar":{"id":"661ae04e-75ef-447c-9f7e-2556d8941a7a","type":"Toolbar"},"x_range":{"id":"ab7e92e7-9721-4858-8dfe-0f6e83c82249","type":"DataRange1d"},"x_scale":{"id":"2304bc62-51c3-4b07-886c-86127547e067","type":"LinearScale"},"y_range":{"id":"aed47207-45ec-44db-9f56-902c3e6a74dc","type":"DataRange1d"},"y_scale":{"id":"2e57b0d4-1662-49a4-b391-5ec3c63fe3f9","type":"LinearScale"}},"id":"2c14455d-7287-475e-86ed-6a2a50efbdc8","subtype":"Figure","type":"Plot"},{"attributes":{},"id":"2304bc62-51c3-4b07-886c-86127547e067","type":"LinearScale"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"7f3f1012-26cd-495d-8e01-932077a50cbf","type":"HoverTool"}]},"id":"661ae04e-75ef-447c-9f7e-2556d8941a7a","type":"Toolbar"},{"attributes":{"axis_label":"Normalized foodprices","formatter":{"id":"8baf3f95-612e-46b0-9426-dd57d63a3e92","type":"BasicTickFormatter"},"plot":{"id":"2c14455d-7287-475e-86ed-6a2a50efbdc8","subtype":"Figure","type":"Plot"},"ticker":{"id":"dd11da19-56ed-4ff0-b2ea-d402110881cf","type":"BasicTicker"}},"id":"e69f180e-5021-4ba3-ab34-7c40d383eaff","type":"LinearAxis"},{"attributes":{"plot":null,"text":"Correlation between Cassava and refugees in Malawi"},"id":"de15ee37-98d7-406d-93c5-cab69dc65568","type":"Title"},{"attributes":{"callback":null},"id":"ab7e92e7-9721-4858-8dfe-0f6e83c82249","type":"DataRange1d"},{"attributes":{"dimension":1,"plot":{"id":"2c14455d-7287-475e-86ed-6a2a50efbdc8","subtype":"Figure","type":"Plot"},"ticker":{"id":"b74ad834-e78f-4f16-b64f-823b4bacd92f","type":"BasicTicker"}},"id":"bfde0ba7-90c0-438b-84b2-2c01d59d5bfc","type":"Grid"},{"attributes":{"callback":null},"id":"aed47207-45ec-44db-9f56-902c3e6a74dc","type":"DataRange1d"}],"root_ids":["2c14455d-7287-475e-86ed-6a2a50efbdc8"]},"title":"Bokeh Application","version":"0.12.16"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('7e29a5b1-535d-4a1b-80a9-c7be14366375').textContent;
+                  var render_items = [{"docid":"fa3f1026-237b-4fc1-b4cc-3f7f5dec4b72","elementid":"bbd20b27-2100-4615-819d-6e9945377637","modelid":"2c14455d-7287-475e-86ed-6a2a50efbdc8"}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    </body>
+</html>
