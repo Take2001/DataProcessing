@@ -29,9 +29,6 @@ Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart 
 
 # Resultaten
 
-<div id="grafiek">
-<iframe src="plotted comparisons/regression_plots/Sudan/Sudan_wheat.html" ></iframe>
-</div>
 
 ## Gemiddelde prijzen
 
@@ -44,8 +41,11 @@ Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart 
 
 <iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_africa.html" style="overflow:hidden; height:950px"></iframe>
 
-<iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_middle_east.html" style="overflow:hidden;"></iframe>
+<iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_middle_east.html" style="overflow:hidden; height:950px"></iframe>
 
 </div>
 
 # Top 3 meest interessante bevindingen
+## Lokaal tegenover geïmporteerde rijst
+
+![alt-text](/plotted comparisons/local_vs_imported_maize_senegal.png)
