@@ -24,9 +24,9 @@ html, body {
       position: absolute;
       left: 50%;
       bottom: 20%;
-  }
-  iframe{
-    border:none;
+color: rgb(165, 80, 0)
+      
+
   }
 
   </style>
@@ -62,15 +62,14 @@ products={
 };
 
 var map = AmCharts.makeChart("chartdiv", {
- type: "map",
- theme: "light",
- dataProvider: {
-  map: "worldLow",
-  zoomLevel: 3.6,
-  zoomLongitude: 28.0174,
-  zoomLatitude: 3.1076,
-
-      areas: [
+    "type": "map",
+    "theme": "light",
+    "dataProvider": {
+      "map": "worldLow",
+      "zoomLevel": 3.6,
+  "zoomLongitude": 28.0174,
+  "zoomLatitude": 3.1076,
+      "areas": [
         { "id": "AE", "color": "darkgrey" },
         { "id": "AF", "autoZoom": true, "selectedColor": "#CC0000" },
         { "id": "AO", "color": "darkgrey" },
@@ -83,7 +82,7 @@ var map = AmCharts.makeChart("chartdiv", {
         { "id": "CG", "color": "darkgrey" },
         { "id": "CI", "color": "darkgrey" },
         { "id": "CM", "color": "darkgrey" },
-        { "id": "DJ", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "DJ", "color": "darkgrey" },
         { "id": "DZ", "color": "darkgrey" },
         { "id": "EG", "color": "darkgrey" },
         { "id": "ER", "color": "darkgrey" },
@@ -96,7 +95,7 @@ var map = AmCharts.makeChart("chartdiv", {
         { "id": "GW", "color": "darkgrey" },
         { "id": "IL", "color": "darkgrey" },
         { "id": "IQ", "autoZoom": true, "selectedColor": "#CC0000" },
-        { "id": "IR", "color": "darkgrey" },
+        { "id": "IR", "autoZoom": true, "selectedColor": "#CC0000" },
         { "id": "JO", "color": "darkgrey" },
         { "id": "KE", "autoZoom": true, "selectedColor": "#CC0000" },
         { "id": "KW", "color": "darkgrey" },
@@ -106,9 +105,9 @@ var map = AmCharts.makeChart("chartdiv", {
         { "id": "LY", "color": "darkgrey" },
         { "id": "MA", "color": "darkgrey" },
         { "id": "MG", "autoZoom": true, "selectedColor": "#CC0000" },
-        { "id": "ML", "autoZoom": true, "selectedColor": "#CC0000" },
+        { "id": "ML", "color": "darkgrey" },
         { "id": "MR", "color": "darkgrey" },
-        { "id": "MW", "autoZoom": true, "selectedColor": "#CC0000"},
+        { "id": "MW", "color": "darkgrey" },
         { "id": "MZ", "autoZoom": true, "selectedColor": "#CC0000" },
         { "id": "NA", "color": "darkgrey" },
         { "id": "NE", "autoZoom": true, "selectedColor": "#CC0000" },
@@ -138,14 +137,10 @@ var map = AmCharts.makeChart("chartdiv", {
       ]
     },
 
-  areasSettings: {
-    alpha: 0.5, 
-    unlistedAreasAlpha: 1,
-    unlistedAreasColor: "#DDDDDD"
-  }
-
-    zoomControl: {
-      minZoomLevel: 2.7
+    "areasSettings": {
+      "alpha": "0.7",
+      "color": "#155799",
+      "rollOverColor": "blue"
     },
 
   });
