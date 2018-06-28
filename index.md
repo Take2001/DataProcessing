@@ -46,6 +46,7 @@ Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart 
 ## Lokaal tegenover geïmporteerde rijst
 
 ![alt-text](docs/local_vs_imported_product/local_vs_imported_maize_senegal.png)
+
 Je kan zien dat de prijs van lokale rijst een lineair verband heeft met de prijs van geïmporteerde rijst.
 
 ## Gemiddelde prijzen
