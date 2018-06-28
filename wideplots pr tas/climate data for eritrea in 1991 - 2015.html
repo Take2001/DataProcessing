@@ -1,0 +1,969 @@
+
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js" type="text/javascript"></script>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.16.min.js" type="text/javascript"></script>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-tables-0.12.16.min.js" type="text/javascript"></script>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-gl-0.12.16.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.20/require.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" type="text/javascript"></script>
+<script type="text/javascript">function HoloViewsWidget() {
+}
+
+HoloViewsWidget.prototype.init_slider = function(init_val){
+  if(this.load_json) {
+    this.from_json()
+  } else {
+    this.update_cache();
+  }
+}
+
+HoloViewsWidget.prototype.populate_cache = function(idx){
+  this.cache[idx].innerHTML = this.frames[idx];
+  if (this.embed) {
+    delete this.frames[idx];
+  }
+}
+
+HoloViewsWidget.prototype.process_error = function(msg){
+}
+
+HoloViewsWidget.prototype.from_json = function() {
+  var data_url = this.json_path + this.id + '.json';
+  $.getJSON(data_url, $.proxy(function(json_data) {
+    this.frames = json_data;
+    this.update_cache();
+    this.update(0);
+  }, this));
+}
+
+HoloViewsWidget.prototype.dynamic_update = function(current){
+  if (current === undefined) {
+    return
+  }
+  this.current = current;
+  if (this.comm) {
+    var msg = {comm_id: this.id+'_client', content: current}
+    this.comm.send(msg);
+  }
+}
+
+HoloViewsWidget.prototype.update_cache = function(force){
+  var frame_len = Object.keys(this.frames).length;
+  for (var i=0; i<frame_len; i++) {
+    if(!this.load_json || this.dynamic)  {
+      var frame = Object.keys(this.frames)[i];
+    } else {
+      var frame = i;
+    }
+    if(!(frame in this.cache) || force) {
+      if ((frame in this.cache) && force) { this.cache[frame].remove() }
+      var div = document.createElement("div");
+      var parent = document.getElementById("_anim_img"+this.id);
+      div.style.display = "none";
+      parent.appendChild(div)
+      this.cache[frame] = div;
+      var cache_id = "_anim_img"+this.id+"_"+frame;
+      this.populate_cache(frame);
+    }
+  }
+}
+
+HoloViewsWidget.prototype.update = function(current){
+  if(current in this.cache) {
+    for (var index in this.cache) {
+      this.cache[index].style.display = "none";
+    }
+    this.cache[current].style.display = "";
+    this.wait = false;
+  }
+}
+
+HoloViewsWidget.prototype.init_comms = function() {
+  var that = this
+  HoloViews.comm_manager.register_target(this.plot_id, this.id, function (msg) { that.process_msg(msg) })
+  if (!this.cached || this.dynamic) {
+    function ack_callback(msg) {
+      msg = JSON.parse(msg.content.data);
+      var comm_id = msg["comm_id"]
+      var comm_status = HoloViews.comm_status[comm_id];
+      if (that.queue.length > 0) {
+        that.time = Date.now();
+        that.dynamic_update(that.queue[that.queue.length-1]);
+        that.queue = [];
+      } else {
+        that.wait = false;
+      }
+      if ((msg.msg_type == "Ready") && msg.content) {
+        console.log("Python callback returned following output:", msg.content);
+      } else if (msg.msg_type == "Error") {
+        console.log("Python failed with the following traceback:", msg['traceback'])
+      }
+    }
+    var comm = HoloViews.comm_manager.get_client_comm(this.plot_id, this.id+'_client', ack_callback);
+    return comm
+  }
+}
+
+HoloViewsWidget.prototype.process_msg = function(msg) {
+}
+
+function SelectionWidget(frames, id, slider_ids, keyMap, dim_vals, notFound, load_json, mode, cached, json_path, dynamic, plot_id){
+  this.frames = frames;
+  this.id = id;
+  this.plot_id = plot_id;
+  this.slider_ids = slider_ids;
+  this.keyMap = keyMap
+  this.current_frame = 0;
+  this.current_vals = dim_vals;
+  this.load_json = load_json;
+  this.mode = mode;
+  this.notFound = notFound;
+  this.cached = cached;
+  this.dynamic = dynamic;
+  this.cache = {};
+  this.json_path = json_path;
+  this.init_slider(this.current_vals[0]);
+  this.queue = [];
+  this.wait = false;
+  if (!this.cached || this.dynamic) {
+    this.comm = this.init_comms();
+  }
+}
+
+SelectionWidget.prototype = new HoloViewsWidget;
+
+
+SelectionWidget.prototype.get_key = function(current_vals) {
+  var key = "(";
+  for (var i=0; i<this.slider_ids.length; i++)
+  {
+    var val = this.current_vals[i];
+    if (!(typeof val === 'string')) {
+      if (val % 1 === 0) { val = val.toFixed(1); }
+      else { val = val.toFixed(10); val = val.slice(0, val.length-1);}
+    }
+    key += "'" + val + "'";
+    if(i != this.slider_ids.length-1) { key += ', ';}
+    else if(this.slider_ids.length == 1) { key += ',';}
+  }
+  key += ")";
+  return this.keyMap[key];
+}
+
+SelectionWidget.prototype.set_frame = function(dim_val, dim_idx){
+  this.current_vals[dim_idx] = dim_val;
+  var key = this.current_vals;
+  if (!this.dynamic) {
+    key = this.get_key(key)
+  }
+  if (this.dynamic || !this.cached) {
+    if ((this.time !== undefined) && ((this.wait) && ((this.time + 10000) > Date.now()))) {
+      this.queue.push(key);
+      return
+    }
+    this.queue = [];
+    this.time = Date.now();
+    this.current_frame = key;
+    this.wait = true;
+    this.dynamic_update(key)
+  } else if (key !== undefined) {
+    this.update(key)
+  }
+}
+
+
+/* Define the ScrubberWidget class */
+function ScrubberWidget(frames, num_frames, id, interval, load_json, mode, cached, json_path, dynamic, plot_id){
+  this.slider_id = "_anim_slider" + id;
+  this.loop_select_id = "_anim_loop_select" + id;
+  this.id = id;
+  this.plot_id = plot_id;
+  this.interval = interval;
+  this.current_frame = 0;
+  this.direction = 0;
+  this.dynamic = dynamic;
+  this.timer = null;
+  this.load_json = load_json;
+  this.mode = mode;
+  this.cached = cached;
+  this.frames = frames;
+  this.cache = {};
+  this.length = num_frames;
+  this.json_path = json_path;
+  document.getElementById(this.slider_id).max = this.length - 1;
+  this.init_slider(0);
+  this.wait = false;
+  this.queue = [];
+  if (!this.cached || this.dynamic) {
+    this.comm = this.init_comms()
+  }
+}
+
+ScrubberWidget.prototype = new HoloViewsWidget;
+
+ScrubberWidget.prototype.set_frame = function(frame){
+  this.current_frame = frame;
+  var widget = document.getElementById(this.slider_id);
+  if (widget === null) {
+    this.pause_animation();
+    return
+  }
+  widget.value = this.current_frame;
+  if (this.dynamic || !this.cached) {
+    if ((this.time !== undefined) && ((this.wait) && ((this.time + 10000) > Date.now()))) {
+      this.queue.push(frame);
+      return
+    }
+    this.queue = [];
+    this.time = Date.now();
+    this.wait = true;
+    this.dynamic_update(frame)
+  } else {
+    this.update(frame)
+  }
+}
+
+ScrubberWidget.prototype.get_loop_state = function(){
+  var button_group = document[this.loop_select_id].state;
+  for (var i = 0; i < button_group.length; i++) {
+    var button = button_group[i];
+    if (button.checked) {
+      return button.value;
+    }
+  }
+  return undefined;
+}
+
+
+ScrubberWidget.prototype.next_frame = function() {
+  this.set_frame(Math.min(this.length - 1, this.current_frame + 1));
+}
+
+ScrubberWidget.prototype.previous_frame = function() {
+  this.set_frame(Math.max(0, this.current_frame - 1));
+}
+
+ScrubberWidget.prototype.first_frame = function() {
+  this.set_frame(0);
+}
+
+ScrubberWidget.prototype.last_frame = function() {
+  this.set_frame(this.length - 1);
+}
+
+ScrubberWidget.prototype.slower = function() {
+  this.interval /= 0.7;
+  if(this.direction > 0){this.play_animation();}
+  else if(this.direction < 0){this.reverse_animation();}
+}
+
+ScrubberWidget.prototype.faster = function() {
+  this.interval *= 0.7;
+  if(this.direction > 0){this.play_animation();}
+  else if(this.direction < 0){this.reverse_animation();}
+}
+
+ScrubberWidget.prototype.anim_step_forward = function() {
+  if(this.current_frame < this.length - 1){
+    this.next_frame();
+  }else{
+    var loop_state = this.get_loop_state();
+    if(loop_state == "loop"){
+      this.first_frame();
+    }else if(loop_state == "reflect"){
+      this.last_frame();
+      this.reverse_animation();
+    }else{
+      this.pause_animation();
+      this.last_frame();
+    }
+  }
+}
+
+ScrubberWidget.prototype.anim_step_reverse = function() {
+  if(this.current_frame > 0){
+    this.previous_frame();
+  } else {
+    var loop_state = this.get_loop_state();
+    if(loop_state == "loop"){
+      this.last_frame();
+    }else if(loop_state == "reflect"){
+      this.first_frame();
+      this.play_animation();
+    }else{
+      this.pause_animation();
+      this.first_frame();
+    }
+  }
+}
+
+ScrubberWidget.prototype.pause_animation = function() {
+  this.direction = 0;
+  if (this.timer){
+    clearInterval(this.timer);
+    this.timer = null;
+  }
+}
+
+ScrubberWidget.prototype.play_animation = function() {
+  this.pause_animation();
+  this.direction = 1;
+  var t = this;
+  if (!this.timer) this.timer = setInterval(function(){t.anim_step_forward();}, this.interval);
+}
+
+ScrubberWidget.prototype.reverse_animation = function() {
+  this.pause_animation();
+  this.direction = -1;
+  var t = this;
+  if (!this.timer) this.timer = setInterval(function(){t.anim_step_reverse();}, this.interval);
+}
+
+function extend(destination, source) {
+  for (var k in source) {
+    if (source.hasOwnProperty(k)) {
+      destination[k] = source[k];
+    }
+  }
+  return destination;
+}
+
+function update_widget(widget, values) {
+  if (widget.hasClass("ui-slider")) {
+    widget.slider('option', {
+      min: 0,
+      max: values.length-1,
+      dim_vals: values,
+      value: 0,
+      dim_labels: values
+    })
+    widget.slider('option', 'slide').call(widget, event, {value: 0})
+  } else {
+    widget.empty();
+    for (var i=0; i<values.length; i++){
+      widget.append($("<option>", {
+        value: i,
+        text: values[i]
+      }))
+    };
+    widget.data('values', values);
+    widget.data('value', 0);
+    widget.trigger("change");
+  };
+}
+
+function init_slider(id, plot_id, dim, values, next_vals, labels, dynamic, step, value, next_dim,
+                     dim_idx, delay, jQueryUI_CDN, UNDERSCORE_CDN) {
+  // Slider JS Block START
+  function loadcssfile(filename){
+    var fileref=document.createElement("link")
+    fileref.setAttribute("rel", "stylesheet")
+    fileref.setAttribute("type", "text/css")
+    fileref.setAttribute("href", filename)
+    document.getElementsByTagName("head")[0].appendChild(fileref)
+  }
+  loadcssfile("https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css");
+  /* Check if jQuery and jQueryUI have been loaded
+     otherwise load with require.js */
+  var jQuery = window.jQuery,
+    // check for old versions of jQuery
+    oldjQuery = jQuery && !!jQuery.fn.jquery.match(/^1\.[0-4](\.|$)/),
+    jquery_path = '',
+    paths = {},
+    noConflict;
+  var jQueryUI = jQuery.ui;
+  // check for jQuery
+  if (!jQuery || oldjQuery) {
+    // load if it's not available or doesn't meet min standards
+    paths.jQuery = jQuery;
+    noConflict = !!oldjQuery;
+  } else {
+    // register the current jQuery
+    define('jquery', [], function() { return jQuery; });
+  }
+  if (!jQueryUI) {
+    paths.jQueryUI = jQueryUI_CDN.slice(null, -3);
+  } else {
+    define('jQueryUI', [], function() { return jQuery.ui; });
+  }
+  paths.underscore = UNDERSCORE_CDN.slice(null, -3);
+  var jquery_require = {
+    paths: paths,
+    shim: {
+      "jQueryUI": {
+        exports:"$",
+        deps: ['jquery']
+      },
+      "underscore": {
+        exports: '_'
+      }
+    }
+  }
+  require.config(jquery_require);
+  require(["jQueryUI", "underscore"], function(jUI, _){
+    if (noConflict) $.noConflict(true);
+    var vals = values;
+    if (dynamic && vals.constructor === Array) {
+      var default_value = parseFloat(value);
+      var min = parseFloat(vals[0]);
+      var max = parseFloat(vals[vals.length-1]);
+      var wstep = step;
+      var wlabels = [default_value];
+      var init_label = default_value;
+    } else {
+      var min = 0;
+      if (dynamic) {
+        var max = Object.keys(vals).length - 1;
+        var init_label = labels[value];
+        var default_value = values[value];
+      } else {
+        var max = vals.length - 1;
+        var init_label = labels[value];
+        var default_value = value;
+      }
+      var wstep = 1;
+      var wlabels = labels;
+    }
+    function adjustFontSize(text) {
+      var width_ratio = (text.parent().width()/8)/text.val().length;
+      var size = Math.min(0.9, Math.max(0.6, width_ratio))+'em';
+      text.css('font-size', size);
+    }
+    var slider = $('#_anim_widget'+id+'_'+dim);
+    slider.slider({
+      animate: "fast",
+      min: min,
+      max: max,
+      step: wstep,
+      value: default_value,
+      dim_vals: vals,
+      dim_labels: wlabels,
+      next_vals: next_vals,
+      slide: function(event, ui) {
+        var vals = slider.slider("option", "dim_vals");
+        var next_vals = slider.slider("option", "next_vals");
+        var dlabels = slider.slider("option", "dim_labels");
+        if (dynamic) {
+          var dim_val = ui.value;
+          if (vals.constructor === Array) {
+            var label = ui.value;
+          } else {
+            var label = dlabels[ui.value];
+          }
+        } else {
+          var dim_val = vals[ui.value];
+          var label = dlabels[ui.value];
+        }
+        var text = $('#textInput'+id+'_'+dim);
+        text.val(label);
+        adjustFontSize(text);
+        HoloViews.index[plot_id].set_frame(dim_val, dim_idx);
+        if (Object.keys(next_vals).length > 0) {
+          var new_vals = next_vals[dim_val];
+          var next_widget = $('#_anim_widget'+id+'_'+next_dim);
+          update_widget(next_widget, new_vals);
+        }
+      }
+    });
+    slider.keypress(function(event) {
+      if (event.which == 80 || event.which == 112) {
+        var start = slider.slider("option", "value");
+        var stop =  slider.slider("option", "max");
+        for (var i=start; i<=stop; i++) {
+          var delay = i*delay;
+          $.proxy(function doSetTimeout(i) { setTimeout($.proxy(function() {
+            var val = {value:i};
+            slider.slider('value',i);
+            slider.slider("option", "slide")(null, val);
+          }, slider), delay);}, slider)(i);
+        }
+      }
+      if (event.which == 82 || event.which == 114) {
+        var start = slider.slider("option", "value");
+        var stop =  slider.slider("option", "min");
+        var count = 0;
+        for (var i=start; i>=stop; i--) {
+          var delay = count*delay;
+          count = count + 1;
+          $.proxy(function doSetTimeout(i) { setTimeout($.proxy(function() {
+            var val = {value:i};
+            slider.slider('value',i);
+            slider.slider("option", "slide")(null, val);
+          }, slider), delay);}, slider)(i);
+        }
+      }
+    });
+    var textInput = $('#textInput'+id+'_'+dim)
+    textInput.val(init_label);
+    adjustFontSize(textInput);
+  });
+}
+
+function init_dropdown(id, plot_id, dim, vals, value, next_vals, labels, next_dim, dim_idx, dynamic) {
+  var widget = $("#_anim_widget"+id+'_'+dim);
+  widget.data('values', vals)
+  for (var i=0; i<vals.length; i++){
+    if (dynamic) {
+      var val = vals[i];
+    } else {
+      var val = i;
+    }
+    widget.append($("<option>", {
+      value: val,
+      text: labels[i]
+    }));
+  };
+  widget.data("next_vals", next_vals);
+  widget.val(value);
+  widget.on('change', function(event, ui) {
+    if (dynamic) {
+      var dim_val = parseInt(this.value);
+    } else {
+      var dim_val = $.data(this, 'values')[this.value];
+    }
+    var next_vals = $.data(this, "next_vals");
+    if (Object.keys(next_vals).length > 0) {
+      var new_vals = next_vals[dim_val];
+      var next_widget = $('#_anim_widget'+id+'_'+next_dim);
+      update_widget(next_widget, new_vals);
+    }
+    var widgets = HoloViews.index[plot_id]
+    if (widgets) {
+      widgets.set_frame(dim_val, dim_idx);
+    }
+  });
+}
+
+
+if (window.HoloViews === undefined) {
+  window.HoloViews = {}
+  window.PyViz = window.HoloViews
+} else if (window.PyViz === undefined) {
+  window.PyViz = window.HoloViews
+}
+
+
+var _namespace = {
+  init_slider: init_slider,
+  init_dropdown: init_dropdown,
+  comms: {},
+  comm_status: {},
+  index: {},
+  plot_index: {},
+  kernels: {},
+  receivers: {}
+}
+
+for (var k in _namespace) {
+  if (!(k in window.HoloViews)) {
+    window.HoloViews[k] = _namespace[k];
+  }
+}
+
+var JS_MIME_TYPE = 'application/javascript';
+var HTML_MIME_TYPE = 'text/html';
+var EXEC_MIME_TYPE = 'application/vnd.holoviews_exec.v0+json';
+var CLASS_NAME = 'output';
+
+/**
+ * Render data to the DOM node
+ */
+function render(props, node) {
+  var div = document.createElement("div");
+  var script = document.createElement("script");
+  node.appendChild(div);
+  node.appendChild(script);
+}
+
+/**
+ * Handle when a new output is added
+ */
+function handle_add_output(event, handle) {
+  var output_area = handle.output_area;
+  var output = handle.output;
+  if (!output.data.hasOwnProperty(EXEC_MIME_TYPE)) {
+    return
+  }
+  var id = output.metadata[EXEC_MIME_TYPE]["id"];
+  var toinsert = output_area.element.find("." + CLASS_NAME.split(' ')[0]);
+  if (id !== undefined) {
+    var nchildren = toinsert.length;
+    toinsert[nchildren-1].children[0].innerHTML = output.data[HTML_MIME_TYPE];
+    toinsert[nchildren-1].children[1].textContent = output.data[JS_MIME_TYPE];
+    output_area._hv_plot_id = id;
+    if ((window.Bokeh !== undefined) && (id in Bokeh.index)) {
+      HoloViews.plot_index[id] = Bokeh.index[id];
+    } else {
+      HoloViews.plot_index[id] = null;
+    }
+  }
+}
+
+/**
+ * Handle when an output is cleared or removed
+ */
+function handle_clear_output(event, handle) {
+  var id = handle.cell.output_area._hv_plot_id;
+  if ((id === undefined) || !(id in HoloViews.plot_index)) { return; }
+  var comm = window.HoloViews.comm_manager.get_client_comm("hv-extension-comm", "hv-extension-comm", function () {});
+  if (comm !== null) {
+    comm.send({event_type: 'delete', 'id': id});
+  }
+  delete HoloViews.plot_index[id];
+  if ((window.Bokeh !== undefined) & (id in window.Bokeh.index)) {
+    window.Bokeh.index[id].model.document.clear();
+    delete Bokeh.index[id];
+  }
+}
+
+/**
+ * Handle kernel restart event
+ */
+function handle_kernel_cleanup(event, handle) {
+  delete HoloViews.comms["hv-extension-comm"];
+  window.HoloViews.plot_index = {}
+}
+
+/**
+ * Handle update_display_data messages
+ */
+function handle_update_output(event, handle) {
+  handle_clear_output(event, {cell: {output_area: handle.output_area}})
+  handle_add_output(event, handle)
+}
+
+function register_renderer(events, OutputArea) {
+  function append_mime(data, metadata, element) {
+    // create a DOM node to render to
+    var toinsert = this.create_output_subarea(
+    metadata,
+    CLASS_NAME,
+    EXEC_MIME_TYPE
+    );
+    this.keyboard_manager.register_events(toinsert);
+    // Render to node
+    var props = {data: data, metadata: metadata[EXEC_MIME_TYPE]};
+    render(props, toinsert[0]);
+    element.append(toinsert);
+    return toinsert
+  }
+
+  events.on('output_added.OutputArea', handle_add_output);	
+  events.on('output_updated.OutputArea', handle_update_output);
+  events.on('clear_output.CodeCell', handle_clear_output);
+  events.on('delete.Cell', handle_clear_output);
+  events.on('kernel_ready.Kernel', handle_kernel_cleanup);
+
+  OutputArea.prototype.register_mime_type(EXEC_MIME_TYPE, append_mime, {
+    safe: true,
+    index: 0
+  });
+}
+
+if (window.Jupyter !== undefined) {
+  try {
+    var events = require('base/js/events');
+    var OutputArea = require('notebook/js/outputarea').OutputArea;
+    if (OutputArea.prototype.mime_types().indexOf(EXEC_MIME_TYPE) == -1) {
+      register_renderer(events, OutputArea);
+    }
+  } catch(err) {
+  }
+}
+
+// Define MPL specific subclasses
+function MPLSelectionWidget() {
+  SelectionWidget.apply(this, arguments);
+}
+
+function MPLScrubberWidget() {
+  ScrubberWidget.apply(this, arguments);
+}
+
+// Let them inherit from the baseclasses
+MPLSelectionWidget.prototype = Object.create(SelectionWidget.prototype);
+MPLScrubberWidget.prototype = Object.create(ScrubberWidget.prototype);
+
+// Define methods to override on widgets
+var MPLMethods = {
+  init_slider : function(init_val){
+    if(this.load_json) {
+      this.from_json()
+    } else {
+      this.update_cache();
+    }
+    if (this.dynamic | !this.cached | (this.current_vals === undefined)) {
+      this.update(0)
+    } else {
+      this.set_frame(this.current_vals[0], 0)
+    }
+  },
+  process_msg : function(msg) {
+    var data = msg.content.data;
+    this.frames[this.current] = data;
+    this.update_cache(true);
+    this.update(this.current);
+  }
+}
+// Extend MPL widgets with backend specific methods
+extend(MPLSelectionWidget.prototype, MPLMethods);
+extend(MPLScrubberWidget.prototype, MPLMethods);
+
+window.HoloViews.MPLSelectionWidget = MPLSelectionWidget
+window.HoloViews.MPLScrubberWidget = MPLScrubberWidget
+
+// Define Bokeh specific subclasses
+function BokehSelectionWidget() {
+  SelectionWidget.apply(this, arguments);
+}
+
+function BokehScrubberWidget() {
+  ScrubberWidget.apply(this, arguments);
+}
+
+// Let them inherit from the baseclasses
+BokehSelectionWidget.prototype = Object.create(SelectionWidget.prototype);
+BokehScrubberWidget.prototype = Object.create(ScrubberWidget.prototype);
+
+// Define methods to override on widgets
+var BokehMethods = {
+  update_cache : function(){
+    for (var index in this.frames) {
+      this.frames[index] = JSON.parse(this.frames[index]);
+    }
+  },
+  update : function(current){
+    if (current === undefined) {
+      return;
+    }
+    var data = this.frames[current];
+    if (data !== undefined) {
+      if (data.root in HoloViews.plot_index) {
+        var doc = HoloViews.plot_index[data.root].model.document;
+      } else {
+        var doc = Bokeh.index[data.root].model.document;
+      }
+      doc.apply_json_patch(data.content);
+    }
+  },
+  init_comms: function() {
+    if (Bokeh.protocol !== undefined) {
+      this.receiver = new Bokeh.protocol.Receiver()
+    } else {
+      this.receiver = null;
+    }
+    return HoloViewsWidget.prototype.init_comms.call(this);
+  },
+  process_msg : function(msg) {
+    if (this.plot_id in HoloViews.plot_index) {
+      var doc = HoloViews.plot_index[this.plot_id].model.document;
+    } else {
+      var doc = Bokeh.index[this.plot_id].model.document;
+    }
+    if (this.receiver === null) { return }
+    var receiver = this.receiver;
+    if (msg.buffers.length > 0) {
+      receiver.consume(msg.buffers[0].buffer)
+    } else {
+      receiver.consume(msg.content.data)
+    }
+    const comm_msg = receiver.message;
+    if ((comm_msg != null) && (doc != null)) {
+      doc.apply_json_patch(comm_msg.content, comm_msg.buffers)
+    }
+  }
+}
+
+// Extend Bokeh widgets with backend specific methods
+extend(BokehSelectionWidget.prototype, BokehMethods);
+extend(BokehScrubberWidget.prototype, BokehMethods);
+
+window.HoloViews.BokehSelectionWidget = BokehSelectionWidget
+window.HoloViews.BokehScrubberWidget = BokehScrubberWidget
+</script>
+<script type="text/javascript">
+    function JupyterCommManager() {
+    }
+
+    JupyterCommManager.prototype.register_target = function(plot_id, comm_id, msg_handler) {
+      if (window.comm_manager || ((window.Jupyter !== undefined) && (Jupyter.notebook.kernel != null))) {
+        var comm_manager = window.comm_manager || Jupyter.notebook.kernel.comm_manager;
+        comm_manager.register_target(comm_id, function(comm) {
+          comm.on_msg(msg_handler);
+        });
+      } else if ((plot_id in window.PyViz.kernels) && (window.PyViz.kernels[plot_id])) {
+        window.PyViz.kernels[plot_id].registerCommTarget(comm_id, function(comm) {
+          comm.onMsg = msg_handler;
+        });
+      }
+    }
+
+    JupyterCommManager.prototype.get_client_comm = function(plot_id, comm_id, msg_handler) {
+      if (comm_id in window.PyViz.comms) {
+        return window.PyViz.comms[comm_id];
+      } else if (window.comm_manager || ((window.Jupyter !== undefined) && (Jupyter.notebook.kernel != null))) {
+        var comm_manager = window.comm_manager || Jupyter.notebook.kernel.comm_manager;
+        var comm = comm_manager.new_comm(comm_id, {}, {}, {}, comm_id);
+        if (msg_handler) {
+          comm.on_msg(msg_handler);
+        }
+      } else if ((plot_id in window.PyViz.kernels) && (window.PyViz.kernels[plot_id])) {
+        var comm = window.PyViz.kernels[plot_id].connectToComm(comm_id);
+        comm.open();
+        if (msg_handler) {
+          comm.onMsg = msg_handler;
+        }
+      }
+
+      window.PyViz.comms[comm_id] = comm;
+      return comm;
+    }
+
+    window.PyViz.comm_manager = new JupyterCommManager();
+    </script>
+
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css">
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.16.min.css">
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-tables-0.12.16.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+<style>div.bk-hbox {
+    display: flex;
+    justify-content: center;
+}
+
+div.bk-hbox div.bk-plot {
+    padding: 8px;
+}
+
+div.bk-hbox div.bk-data-table {
+    padding: 20px;
+}
+
+div.hololayout {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+div.holoframe {
+  width: 75%;
+}
+
+div.holowell {
+  display: flex;
+  align-items: center;
+}
+
+form.holoform {
+  background-color: #fafafa;
+  border-radius: 5px;
+  overflow: hidden;
+  padding-left: 0.8em;
+  padding-right: 0.8em;
+  padding-top: 0.4em;
+  padding-bottom: 0.4em;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  border: 1px solid #e3e3e3;
+}
+
+div.holowidgets {
+  padding-right: 0;
+  width: 25%;
+}
+
+div.holoslider {
+  min-height: 0 !important;
+  height: 0.8em;
+  width: 100%;
+}
+
+div.holoformgroup {
+  padding-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+div.hologroup {
+  padding-left: 0;
+  padding-right: 0.8em;
+  width: 100%;
+}
+
+.holoselect {
+  width: 92%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.holotext {
+  padding-left:  0.5em;
+  padding-right: 0;
+  width: 100%;
+}
+
+.holowidgets .ui-resizable-se {
+  visibility: hidden
+}
+
+.holoframe > .ui-resizable-se {
+  visibility: hidden
+}
+
+.holowidgets .ui-resizable-s {
+  visibility: hidden
+}
+
+
+/* CSS rules for noUISlider based slider used by JupyterLab extension  */
+
+.noUi-handle {
+  width: 20px !important;
+  height: 20px !important;
+  left: -5px !important;
+  top: -5px !important;
+}
+
+.noUi-handle:before, .noUi-handle:after {
+  visibility: hidden;
+  height: 0px;
+}
+
+.noUi-target {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+</style><div style='display: table; margin: 0 auto;'>
+
+<div class="bk-root">
+    <div class="bk-plotdiv" id="aa54db11-ad90-493a-bafb-d80c7b1bca0b"></div>
+</div>
+<script type="text/javascript">
+  (function(root) {
+  function embed_document(root) {
+    
+  var docs_json = {"34bb3610-9e34-449c-8019-7f9d67089957":{"roots":{"references":[{"attributes":{},"id":"7caa3cdd-516a-4aba-b2c5-2d6faeca308c","type":"BasicTickFormatter"},{"attributes":{},"id":"87830569-9386-4fd8-b5f2-be47a9c425e6","type":"CategoricalScale"},{"attributes":{"data_source":{"id":"70bdb0b0-0a28-4de0-b77f-adaa5d875df5","type":"ColumnDataSource"},"glyph":{"id":"7e1425f0-5e70-4c85-83a1-0414cd68bfaf","type":"VBar"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"e76e7fab-c6b1-4590-8cff-42ba5b3e7c81","type":"VBar"},"selection_glyph":null,"view":{"id":"acec0bc3-e7bb-4a4c-9709-cc682b9757ff","type":"CDSView"}},"id":"dd550375-d197-4260-86d6-6e2c02d07395","type":"GlyphRenderer"},{"attributes":{"callback":null,"data":{"eritrea_1991_hyphen_minus_2015":["1991.0","1991.08","1991.17","1991.25","1991.33","1991.42","1991.5","1991.58","1991.67","1991.75","1991.83","1991.92","1992.0","1992.08","1992.17","1992.25","1992.33","1992.42","1992.5","1992.58","1992.67","1992.75","1992.83","1992.92","1993.0","1993.08","1993.17","1993.25","1993.33","1993.42","1993.5","1993.58","1993.67","1993.75","1993.83","1993.92","1994.0","1994.08","1994.17","1994.25","1994.33","1994.42","1994.5","1994.58","1994.67","1994.75","1994.83","1994.92","1995.0","1995.08","1995.17","1995.25","1995.33","1995.42","1995.5","1995.58","1995.67","1995.75","1995.83","1995.92","1996.0","1996.08","1996.17","1996.25","1996.33","1996.42","1996.5","1996.58","1996.67","1996.75","1996.83","1996.92","1997.0","1997.08","1997.17","1997.25","1997.33","1997.42","1997.5","1997.58","1997.67","1997.75","1997.83","1997.92","1998.0","1998.08","1998.17","1998.25","1998.33","1998.42","1998.5","1998.58","1998.67","1998.75","1998.83","1998.92","1999.0","1999.08","1999.17","1999.25","1999.33","1999.42","1999.5","1999.58","1999.67","1999.75","1999.83","1999.92","2000.0","2000.08","2000.17","2000.25","2000.33","2000.42","2000.5","2000.58","2000.67","2000.75","2000.83","2000.92","2001.0","2001.08","2001.17","2001.25","2001.33","2001.42","2001.5","2001.58","2001.67","2001.75","2001.83","2001.92","2002.0","2002.08","2002.17","2002.25","2002.33","2002.42","2002.5","2002.58","2002.67","2002.75","2002.83","2002.92","2003.0","2003.08","2003.17","2003.25","2003.33","2003.42","2003.5","2003.58","2003.67","2003.75","2003.83","2003.92","2004.0","2004.08","2004.17","2004.25","2004.33","2004.42","2004.5","2004.58","2004.67","2004.75","2004.83","2004.92","2005.0","2005.08","2005.17","2005.25","2005.33","2005.42","2005.5","2005.58","2005.67","2005.75","2005.83","2005.92","2006.0","2006.08","2006.17","2006.25","2006.33","2006.42","2006.5","2006.58","2006.67","2006.75","2006.83","2006.92","2007.0","2007.08","2007.17","2007.25","2007.33","2007.42","2007.5","2007.58","2007.67","2007.75","2007.83","2007.92","2008.0","2008.08","2008.17","2008.25","2008.33","2008.42","2008.5","2008.58","2008.67","2008.75","2008.83","2008.92","2009.0","2009.08","2009.17","2009.25","2009.33","2009.42","2009.5","2009.58","2009.67","2009.75","2009.83","2009.92","2010.0","2010.08","2010.17","2010.25","2010.33","2010.42","2010.5","2010.58","2010.67","2010.75","2010.83","2010.92","2011.0","2011.08","2011.17","2011.25","2011.33","2011.42","2011.5","2011.58","2011.67","2011.75","2011.83","2011.92","2012.0","2012.08","2012.17","2012.25","2012.33","2012.42","2012.5","2012.58","2012.67","2012.75","2012.83","2012.92","2013.0","2013.08","2013.17","2013.25","2013.33","2013.42","2013.5","2013.58","2013.67","2013.75","2013.83","2013.92","2014.0","2014.08","2014.17","2014.25","2014.33","2014.42","2014.5","2014.58","2014.67","2014.75","2014.83","2014.92","2015.0","2015.08","2015.17","2015.25","2015.33","2015.42","2015.5","2015.58","2015.67","2015.75","2015.83","2015.92"],"normalised_precipitation_and_temperature":{"__ndarray__":"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","dtype":"float64","shape":[300]}},"selected":{"id":"0cbdd27f-5178-4bf9-994f-cb488a1d8bf0","type":"Selection"},"selection_policy":{"id":"5e12b757-15d3-4aa8-985a-3c018ef34ef9","type":"UnionRenderers"}},"id":"70bdb0b0-0a28-4de0-b77f-adaa5d875df5","type":"ColumnDataSource"},{"attributes":{},"id":"0cbdd27f-5178-4bf9-994f-cb488a1d8bf0","type":"Selection"},{"attributes":{"line_color":"red","line_width":2,"x":{"field":"eritrea 1991 - 2015"},"y":{"field":"normalised precipitation and temperature"}},"id":"e48eae02-2121-4c3c-aed0-5717c397239a","type":"Line"},{"attributes":{},"id":"0767de5c-c0e0-494e-9006-23a80be54a4c","type":"ResetTool"},{"attributes":{"callback":null,"factors":["1991.0","1991.08","1991.17","1991.25","1991.33","1991.42","1991.5","1991.58","1991.67","1991.75","1991.83","1991.92","1992.0","1992.08","1992.17","1992.25","1992.33","1992.42","1992.5","1992.58","1992.67","1992.75","1992.83","1992.92","1993.0","1993.08","1993.17","1993.25","1993.33","1993.42","1993.5","1993.58","1993.67","1993.75","1993.83","1993.92","1994.0","1994.08","1994.17","1994.25","1994.33","1994.42","1994.5","1994.58","1994.67","1994.75","1994.83","1994.92","1995.0","1995.08","1995.17","1995.25","1995.33","1995.42","1995.5","1995.58","1995.67","1995.75","1995.83","1995.92","1996.0","1996.08","1996.17","1996.25","1996.33","1996.42","1996.5","1996.58","1996.67","1996.75","1996.83","1996.92","1997.0","1997.08","1997.17","1997.25","1997.33","1997.42","1997.5","1997.58","1997.67","1997.75","1997.83","1997.92","1998.0","1998.08","1998.17","1998.25","1998.33","1998.42","1998.5","1998.58","1998.67","1998.75","1998.83","1998.92","1999.0","1999.08","1999.17","1999.25","1999.33","1999.42","1999.5","1999.58","1999.67","1999.75","1999.83","1999.92","2000.0","2000.08","2000.17","2000.25","2000.33","2000.42","2000.5","2000.58","2000.67","2000.75","2000.83","2000.92","2001.0","2001.08","2001.17","2001.25","2001.33","2001.42","2001.5","2001.58","2001.67","2001.75","2001.83","2001.92","2002.0","2002.08","2002.17","2002.25","2002.33","2002.42","2002.5","2002.58","2002.67","2002.75","2002.83","2002.92","2003.0","2003.08","2003.17","2003.25","2003.33","2003.42","2003.5","2003.58","2003.67","2003.75","2003.83","2003.92","2004.0","2004.08","2004.17","2004.25","2004.33","2004.42","2004.5","2004.58","2004.67","2004.75","2004.83","2004.92","2005.0","2005.08","2005.17","2005.25","2005.33","2005.42","2005.5","2005.58","2005.67","2005.75","2005.83","2005.92","2006.0","2006.08","2006.17","2006.25","2006.33","2006.42","2006.5","2006.58","2006.67","2006.75","2006.83","2006.92","2007.0","2007.08","2007.17","2007.25","2007.33","2007.42","2007.5","2007.58","2007.67","2007.75","2007.83","2007.92","2008.0","2008.08","2008.17","2008.25","2008.33","2008.42","2008.5","2008.58","2008.67","2008.75","2008.83","2008.92","2009.0","2009.08","2009.17","2009.25","2009.33","2009.42","2009.5","2009.58","2009.67","2009.75","2009.83","2009.92","2010.0","2010.08","2010.17","2010.25","2010.33","2010.42","2010.5","2010.58","2010.67","2010.75","2010.83","2010.92","2011.0","2011.08","2011.17","2011.25","2011.33","2011.42","2011.5","2011.58","2011.67","2011.75","2011.83","2011.92","2012.0","2012.08","2012.17","2012.25","2012.33","2012.42","2012.5","2012.58","2012.67","2012.75","2012.83","2012.92","2013.0","2013.08","2013.17","2013.25","2013.33","2013.42","2013.5","2013.58","2013.67","2013.75","2013.83","2013.92","2014.0","2014.08","2014.17","2014.25","2014.33","2014.42","2014.5","2014.58","2014.67","2014.75","2014.83","2014.92","2015.0","2015.08","2015.17","2015.25","2015.33","2015.42","2015.5","2015.58","2015.67","2015.75","2015.83","2015.92"]},"id":"109bbed1-409a-40c2-9399-0c161e16d242","type":"FactorRange"},{"attributes":{},"id":"3dd03829-0807-4114-83e2-bd078ef393b2","type":"PanTool"},{"attributes":{},"id":"e0afc3ae-ce2b-49f5-a638-924d9712b111","type":"CategoricalTicker"},{"attributes":{"callback":null,"data":{"eritrea 1991 - 2015":["1991.0","1991.08","1991.17","1991.25","1991.33","1991.42","1991.5","1991.58","1991.67","1991.75","1991.83","1991.92","1992.0","1992.08","1992.17","1992.25","1992.33","1992.42","1992.5","1992.58","1992.67","1992.75","1992.83","1992.92","1993.0","1993.08","1993.17","1993.25","1993.33","1993.42","1993.5","1993.58","1993.67","1993.75","1993.83","1993.92","1994.0","1994.08","1994.17","1994.25","1994.33","1994.42","1994.5","1994.58","1994.67","1994.75","1994.83","1994.92","1995.0","1995.08","1995.17","1995.25","1995.33","1995.42","1995.5","1995.58","1995.67","1995.75","1995.83","1995.92","1996.0","1996.08","1996.17","1996.25","1996.33","1996.42","1996.5","1996.58","1996.67","1996.75","1996.83","1996.92","1997.0","1997.08","1997.17","1997.25","1997.33","1997.42","1997.5","1997.58","1997.67","1997.75","1997.83","1997.92","1998.0","1998.08","1998.17","1998.25","1998.33","1998.42","1998.5","1998.58","1998.67","1998.75","1998.83","1998.92","1999.0","1999.08","1999.17","1999.25","1999.33","1999.42","1999.5","1999.58","1999.67","1999.75","1999.83","1999.92","2000.0","2000.08","2000.17","2000.25","2000.33","2000.42","2000.5","2000.58","2000.67","2000.75","2000.83","2000.92","2001.0","2001.08","2001.17","2001.25","2001.33","2001.42","2001.5","2001.58","2001.67","2001.75","2001.83","2001.92","2002.0","2002.08","2002.17","2002.25","2002.33","2002.42","2002.5","2002.58","2002.67","2002.75","2002.83","2002.92","2003.0","2003.08","2003.17","2003.25","2003.33","2003.42","2003.5","2003.58","2003.67","2003.75","2003.83","2003.92","2004.0","2004.08","2004.17","2004.25","2004.33","2004.42","2004.5","2004.58","2004.67","2004.75","2004.83","2004.92","2005.0","2005.08","2005.17","2005.25","2005.33","2005.42","2005.5","2005.58","2005.67","2005.75","2005.83","2005.92","2006.0","2006.08","2006.17","2006.25","2006.33","2006.42","2006.5","2006.58","2006.67","2006.75","2006.83","2006.92","2007.0","2007.08","2007.17","2007.25","2007.33","2007.42","2007.5","2007.58","2007.67","2007.75","2007.83","2007.92","2008.0","2008.08","2008.17","2008.25","2008.33","2008.42","2008.5","2008.58","2008.67","2008.75","2008.83","2008.92","2009.0","2009.08","2009.17","2009.25","2009.33","2009.42","2009.5","2009.58","2009.67","2009.75","2009.83","2009.92","2010.0","2010.08","2010.17","2010.25","2010.33","2010.42","2010.5","2010.58","2010.67","2010.75","2010.83","2010.92","2011.0","2011.08","2011.17","2011.25","2011.33","2011.42","2011.5","2011.58","2011.67","2011.75","2011.83","2011.92","2012.0","2012.08","2012.17","2012.25","2012.33","2012.42","2012.5","2012.58","2012.67","2012.75","2012.83","2012.92","2013.0","2013.08","2013.17","2013.25","2013.33","2013.42","2013.5","2013.58","2013.67","2013.75","2013.83","2013.92","2014.0","2014.08","2014.17","2014.25","2014.33","2014.42","2014.5","2014.58","2014.67","2014.75","2014.83","2014.92","2015.0","2015.08","2015.17","2015.25","2015.33","2015.42","2015.5","2015.58","2015.67","2015.75","2015.83","2015.92"],"eritrea_1991_hyphen_minus_2015":["1991.0","1991.08","1991.17","1991.25","1991.33","1991.42","1991.5","1991.58","1991.67","1991.75","1991.83","1991.92","1992.0","1992.08","1992.17","1992.25","1992.33","1992.42","1992.5","1992.58","1992.67","1992.75","1992.83","1992.92","1993.0","1993.08","1993.17","1993.25","1993.33","1993.42","1993.5","1993.58","1993.67","1993.75","1993.83","1993.92","1994.0","1994.08","1994.17","1994.25","1994.33","1994.42","1994.5","1994.58","1994.67","1994.75","1994.83","1994.92","1995.0","1995.08","1995.17","1995.25","1995.33","1995.42","1995.5","1995.58","1995.67","1995.75","1995.83","1995.92","1996.0","1996.08","1996.17","1996.25","1996.33","1996.42","1996.5","1996.58","1996.67","1996.75","1996.83","1996.92","1997.0","1997.08","1997.17","1997.25","1997.33","1997.42","1997.5","1997.58","1997.67","1997.75","1997.83","1997.92","1998.0","1998.08","1998.17","1998.25","1998.33","1998.42","1998.5","1998.58","1998.67","1998.75","1998.83","1998.92","1999.0","1999.08","1999.17","1999.25","1999.33","1999.42","1999.5","1999.58","1999.67","1999.75","1999.83","1999.92","2000.0","2000.08","2000.17","2000.25","2000.33","2000.42","2000.5","2000.58","2000.67","2000.75","2000.83","2000.92","2001.0","2001.08","2001.17","2001.25","2001.33","2001.42","2001.5","2001.58","2001.67","2001.75","2001.83","2001.92","2002.0","2002.08","2002.17","2002.25","2002.33","2002.42","2002.5","2002.58","2002.67","2002.75","2002.83","2002.92","2003.0","2003.08","2003.17","2003.25","2003.33","2003.42","2003.5","2003.58","2003.67","2003.75","2003.83","2003.92","2004.0","2004.08","2004.17","2004.25","2004.33","2004.42","2004.5","2004.58","2004.67","2004.75","2004.83","2004.92","2005.0","2005.08","2005.17","2005.25","2005.33","2005.42","2005.5","2005.58","2005.67","2005.75","2005.83","2005.92","2006.0","2006.08","2006.17","2006.25","2006.33","2006.42","2006.5","2006.58","2006.67","2006.75","2006.83","2006.92","2007.0","2007.08","2007.17","2007.25","2007.33","2007.42","2007.5","2007.58","2007.67","2007.75","2007.83","2007.92","2008.0","2008.08","2008.17","2008.25","2008.33","2008.42","2008.5","2008.58","2008.67","2008.75","2008.83","2008.92","2009.0","2009.08","2009.17","2009.25","2009.33","2009.42","2009.5","2009.58","2009.67","2009.75","2009.83","2009.92","2010.0","2010.08","2010.17","2010.25","2010.33","2010.42","2010.5","2010.58","2010.67","2010.75","2010.83","2010.92","2011.0","2011.08","2011.17","2011.25","2011.33","2011.42","2011.5","2011.58","2011.67","2011.75","2011.83","2011.92","2012.0","2012.08","2012.17","2012.25","2012.33","2012.42","2012.5","2012.58","2012.67","2012.75","2012.83","2012.92","2013.0","2013.08","2013.17","2013.25","2013.33","2013.42","2013.5","2013.58","2013.67","2013.75","2013.83","2013.92","2014.0","2014.08","2014.17","2014.25","2014.33","2014.42","2014.5","2014.58","2014.67","2014.75","2014.83","2014.92","2015.0","2015.08","2015.17","2015.25","2015.33","2015.42","2015.5","2015.58","2015.67","2015.75","2015.83","2015.92"],"normalised precipitation and temperature":{"__ndarray__":"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","dtype":"float64","shape":[300]},"normalised_precipitation_and_temperature":{"__ndarray__":"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","dtype":"float64","shape":[300]}},"selected":{"id":"17b624b1-32f6-4c36-9a10-eccc802a9068","type":"Selection"},"selection_policy":{"id":"148a7eba-3d1d-4fc4-ac2a-880706618e8d","type":"UnionRenderers"}},"id":"99793750-b4d2-4077-a9fc-5bf852840095","type":"ColumnDataSource"},{"attributes":{},"id":"15fb4092-6c60-480c-bf64-aac30c7ad83d","type":"SaveTool"},{"attributes":{},"id":"148a7eba-3d1d-4fc4-ac2a-880706618e8d","type":"UnionRenderers"},{"attributes":{},"id":"5e12b757-15d3-4aa8-985a-3c018ef34ef9","type":"UnionRenderers"},{"attributes":{"plot":null,"text":"","text_color":{"value":"black"},"text_font_size":{"value":"12pt"}},"id":"9a7da671-a825-4f84-91b5-69b5431091f9","type":"Title"},{"attributes":{},"id":"17b624b1-32f6-4c36-9a10-eccc802a9068","type":"Selection"},{"attributes":{},"id":"283eca56-05f5-4d84-94f8-1ef7f211252d","type":"WheelZoomTool"},{"attributes":{"axis_label":"eritrea 1991 - 2015","bounds":"auto","formatter":{"id":"a6f52c4d-5e44-41eb-92dd-5ef3d3732787","type":"CategoricalTickFormatter"},"major_label_orientation":"horizontal","plot":{"id":"02ea430a-d9c0-4144-b845-e3339be621bf","subtype":"Figure","type":"Plot"},"ticker":{"id":"e0afc3ae-ce2b-49f5-a638-924d9712b111","type":"CategoricalTicker"}},"id":"c816b29e-45f0-45f9-ae7b-b6af53b37c94","type":"CategoricalAxis"},{"attributes":{"data_source":{"id":"99793750-b4d2-4077-a9fc-5bf852840095","type":"ColumnDataSource"},"glyph":{"id":"e48eae02-2121-4c3c-aed0-5717c397239a","type":"Line"},"hover_glyph":null,"muted_glyph":{"id":"85049ebd-6917-46e9-a0cd-57851530fcde","type":"Line"},"nonselection_glyph":{"id":"32a4d85e-d8b0-4430-a65d-d545f20aaa30","type":"Line"},"selection_glyph":null,"view":{"id":"6e24b601-1b73-4e12-9a63-0e250d2065bf","type":"CDSView"}},"id":"a2edc727-eaae-48cf-9487-e25e4ff41e5e","type":"GlyphRenderer"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"plot":null,"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"596bc83d-e57a-4e71-a04a-40cc5d9fa226","type":"BoxAnnotation"},{"attributes":{"dimension":1,"grid_line_color":{"value":null},"plot":{"id":"02ea430a-d9c0-4144-b845-e3339be621bf","subtype":"Figure","type":"Plot"},"ticker":{"id":"d3185913-8b93-460a-8635-f5940a6e7ff9","type":"BasicTicker"}},"id":"89b4b519-1290-49bf-92e8-bfd808961659","type":"Grid"},{"attributes":{},"id":"9f7db04d-8611-4659-9b7b-32965f8e0630","type":"LinearScale"},{"attributes":{"click_policy":"mute","items":[{"id":"55079a96-292b-48e2-ace1-82dde1d96d99","type":"LegendItem"},{"id":"e810b159-bb41-45fe-a00d-cab9920d6331","type":"LegendItem"}],"plot":{"id":"02ea430a-d9c0-4144-b845-e3339be621bf","subtype":"Figure","type":"Plot"}},"id":"e6b05d6f-f32c-49d5-880c-8a0fa8e64c9b","type":"Legend"},{"attributes":{"line_alpha":0.1,"line_color":"red","line_width":2,"x":{"field":"eritrea 1991 - 2015"},"y":{"field":"normalised precipitation and temperature"}},"id":"32a4d85e-d8b0-4430-a65d-d545f20aaa30","type":"Line"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"1e94605c-5e6e-44a6-af8b-3fdedfd91666","type":"HoverTool"},{"id":"15fb4092-6c60-480c-bf64-aac30c7ad83d","type":"SaveTool"},{"id":"3dd03829-0807-4114-83e2-bd078ef393b2","type":"PanTool"},{"id":"283eca56-05f5-4d84-94f8-1ef7f211252d","type":"WheelZoomTool"},{"id":"04ed23e6-d846-4163-b262-04c3cfe09580","type":"BoxZoomTool"},{"id":"0767de5c-c0e0-494e-9006-23a80be54a4c","type":"ResetTool"}]},"id":"cc738e6a-2f1e-4669-82ae-8517db74d288","type":"Toolbar"},{"attributes":{"line_alpha":0.2,"line_color":"red","line_width":2,"x":{"field":"eritrea 1991 - 2015"},"y":{"field":"normalised precipitation and temperature"}},"id":"85049ebd-6917-46e9-a0cd-57851530fcde","type":"Line"},{"attributes":{"below":[{"id":"c816b29e-45f0-45f9-ae7b-b6af53b37c94","type":"CategoricalAxis"}],"left":[{"id":"b15c0297-11d1-4015-b1ff-6844825aa089","type":"LinearAxis"}],"min_border_bottom":10,"min_border_left":10,"min_border_right":10,"min_border_top":10,"plot_height":250,"plot_width":832,"renderers":[{"id":"c816b29e-45f0-45f9-ae7b-b6af53b37c94","type":"CategoricalAxis"},{"id":"b3a01b5b-ad55-4411-9581-6ddd6f216bf1","type":"Grid"},{"id":"b15c0297-11d1-4015-b1ff-6844825aa089","type":"LinearAxis"},{"id":"89b4b519-1290-49bf-92e8-bfd808961659","type":"Grid"},{"id":"596bc83d-e57a-4e71-a04a-40cc5d9fa226","type":"BoxAnnotation"},{"id":"e6b05d6f-f32c-49d5-880c-8a0fa8e64c9b","type":"Legend"},{"id":"dd550375-d197-4260-86d6-6e2c02d07395","type":"GlyphRenderer"},{"id":"a2edc727-eaae-48cf-9487-e25e4ff41e5e","type":"GlyphRenderer"}],"title":{"id":"9a7da671-a825-4f84-91b5-69b5431091f9","type":"Title"},"toolbar":{"id":"cc738e6a-2f1e-4669-82ae-8517db74d288","type":"Toolbar"},"x_range":{"id":"109bbed1-409a-40c2-9399-0c161e16d242","type":"FactorRange"},"x_scale":{"id":"87830569-9386-4fd8-b5f2-be47a9c425e6","type":"CategoricalScale"},"y_range":{"id":"8f338441-71a8-439e-86e4-54b18de1d157","type":"Range1d"},"y_scale":{"id":"9f7db04d-8611-4659-9b7b-32965f8e0630","type":"LinearScale"}},"id":"02ea430a-d9c0-4144-b845-e3339be621bf","subtype":"Figure","type":"Plot"},{"attributes":{"source":{"id":"70bdb0b0-0a28-4de0-b77f-adaa5d875df5","type":"ColumnDataSource"}},"id":"acec0bc3-e7bb-4a4c-9709-cc682b9757ff","type":"CDSView"},{"attributes":{"label":{"value":"temperature"},"renderers":[{"id":"a2edc727-eaae-48cf-9487-e25e4ff41e5e","type":"GlyphRenderer"}]},"id":"e810b159-bb41-45fe-a00d-cab9920d6331","type":"LegendItem"},{"attributes":{},"id":"d3185913-8b93-460a-8635-f5940a6e7ff9","type":"BasicTicker"},{"attributes":{"source":{"id":"99793750-b4d2-4077-a9fc-5bf852840095","type":"ColumnDataSource"}},"id":"6e24b601-1b73-4e12-9a63-0e250d2065bf","type":"CDSView"},{"attributes":{"label":{"value":"precipitation"},"renderers":[{"id":"dd550375-d197-4260-86d6-6e2c02d07395","type":"GlyphRenderer"}]},"id":"55079a96-292b-48e2-ace1-82dde1d96d99","type":"LegendItem"},{"attributes":{},"id":"a6f52c4d-5e44-41eb-92dd-5ef3d3732787","type":"CategoricalTickFormatter"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#30a2da"},"line_alpha":{"value":0.1},"line_color":{"value":"black"},"top":{"field":"normalised_precipitation_and_temperature"},"width":{"value":0.8},"x":{"field":"eritrea_1991_hyphen_minus_2015"}},"id":"e76e7fab-c6b1-4590-8cff-42ba5b3e7c81","type":"VBar"},{"attributes":{"callback":null,"renderers":[{"id":"a2edc727-eaae-48cf-9487-e25e4ff41e5e","type":"GlyphRenderer"}],"tooltips":[["eritrea 1991 - 2015","@{eritrea_1991_hyphen_minus_2015}"],["normalised precipitation and temperature","@{normalised_precipitation_and_temperature}"]]},"id":"1e94605c-5e6e-44a6-af8b-3fdedfd91666","type":"HoverTool"},{"attributes":{"axis_label":"normalised precipitation and temperature","bounds":"auto","formatter":{"id":"7caa3cdd-516a-4aba-b2c5-2d6faeca308c","type":"BasicTickFormatter"},"major_label_orientation":"horizontal","plot":{"id":"02ea430a-d9c0-4144-b845-e3339be621bf","subtype":"Figure","type":"Plot"},"ticker":{"id":"d3185913-8b93-460a-8635-f5940a6e7ff9","type":"BasicTicker"}},"id":"b15c0297-11d1-4015-b1ff-6844825aa089","type":"LinearAxis"},{"attributes":{"fill_color":{"value":"#30a2da"},"top":{"field":"normalised_precipitation_and_temperature"},"width":{"value":0.8},"x":{"field":"eritrea_1991_hyphen_minus_2015"}},"id":"7e1425f0-5e70-4c85-83a1-0414cd68bfaf","type":"VBar"},{"attributes":{"grid_line_color":{"value":null},"plot":{"id":"02ea430a-d9c0-4144-b845-e3339be621bf","subtype":"Figure","type":"Plot"},"ticker":{"id":"e0afc3ae-ce2b-49f5-a638-924d9712b111","type":"CategoricalTicker"}},"id":"b3a01b5b-ad55-4411-9581-6ddd6f216bf1","type":"Grid"},{"attributes":{"callback":null},"id":"8f338441-71a8-439e-86e4-54b18de1d157","type":"Range1d"},{"attributes":{"overlay":{"id":"596bc83d-e57a-4e71-a04a-40cc5d9fa226","type":"BoxAnnotation"}},"id":"04ed23e6-d846-4163-b262-04c3cfe09580","type":"BoxZoomTool"}],"root_ids":["02ea430a-d9c0-4144-b845-e3339be621bf"]},"title":"Bokeh Application","version":"0.12.16"}};
+  var render_items = [{"docid":"34bb3610-9e34-449c-8019-7f9d67089957","elementid":"aa54db11-ad90-493a-bafb-d80c7b1bca0b","modelid":"02ea430a-d9c0-4144-b845-e3339be621bf"}];
+  root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
+
+  }
+  if (root.Bokeh !== undefined) {
+    embed_document(root);
+  } else {
+    var attempts = 0;
+    var timer = setInterval(function(root) {
+      if (root.Bokeh !== undefined) {
+        embed_document(root);
+        clearInterval(timer);
+      }
+      attempts++;
+      if (attempts > 100) {
+        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+        clearInterval(timer);
+      }
+    }, 10, root)
+  }
+})(window);
+</script>
+</div>

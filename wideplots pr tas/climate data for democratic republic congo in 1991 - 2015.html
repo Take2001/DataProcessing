@@ -1,0 +1,969 @@
+
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.js" type="text/javascript"></script>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.16.min.js" type="text/javascript"></script>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-tables-0.12.16.min.js" type="text/javascript"></script>
+<script src="https://cdn.pydata.org/bokeh/release/bokeh-gl-0.12.16.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.20/require.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" type="text/javascript"></script>
+<script type="text/javascript">function HoloViewsWidget() {
+}
+
+HoloViewsWidget.prototype.init_slider = function(init_val){
+  if(this.load_json) {
+    this.from_json()
+  } else {
+    this.update_cache();
+  }
+}
+
+HoloViewsWidget.prototype.populate_cache = function(idx){
+  this.cache[idx].innerHTML = this.frames[idx];
+  if (this.embed) {
+    delete this.frames[idx];
+  }
+}
+
+HoloViewsWidget.prototype.process_error = function(msg){
+}
+
+HoloViewsWidget.prototype.from_json = function() {
+  var data_url = this.json_path + this.id + '.json';
+  $.getJSON(data_url, $.proxy(function(json_data) {
+    this.frames = json_data;
+    this.update_cache();
+    this.update(0);
+  }, this));
+}
+
+HoloViewsWidget.prototype.dynamic_update = function(current){
+  if (current === undefined) {
+    return
+  }
+  this.current = current;
+  if (this.comm) {
+    var msg = {comm_id: this.id+'_client', content: current}
+    this.comm.send(msg);
+  }
+}
+
+HoloViewsWidget.prototype.update_cache = function(force){
+  var frame_len = Object.keys(this.frames).length;
+  for (var i=0; i<frame_len; i++) {
+    if(!this.load_json || this.dynamic)  {
+      var frame = Object.keys(this.frames)[i];
+    } else {
+      var frame = i;
+    }
+    if(!(frame in this.cache) || force) {
+      if ((frame in this.cache) && force) { this.cache[frame].remove() }
+      var div = document.createElement("div");
+      var parent = document.getElementById("_anim_img"+this.id);
+      div.style.display = "none";
+      parent.appendChild(div)
+      this.cache[frame] = div;
+      var cache_id = "_anim_img"+this.id+"_"+frame;
+      this.populate_cache(frame);
+    }
+  }
+}
+
+HoloViewsWidget.prototype.update = function(current){
+  if(current in this.cache) {
+    for (var index in this.cache) {
+      this.cache[index].style.display = "none";
+    }
+    this.cache[current].style.display = "";
+    this.wait = false;
+  }
+}
+
+HoloViewsWidget.prototype.init_comms = function() {
+  var that = this
+  HoloViews.comm_manager.register_target(this.plot_id, this.id, function (msg) { that.process_msg(msg) })
+  if (!this.cached || this.dynamic) {
+    function ack_callback(msg) {
+      msg = JSON.parse(msg.content.data);
+      var comm_id = msg["comm_id"]
+      var comm_status = HoloViews.comm_status[comm_id];
+      if (that.queue.length > 0) {
+        that.time = Date.now();
+        that.dynamic_update(that.queue[that.queue.length-1]);
+        that.queue = [];
+      } else {
+        that.wait = false;
+      }
+      if ((msg.msg_type == "Ready") && msg.content) {
+        console.log("Python callback returned following output:", msg.content);
+      } else if (msg.msg_type == "Error") {
+        console.log("Python failed with the following traceback:", msg['traceback'])
+      }
+    }
+    var comm = HoloViews.comm_manager.get_client_comm(this.plot_id, this.id+'_client', ack_callback);
+    return comm
+  }
+}
+
+HoloViewsWidget.prototype.process_msg = function(msg) {
+}
+
+function SelectionWidget(frames, id, slider_ids, keyMap, dim_vals, notFound, load_json, mode, cached, json_path, dynamic, plot_id){
+  this.frames = frames;
+  this.id = id;
+  this.plot_id = plot_id;
+  this.slider_ids = slider_ids;
+  this.keyMap = keyMap
+  this.current_frame = 0;
+  this.current_vals = dim_vals;
+  this.load_json = load_json;
+  this.mode = mode;
+  this.notFound = notFound;
+  this.cached = cached;
+  this.dynamic = dynamic;
+  this.cache = {};
+  this.json_path = json_path;
+  this.init_slider(this.current_vals[0]);
+  this.queue = [];
+  this.wait = false;
+  if (!this.cached || this.dynamic) {
+    this.comm = this.init_comms();
+  }
+}
+
+SelectionWidget.prototype = new HoloViewsWidget;
+
+
+SelectionWidget.prototype.get_key = function(current_vals) {
+  var key = "(";
+  for (var i=0; i<this.slider_ids.length; i++)
+  {
+    var val = this.current_vals[i];
+    if (!(typeof val === 'string')) {
+      if (val % 1 === 0) { val = val.toFixed(1); }
+      else { val = val.toFixed(10); val = val.slice(0, val.length-1);}
+    }
+    key += "'" + val + "'";
+    if(i != this.slider_ids.length-1) { key += ', ';}
+    else if(this.slider_ids.length == 1) { key += ',';}
+  }
+  key += ")";
+  return this.keyMap[key];
+}
+
+SelectionWidget.prototype.set_frame = function(dim_val, dim_idx){
+  this.current_vals[dim_idx] = dim_val;
+  var key = this.current_vals;
+  if (!this.dynamic) {
+    key = this.get_key(key)
+  }
+  if (this.dynamic || !this.cached) {
+    if ((this.time !== undefined) && ((this.wait) && ((this.time + 10000) > Date.now()))) {
+      this.queue.push(key);
+      return
+    }
+    this.queue = [];
+    this.time = Date.now();
+    this.current_frame = key;
+    this.wait = true;
+    this.dynamic_update(key)
+  } else if (key !== undefined) {
+    this.update(key)
+  }
+}
+
+
+/* Define the ScrubberWidget class */
+function ScrubberWidget(frames, num_frames, id, interval, load_json, mode, cached, json_path, dynamic, plot_id){
+  this.slider_id = "_anim_slider" + id;
+  this.loop_select_id = "_anim_loop_select" + id;
+  this.id = id;
+  this.plot_id = plot_id;
+  this.interval = interval;
+  this.current_frame = 0;
+  this.direction = 0;
+  this.dynamic = dynamic;
+  this.timer = null;
+  this.load_json = load_json;
+  this.mode = mode;
+  this.cached = cached;
+  this.frames = frames;
+  this.cache = {};
+  this.length = num_frames;
+  this.json_path = json_path;
+  document.getElementById(this.slider_id).max = this.length - 1;
+  this.init_slider(0);
+  this.wait = false;
+  this.queue = [];
+  if (!this.cached || this.dynamic) {
+    this.comm = this.init_comms()
+  }
+}
+
+ScrubberWidget.prototype = new HoloViewsWidget;
+
+ScrubberWidget.prototype.set_frame = function(frame){
+  this.current_frame = frame;
+  var widget = document.getElementById(this.slider_id);
+  if (widget === null) {
+    this.pause_animation();
+    return
+  }
+  widget.value = this.current_frame;
+  if (this.dynamic || !this.cached) {
+    if ((this.time !== undefined) && ((this.wait) && ((this.time + 10000) > Date.now()))) {
+      this.queue.push(frame);
+      return
+    }
+    this.queue = [];
+    this.time = Date.now();
+    this.wait = true;
+    this.dynamic_update(frame)
+  } else {
+    this.update(frame)
+  }
+}
+
+ScrubberWidget.prototype.get_loop_state = function(){
+  var button_group = document[this.loop_select_id].state;
+  for (var i = 0; i < button_group.length; i++) {
+    var button = button_group[i];
+    if (button.checked) {
+      return button.value;
+    }
+  }
+  return undefined;
+}
+
+
+ScrubberWidget.prototype.next_frame = function() {
+  this.set_frame(Math.min(this.length - 1, this.current_frame + 1));
+}
+
+ScrubberWidget.prototype.previous_frame = function() {
+  this.set_frame(Math.max(0, this.current_frame - 1));
+}
+
+ScrubberWidget.prototype.first_frame = function() {
+  this.set_frame(0);
+}
+
+ScrubberWidget.prototype.last_frame = function() {
+  this.set_frame(this.length - 1);
+}
+
+ScrubberWidget.prototype.slower = function() {
+  this.interval /= 0.7;
+  if(this.direction > 0){this.play_animation();}
+  else if(this.direction < 0){this.reverse_animation();}
+}
+
+ScrubberWidget.prototype.faster = function() {
+  this.interval *= 0.7;
+  if(this.direction > 0){this.play_animation();}
+  else if(this.direction < 0){this.reverse_animation();}
+}
+
+ScrubberWidget.prototype.anim_step_forward = function() {
+  if(this.current_frame < this.length - 1){
+    this.next_frame();
+  }else{
+    var loop_state = this.get_loop_state();
+    if(loop_state == "loop"){
+      this.first_frame();
+    }else if(loop_state == "reflect"){
+      this.last_frame();
+      this.reverse_animation();
+    }else{
+      this.pause_animation();
+      this.last_frame();
+    }
+  }
+}
+
+ScrubberWidget.prototype.anim_step_reverse = function() {
+  if(this.current_frame > 0){
+    this.previous_frame();
+  } else {
+    var loop_state = this.get_loop_state();
+    if(loop_state == "loop"){
+      this.last_frame();
+    }else if(loop_state == "reflect"){
+      this.first_frame();
+      this.play_animation();
+    }else{
+      this.pause_animation();
+      this.first_frame();
+    }
+  }
+}
+
+ScrubberWidget.prototype.pause_animation = function() {
+  this.direction = 0;
+  if (this.timer){
+    clearInterval(this.timer);
+    this.timer = null;
+  }
+}
+
+ScrubberWidget.prototype.play_animation = function() {
+  this.pause_animation();
+  this.direction = 1;
+  var t = this;
+  if (!this.timer) this.timer = setInterval(function(){t.anim_step_forward();}, this.interval);
+}
+
+ScrubberWidget.prototype.reverse_animation = function() {
+  this.pause_animation();
+  this.direction = -1;
+  var t = this;
+  if (!this.timer) this.timer = setInterval(function(){t.anim_step_reverse();}, this.interval);
+}
+
+function extend(destination, source) {
+  for (var k in source) {
+    if (source.hasOwnProperty(k)) {
+      destination[k] = source[k];
+    }
+  }
+  return destination;
+}
+
+function update_widget(widget, values) {
+  if (widget.hasClass("ui-slider")) {
+    widget.slider('option', {
+      min: 0,
+      max: values.length-1,
+      dim_vals: values,
+      value: 0,
+      dim_labels: values
+    })
+    widget.slider('option', 'slide').call(widget, event, {value: 0})
+  } else {
+    widget.empty();
+    for (var i=0; i<values.length; i++){
+      widget.append($("<option>", {
+        value: i,
+        text: values[i]
+      }))
+    };
+    widget.data('values', values);
+    widget.data('value', 0);
+    widget.trigger("change");
+  };
+}
+
+function init_slider(id, plot_id, dim, values, next_vals, labels, dynamic, step, value, next_dim,
+                     dim_idx, delay, jQueryUI_CDN, UNDERSCORE_CDN) {
+  // Slider JS Block START
+  function loadcssfile(filename){
+    var fileref=document.createElement("link")
+    fileref.setAttribute("rel", "stylesheet")
+    fileref.setAttribute("type", "text/css")
+    fileref.setAttribute("href", filename)
+    document.getElementsByTagName("head")[0].appendChild(fileref)
+  }
+  loadcssfile("https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css");
+  /* Check if jQuery and jQueryUI have been loaded
+     otherwise load with require.js */
+  var jQuery = window.jQuery,
+    // check for old versions of jQuery
+    oldjQuery = jQuery && !!jQuery.fn.jquery.match(/^1\.[0-4](\.|$)/),
+    jquery_path = '',
+    paths = {},
+    noConflict;
+  var jQueryUI = jQuery.ui;
+  // check for jQuery
+  if (!jQuery || oldjQuery) {
+    // load if it's not available or doesn't meet min standards
+    paths.jQuery = jQuery;
+    noConflict = !!oldjQuery;
+  } else {
+    // register the current jQuery
+    define('jquery', [], function() { return jQuery; });
+  }
+  if (!jQueryUI) {
+    paths.jQueryUI = jQueryUI_CDN.slice(null, -3);
+  } else {
+    define('jQueryUI', [], function() { return jQuery.ui; });
+  }
+  paths.underscore = UNDERSCORE_CDN.slice(null, -3);
+  var jquery_require = {
+    paths: paths,
+    shim: {
+      "jQueryUI": {
+        exports:"$",
+        deps: ['jquery']
+      },
+      "underscore": {
+        exports: '_'
+      }
+    }
+  }
+  require.config(jquery_require);
+  require(["jQueryUI", "underscore"], function(jUI, _){
+    if (noConflict) $.noConflict(true);
+    var vals = values;
+    if (dynamic && vals.constructor === Array) {
+      var default_value = parseFloat(value);
+      var min = parseFloat(vals[0]);
+      var max = parseFloat(vals[vals.length-1]);
+      var wstep = step;
+      var wlabels = [default_value];
+      var init_label = default_value;
+    } else {
+      var min = 0;
+      if (dynamic) {
+        var max = Object.keys(vals).length - 1;
+        var init_label = labels[value];
+        var default_value = values[value];
+      } else {
+        var max = vals.length - 1;
+        var init_label = labels[value];
+        var default_value = value;
+      }
+      var wstep = 1;
+      var wlabels = labels;
+    }
+    function adjustFontSize(text) {
+      var width_ratio = (text.parent().width()/8)/text.val().length;
+      var size = Math.min(0.9, Math.max(0.6, width_ratio))+'em';
+      text.css('font-size', size);
+    }
+    var slider = $('#_anim_widget'+id+'_'+dim);
+    slider.slider({
+      animate: "fast",
+      min: min,
+      max: max,
+      step: wstep,
+      value: default_value,
+      dim_vals: vals,
+      dim_labels: wlabels,
+      next_vals: next_vals,
+      slide: function(event, ui) {
+        var vals = slider.slider("option", "dim_vals");
+        var next_vals = slider.slider("option", "next_vals");
+        var dlabels = slider.slider("option", "dim_labels");
+        if (dynamic) {
+          var dim_val = ui.value;
+          if (vals.constructor === Array) {
+            var label = ui.value;
+          } else {
+            var label = dlabels[ui.value];
+          }
+        } else {
+          var dim_val = vals[ui.value];
+          var label = dlabels[ui.value];
+        }
+        var text = $('#textInput'+id+'_'+dim);
+        text.val(label);
+        adjustFontSize(text);
+        HoloViews.index[plot_id].set_frame(dim_val, dim_idx);
+        if (Object.keys(next_vals).length > 0) {
+          var new_vals = next_vals[dim_val];
+          var next_widget = $('#_anim_widget'+id+'_'+next_dim);
+          update_widget(next_widget, new_vals);
+        }
+      }
+    });
+    slider.keypress(function(event) {
+      if (event.which == 80 || event.which == 112) {
+        var start = slider.slider("option", "value");
+        var stop =  slider.slider("option", "max");
+        for (var i=start; i<=stop; i++) {
+          var delay = i*delay;
+          $.proxy(function doSetTimeout(i) { setTimeout($.proxy(function() {
+            var val = {value:i};
+            slider.slider('value',i);
+            slider.slider("option", "slide")(null, val);
+          }, slider), delay);}, slider)(i);
+        }
+      }
+      if (event.which == 82 || event.which == 114) {
+        var start = slider.slider("option", "value");
+        var stop =  slider.slider("option", "min");
+        var count = 0;
+        for (var i=start; i>=stop; i--) {
+          var delay = count*delay;
+          count = count + 1;
+          $.proxy(function doSetTimeout(i) { setTimeout($.proxy(function() {
+            var val = {value:i};
+            slider.slider('value',i);
+            slider.slider("option", "slide")(null, val);
+          }, slider), delay);}, slider)(i);
+        }
+      }
+    });
+    var textInput = $('#textInput'+id+'_'+dim)
+    textInput.val(init_label);
+    adjustFontSize(textInput);
+  });
+}
+
+function init_dropdown(id, plot_id, dim, vals, value, next_vals, labels, next_dim, dim_idx, dynamic) {
+  var widget = $("#_anim_widget"+id+'_'+dim);
+  widget.data('values', vals)
+  for (var i=0; i<vals.length; i++){
+    if (dynamic) {
+      var val = vals[i];
+    } else {
+      var val = i;
+    }
+    widget.append($("<option>", {
+      value: val,
+      text: labels[i]
+    }));
+  };
+  widget.data("next_vals", next_vals);
+  widget.val(value);
+  widget.on('change', function(event, ui) {
+    if (dynamic) {
+      var dim_val = parseInt(this.value);
+    } else {
+      var dim_val = $.data(this, 'values')[this.value];
+    }
+    var next_vals = $.data(this, "next_vals");
+    if (Object.keys(next_vals).length > 0) {
+      var new_vals = next_vals[dim_val];
+      var next_widget = $('#_anim_widget'+id+'_'+next_dim);
+      update_widget(next_widget, new_vals);
+    }
+    var widgets = HoloViews.index[plot_id]
+    if (widgets) {
+      widgets.set_frame(dim_val, dim_idx);
+    }
+  });
+}
+
+
+if (window.HoloViews === undefined) {
+  window.HoloViews = {}
+  window.PyViz = window.HoloViews
+} else if (window.PyViz === undefined) {
+  window.PyViz = window.HoloViews
+}
+
+
+var _namespace = {
+  init_slider: init_slider,
+  init_dropdown: init_dropdown,
+  comms: {},
+  comm_status: {},
+  index: {},
+  plot_index: {},
+  kernels: {},
+  receivers: {}
+}
+
+for (var k in _namespace) {
+  if (!(k in window.HoloViews)) {
+    window.HoloViews[k] = _namespace[k];
+  }
+}
+
+var JS_MIME_TYPE = 'application/javascript';
+var HTML_MIME_TYPE = 'text/html';
+var EXEC_MIME_TYPE = 'application/vnd.holoviews_exec.v0+json';
+var CLASS_NAME = 'output';
+
+/**
+ * Render data to the DOM node
+ */
+function render(props, node) {
+  var div = document.createElement("div");
+  var script = document.createElement("script");
+  node.appendChild(div);
+  node.appendChild(script);
+}
+
+/**
+ * Handle when a new output is added
+ */
+function handle_add_output(event, handle) {
+  var output_area = handle.output_area;
+  var output = handle.output;
+  if (!output.data.hasOwnProperty(EXEC_MIME_TYPE)) {
+    return
+  }
+  var id = output.metadata[EXEC_MIME_TYPE]["id"];
+  var toinsert = output_area.element.find("." + CLASS_NAME.split(' ')[0]);
+  if (id !== undefined) {
+    var nchildren = toinsert.length;
+    toinsert[nchildren-1].children[0].innerHTML = output.data[HTML_MIME_TYPE];
+    toinsert[nchildren-1].children[1].textContent = output.data[JS_MIME_TYPE];
+    output_area._hv_plot_id = id;
+    if ((window.Bokeh !== undefined) && (id in Bokeh.index)) {
+      HoloViews.plot_index[id] = Bokeh.index[id];
+    } else {
+      HoloViews.plot_index[id] = null;
+    }
+  }
+}
+
+/**
+ * Handle when an output is cleared or removed
+ */
+function handle_clear_output(event, handle) {
+  var id = handle.cell.output_area._hv_plot_id;
+  if ((id === undefined) || !(id in HoloViews.plot_index)) { return; }
+  var comm = window.HoloViews.comm_manager.get_client_comm("hv-extension-comm", "hv-extension-comm", function () {});
+  if (comm !== null) {
+    comm.send({event_type: 'delete', 'id': id});
+  }
+  delete HoloViews.plot_index[id];
+  if ((window.Bokeh !== undefined) & (id in window.Bokeh.index)) {
+    window.Bokeh.index[id].model.document.clear();
+    delete Bokeh.index[id];
+  }
+}
+
+/**
+ * Handle kernel restart event
+ */
+function handle_kernel_cleanup(event, handle) {
+  delete HoloViews.comms["hv-extension-comm"];
+  window.HoloViews.plot_index = {}
+}
+
+/**
+ * Handle update_display_data messages
+ */
+function handle_update_output(event, handle) {
+  handle_clear_output(event, {cell: {output_area: handle.output_area}})
+  handle_add_output(event, handle)
+}
+
+function register_renderer(events, OutputArea) {
+  function append_mime(data, metadata, element) {
+    // create a DOM node to render to
+    var toinsert = this.create_output_subarea(
+    metadata,
+    CLASS_NAME,
+    EXEC_MIME_TYPE
+    );
+    this.keyboard_manager.register_events(toinsert);
+    // Render to node
+    var props = {data: data, metadata: metadata[EXEC_MIME_TYPE]};
+    render(props, toinsert[0]);
+    element.append(toinsert);
+    return toinsert
+  }
+
+  events.on('output_added.OutputArea', handle_add_output);	
+  events.on('output_updated.OutputArea', handle_update_output);
+  events.on('clear_output.CodeCell', handle_clear_output);
+  events.on('delete.Cell', handle_clear_output);
+  events.on('kernel_ready.Kernel', handle_kernel_cleanup);
+
+  OutputArea.prototype.register_mime_type(EXEC_MIME_TYPE, append_mime, {
+    safe: true,
+    index: 0
+  });
+}
+
+if (window.Jupyter !== undefined) {
+  try {
+    var events = require('base/js/events');
+    var OutputArea = require('notebook/js/outputarea').OutputArea;
+    if (OutputArea.prototype.mime_types().indexOf(EXEC_MIME_TYPE) == -1) {
+      register_renderer(events, OutputArea);
+    }
+  } catch(err) {
+  }
+}
+
+// Define MPL specific subclasses
+function MPLSelectionWidget() {
+  SelectionWidget.apply(this, arguments);
+}
+
+function MPLScrubberWidget() {
+  ScrubberWidget.apply(this, arguments);
+}
+
+// Let them inherit from the baseclasses
+MPLSelectionWidget.prototype = Object.create(SelectionWidget.prototype);
+MPLScrubberWidget.prototype = Object.create(ScrubberWidget.prototype);
+
+// Define methods to override on widgets
+var MPLMethods = {
+  init_slider : function(init_val){
+    if(this.load_json) {
+      this.from_json()
+    } else {
+      this.update_cache();
+    }
+    if (this.dynamic | !this.cached | (this.current_vals === undefined)) {
+      this.update(0)
+    } else {
+      this.set_frame(this.current_vals[0], 0)
+    }
+  },
+  process_msg : function(msg) {
+    var data = msg.content.data;
+    this.frames[this.current] = data;
+    this.update_cache(true);
+    this.update(this.current);
+  }
+}
+// Extend MPL widgets with backend specific methods
+extend(MPLSelectionWidget.prototype, MPLMethods);
+extend(MPLScrubberWidget.prototype, MPLMethods);
+
+window.HoloViews.MPLSelectionWidget = MPLSelectionWidget
+window.HoloViews.MPLScrubberWidget = MPLScrubberWidget
+
+// Define Bokeh specific subclasses
+function BokehSelectionWidget() {
+  SelectionWidget.apply(this, arguments);
+}
+
+function BokehScrubberWidget() {
+  ScrubberWidget.apply(this, arguments);
+}
+
+// Let them inherit from the baseclasses
+BokehSelectionWidget.prototype = Object.create(SelectionWidget.prototype);
+BokehScrubberWidget.prototype = Object.create(ScrubberWidget.prototype);
+
+// Define methods to override on widgets
+var BokehMethods = {
+  update_cache : function(){
+    for (var index in this.frames) {
+      this.frames[index] = JSON.parse(this.frames[index]);
+    }
+  },
+  update : function(current){
+    if (current === undefined) {
+      return;
+    }
+    var data = this.frames[current];
+    if (data !== undefined) {
+      if (data.root in HoloViews.plot_index) {
+        var doc = HoloViews.plot_index[data.root].model.document;
+      } else {
+        var doc = Bokeh.index[data.root].model.document;
+      }
+      doc.apply_json_patch(data.content);
+    }
+  },
+  init_comms: function() {
+    if (Bokeh.protocol !== undefined) {
+      this.receiver = new Bokeh.protocol.Receiver()
+    } else {
+      this.receiver = null;
+    }
+    return HoloViewsWidget.prototype.init_comms.call(this);
+  },
+  process_msg : function(msg) {
+    if (this.plot_id in HoloViews.plot_index) {
+      var doc = HoloViews.plot_index[this.plot_id].model.document;
+    } else {
+      var doc = Bokeh.index[this.plot_id].model.document;
+    }
+    if (this.receiver === null) { return }
+    var receiver = this.receiver;
+    if (msg.buffers.length > 0) {
+      receiver.consume(msg.buffers[0].buffer)
+    } else {
+      receiver.consume(msg.content.data)
+    }
+    const comm_msg = receiver.message;
+    if ((comm_msg != null) && (doc != null)) {
+      doc.apply_json_patch(comm_msg.content, comm_msg.buffers)
+    }
+  }
+}
+
+// Extend Bokeh widgets with backend specific methods
+extend(BokehSelectionWidget.prototype, BokehMethods);
+extend(BokehScrubberWidget.prototype, BokehMethods);
+
+window.HoloViews.BokehSelectionWidget = BokehSelectionWidget
+window.HoloViews.BokehScrubberWidget = BokehScrubberWidget
+</script>
+<script type="text/javascript">
+    function JupyterCommManager() {
+    }
+
+    JupyterCommManager.prototype.register_target = function(plot_id, comm_id, msg_handler) {
+      if (window.comm_manager || ((window.Jupyter !== undefined) && (Jupyter.notebook.kernel != null))) {
+        var comm_manager = window.comm_manager || Jupyter.notebook.kernel.comm_manager;
+        comm_manager.register_target(comm_id, function(comm) {
+          comm.on_msg(msg_handler);
+        });
+      } else if ((plot_id in window.PyViz.kernels) && (window.PyViz.kernels[plot_id])) {
+        window.PyViz.kernels[plot_id].registerCommTarget(comm_id, function(comm) {
+          comm.onMsg = msg_handler;
+        });
+      }
+    }
+
+    JupyterCommManager.prototype.get_client_comm = function(plot_id, comm_id, msg_handler) {
+      if (comm_id in window.PyViz.comms) {
+        return window.PyViz.comms[comm_id];
+      } else if (window.comm_manager || ((window.Jupyter !== undefined) && (Jupyter.notebook.kernel != null))) {
+        var comm_manager = window.comm_manager || Jupyter.notebook.kernel.comm_manager;
+        var comm = comm_manager.new_comm(comm_id, {}, {}, {}, comm_id);
+        if (msg_handler) {
+          comm.on_msg(msg_handler);
+        }
+      } else if ((plot_id in window.PyViz.kernels) && (window.PyViz.kernels[plot_id])) {
+        var comm = window.PyViz.kernels[plot_id].connectToComm(comm_id);
+        comm.open();
+        if (msg_handler) {
+          comm.onMsg = msg_handler;
+        }
+      }
+
+      window.PyViz.comms[comm_id] = comm;
+      return comm;
+    }
+
+    window.PyViz.comm_manager = new JupyterCommManager();
+    </script>
+
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.16.min.css">
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.16.min.css">
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-tables-0.12.16.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+<style>div.bk-hbox {
+    display: flex;
+    justify-content: center;
+}
+
+div.bk-hbox div.bk-plot {
+    padding: 8px;
+}
+
+div.bk-hbox div.bk-data-table {
+    padding: 20px;
+}
+
+div.hololayout {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+div.holoframe {
+  width: 75%;
+}
+
+div.holowell {
+  display: flex;
+  align-items: center;
+}
+
+form.holoform {
+  background-color: #fafafa;
+  border-radius: 5px;
+  overflow: hidden;
+  padding-left: 0.8em;
+  padding-right: 0.8em;
+  padding-top: 0.4em;
+  padding-bottom: 0.4em;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  border: 1px solid #e3e3e3;
+}
+
+div.holowidgets {
+  padding-right: 0;
+  width: 25%;
+}
+
+div.holoslider {
+  min-height: 0 !important;
+  height: 0.8em;
+  width: 100%;
+}
+
+div.holoformgroup {
+  padding-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+div.hologroup {
+  padding-left: 0;
+  padding-right: 0.8em;
+  width: 100%;
+}
+
+.holoselect {
+  width: 92%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.holotext {
+  padding-left:  0.5em;
+  padding-right: 0;
+  width: 100%;
+}
+
+.holowidgets .ui-resizable-se {
+  visibility: hidden
+}
+
+.holoframe > .ui-resizable-se {
+  visibility: hidden
+}
+
+.holowidgets .ui-resizable-s {
+  visibility: hidden
+}
+
+
+/* CSS rules for noUISlider based slider used by JupyterLab extension  */
+
+.noUi-handle {
+  width: 20px !important;
+  height: 20px !important;
+  left: -5px !important;
+  top: -5px !important;
+}
+
+.noUi-handle:before, .noUi-handle:after {
+  visibility: hidden;
+  height: 0px;
+}
+
+.noUi-target {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+</style><div style='display: table; margin: 0 auto;'>
+
+<div class="bk-root">
+    <div class="bk-plotdiv" id="16adc0df-beed-43e5-9272-f9724ef80e90"></div>
+</div>
+<script type="text/javascript">
+  (function(root) {
+  function embed_document(root) {
+    
+  var docs_json = {"2f5c046a-8ced-45f7-a780-a14d0c20a533":{"roots":{"references":[{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#30a2da"},"line_alpha":{"value":0.1},"line_color":{"value":"black"},"top":{"field":"normalised_precipitation_and_temperature"},"width":{"value":0.8},"x":{"field":"democratic_republic_congo_1991_hyphen_minus_2015"}},"id":"eed008d8-7f31-4abb-b459-118982068f05","type":"VBar"},{"attributes":{"source":{"id":"123d5a88-87bd-48e9-bb1f-408c10f3b654","type":"ColumnDataSource"}},"id":"ffe20550-d156-42aa-bc89-0159fb75e7ba","type":"CDSView"},{"attributes":{"source":{"id":"e47eb9cf-1563-446b-9d14-48cb7fc61d7e","type":"ColumnDataSource"}},"id":"b42ee8fe-8db6-45f3-82d9-0235da9c3d77","type":"CDSView"},{"attributes":{"data_source":{"id":"123d5a88-87bd-48e9-bb1f-408c10f3b654","type":"ColumnDataSource"},"glyph":{"id":"36d2e5c9-ea3c-4f01-a40b-bc85d23fb225","type":"VBar"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"eed008d8-7f31-4abb-b459-118982068f05","type":"VBar"},"selection_glyph":null,"view":{"id":"ffe20550-d156-42aa-bc89-0159fb75e7ba","type":"CDSView"}},"id":"753b3870-74a1-4751-a97a-d7df91556b73","type":"GlyphRenderer"},{"attributes":{},"id":"b2ecc3bd-b548-43dd-a3a8-53728df61105","type":"UnionRenderers"},{"attributes":{},"id":"94bf3fc9-353f-473c-8b48-d6b8133c4335","type":"CategoricalScale"},{"attributes":{},"id":"28de2631-c528-4f84-9f35-5250341724fb","type":"CategoricalTickFormatter"},{"attributes":{"plot":null,"text":"","text_color":{"value":"black"},"text_font_size":{"value":"12pt"}},"id":"a06f9d00-4f06-4161-95d9-06217f12efe0","type":"Title"},{"attributes":{"fill_color":{"value":"#30a2da"},"top":{"field":"normalised_precipitation_and_temperature"},"width":{"value":0.8},"x":{"field":"democratic_republic_congo_1991_hyphen_minus_2015"}},"id":"36d2e5c9-ea3c-4f01-a40b-bc85d23fb225","type":"VBar"},{"attributes":{},"id":"76dc06bb-1898-4846-a10e-97b023e442f4","type":"LinearScale"},{"attributes":{"data_source":{"id":"e47eb9cf-1563-446b-9d14-48cb7fc61d7e","type":"ColumnDataSource"},"glyph":{"id":"84f30707-9a9c-4d0a-b635-8b47c75e6ba2","type":"Line"},"hover_glyph":null,"muted_glyph":{"id":"f082a468-6b0d-4fec-bcd8-bed4e1e01d74","type":"Line"},"nonselection_glyph":{"id":"ecfae16d-4788-4f88-8066-8bfed6305fe4","type":"Line"},"selection_glyph":null,"view":{"id":"b42ee8fe-8db6-45f3-82d9-0235da9c3d77","type":"CDSView"}},"id":"3b15ec0a-468c-4953-83bb-38671fe62752","type":"GlyphRenderer"},{"attributes":{"below":[{"id":"07e3ccb3-35f2-4b63-8f45-9e0edaa53238","type":"CategoricalAxis"}],"left":[{"id":"a89268b5-37be-4d0d-bd2c-3e8a114461a7","type":"LinearAxis"}],"min_border_bottom":10,"min_border_left":10,"min_border_right":10,"min_border_top":10,"plot_height":250,"plot_width":832,"renderers":[{"id":"07e3ccb3-35f2-4b63-8f45-9e0edaa53238","type":"CategoricalAxis"},{"id":"1b232bfa-6d01-44bd-9fb8-d2cbc066f136","type":"Grid"},{"id":"a89268b5-37be-4d0d-bd2c-3e8a114461a7","type":"LinearAxis"},{"id":"99ed6c7a-a4e5-41c0-9c59-ae9b15d91f3f","type":"Grid"},{"id":"9b253379-e7f9-4891-ad6f-282978011997","type":"BoxAnnotation"},{"id":"744a8af8-3756-4cdc-b2ed-e1569db76121","type":"Legend"},{"id":"753b3870-74a1-4751-a97a-d7df91556b73","type":"GlyphRenderer"},{"id":"3b15ec0a-468c-4953-83bb-38671fe62752","type":"GlyphRenderer"}],"title":{"id":"a06f9d00-4f06-4161-95d9-06217f12efe0","type":"Title"},"toolbar":{"id":"a1d45897-6fb2-4e5f-aeb2-dcd924ede933","type":"Toolbar"},"x_range":{"id":"e9c35168-a48f-4bca-97ef-fb0f4dbfccd7","type":"FactorRange"},"x_scale":{"id":"94bf3fc9-353f-473c-8b48-d6b8133c4335","type":"CategoricalScale"},"y_range":{"id":"05f66561-41fa-4c9b-a243-18e2de86b082","type":"Range1d"},"y_scale":{"id":"76dc06bb-1898-4846-a10e-97b023e442f4","type":"LinearScale"}},"id":"0e4a3ca4-dd56-4b5b-97ec-0897dca809e7","subtype":"Figure","type":"Plot"},{"attributes":{"line_color":"red","line_width":2,"x":{"field":"democratic republic congo 1991 - 2015"},"y":{"field":"normalised precipitation and temperature"}},"id":"84f30707-9a9c-4d0a-b635-8b47c75e6ba2","type":"Line"},{"attributes":{},"id":"dfa73527-6293-4e8c-b884-fb29e6d69f58","type":"SaveTool"},{"attributes":{},"id":"bf48f327-39e2-4f84-ad4b-b6115df0dfaa","type":"PanTool"},{"attributes":{},"id":"eb5798fd-c44c-423e-9c65-3bc090838aff","type":"Selection"},{"attributes":{"axis_label":"democratic republic congo 1991 - 2015","bounds":"auto","formatter":{"id":"28de2631-c528-4f84-9f35-5250341724fb","type":"CategoricalTickFormatter"},"major_label_orientation":"horizontal","plot":{"id":"0e4a3ca4-dd56-4b5b-97ec-0897dca809e7","subtype":"Figure","type":"Plot"},"ticker":{"id":"77919902-0d2c-4bec-a08a-1f71771df926","type":"CategoricalTicker"}},"id":"07e3ccb3-35f2-4b63-8f45-9e0edaa53238","type":"CategoricalAxis"},{"attributes":{},"id":"f19aaf43-72ba-43cc-b833-87af12500a91","type":"UnionRenderers"},{"attributes":{"dimension":1,"grid_line_color":{"value":null},"plot":{"id":"0e4a3ca4-dd56-4b5b-97ec-0897dca809e7","subtype":"Figure","type":"Plot"},"ticker":{"id":"58d88f9f-0e9c-4085-b130-1325ea90940b","type":"BasicTicker"}},"id":"99ed6c7a-a4e5-41c0-9c59-ae9b15d91f3f","type":"Grid"},{"attributes":{},"id":"58d88f9f-0e9c-4085-b130-1325ea90940b","type":"BasicTicker"},{"attributes":{"callback":null,"renderers":[{"id":"3b15ec0a-468c-4953-83bb-38671fe62752","type":"GlyphRenderer"}],"tooltips":[["democratic republic congo 1991 - 2015","@{democratic_republic_congo_1991_hyphen_minus_2015}"],["normalised precipitation and temperature","@{normalised_precipitation_and_temperature}"]]},"id":"1df365d6-5e45-4911-98ed-bd14f5cac4a2","type":"HoverTool"},{"attributes":{"click_policy":"mute","items":[{"id":"1f99d070-fa7e-486e-8c2c-3bf8398e49dd","type":"LegendItem"},{"id":"caeb62b5-a9e9-4c5a-b1a2-118593dc668a","type":"LegendItem"}],"plot":{"id":"0e4a3ca4-dd56-4b5b-97ec-0897dca809e7","subtype":"Figure","type":"Plot"}},"id":"744a8af8-3756-4cdc-b2ed-e1569db76121","type":"Legend"},{"attributes":{"grid_line_color":{"value":null},"plot":{"id":"0e4a3ca4-dd56-4b5b-97ec-0897dca809e7","subtype":"Figure","type":"Plot"},"ticker":{"id":"77919902-0d2c-4bec-a08a-1f71771df926","type":"CategoricalTicker"}},"id":"1b232bfa-6d01-44bd-9fb8-d2cbc066f136","type":"Grid"},{"attributes":{},"id":"ac94b6f6-d4d1-4a70-9c8e-71fcdad45012","type":"BasicTickFormatter"},{"attributes":{"callback":null},"id":"05f66561-41fa-4c9b-a243-18e2de86b082","type":"Range1d"},{"attributes":{"label":{"value":"temperature"},"renderers":[{"id":"3b15ec0a-468c-4953-83bb-38671fe62752","type":"GlyphRenderer"}]},"id":"caeb62b5-a9e9-4c5a-b1a2-118593dc668a","type":"LegendItem"},{"attributes":{"axis_label":"normalised precipitation and temperature","bounds":"auto","formatter":{"id":"ac94b6f6-d4d1-4a70-9c8e-71fcdad45012","type":"BasicTickFormatter"},"major_label_orientation":"horizontal","plot":{"id":"0e4a3ca4-dd56-4b5b-97ec-0897dca809e7","subtype":"Figure","type":"Plot"},"ticker":{"id":"58d88f9f-0e9c-4085-b130-1325ea90940b","type":"BasicTicker"}},"id":"a89268b5-37be-4d0d-bd2c-3e8a114461a7","type":"LinearAxis"},{"attributes":{"callback":null,"data":{"democratic_republic_congo_1991_hyphen_minus_2015":["1991.0","1991.08","1991.17","1991.25","1991.33","1991.42","1991.5","1991.58","1991.67","1991.75","1991.83","1991.92","1992.0","1992.08","1992.17","1992.25","1992.33","1992.42","1992.5","1992.58","1992.67","1992.75","1992.83","1992.92","1993.0","1993.08","1993.17","1993.25","1993.33","1993.42","1993.5","1993.58","1993.67","1993.75","1993.83","1993.92","1994.0","1994.08","1994.17","1994.25","1994.33","1994.42","1994.5","1994.58","1994.67","1994.75","1994.83","1994.92","1995.0","1995.08","1995.17","1995.25","1995.33","1995.42","1995.5","1995.58","1995.67","1995.75","1995.83","1995.92","1996.0","1996.08","1996.17","1996.25","1996.33","1996.42","1996.5","1996.58","1996.67","1996.75","1996.83","1996.92","1997.0","1997.08","1997.17","1997.25","1997.33","1997.42","1997.5","1997.58","1997.67","1997.75","1997.83","1997.92","1998.0","1998.08","1998.17","1998.25","1998.33","1998.42","1998.5","1998.58","1998.67","1998.75","1998.83","1998.92","1999.0","1999.08","1999.17","1999.25","1999.33","1999.42","1999.5","1999.58","1999.67","1999.75","1999.83","1999.92","2000.0","2000.08","2000.17","2000.25","2000.33","2000.42","2000.5","2000.58","2000.67","2000.75","2000.83","2000.92","2001.0","2001.08","2001.17","2001.25","2001.33","2001.42","2001.5","2001.58","2001.67","2001.75","2001.83","2001.92","2002.0","2002.08","2002.17","2002.25","2002.33","2002.42","2002.5","2002.58","2002.67","2002.75","2002.83","2002.92","2003.0","2003.08","2003.17","2003.25","2003.33","2003.42","2003.5","2003.58","2003.67","2003.75","2003.83","2003.92","2004.0","2004.08","2004.17","2004.25","2004.33","2004.42","2004.5","2004.58","2004.67","2004.75","2004.83","2004.92","2005.0","2005.08","2005.17","2005.25","2005.33","2005.42","2005.5","2005.58","2005.67","2005.75","2005.83","2005.92","2006.0","2006.08","2006.17","2006.25","2006.33","2006.42","2006.5","2006.58","2006.67","2006.75","2006.83","2006.92","2007.0","2007.08","2007.17","2007.25","2007.33","2007.42","2007.5","2007.58","2007.67","2007.75","2007.83","2007.92","2008.0","2008.08","2008.17","2008.25","2008.33","2008.42","2008.5","2008.58","2008.67","2008.75","2008.83","2008.92","2009.0","2009.08","2009.17","2009.25","2009.33","2009.42","2009.5","2009.58","2009.67","2009.75","2009.83","2009.92","2010.0","2010.08","2010.17","2010.25","2010.33","2010.42","2010.5","2010.58","2010.67","2010.75","2010.83","2010.92","2011.0","2011.08","2011.17","2011.25","2011.33","2011.42","2011.5","2011.58","2011.67","2011.75","2011.83","2011.92","2012.0","2012.08","2012.17","2012.25","2012.33","2012.42","2012.5","2012.58","2012.67","2012.75","2012.83","2012.92","2013.0","2013.08","2013.17","2013.25","2013.33","2013.42","2013.5","2013.58","2013.67","2013.75","2013.83","2013.92","2014.0","2014.08","2014.17","2014.25","2014.33","2014.42","2014.5","2014.58","2014.67","2014.75","2014.83","2014.92","2015.0","2015.08","2015.17","2015.25","2015.33","2015.42","2015.5","2015.58","2015.67","2015.75","2015.83","2015.92"],"normalised_precipitation_and_temperature":{"__ndarray__":"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","dtype":"float64","shape":[300]}},"selected":{"id":"0c5f40b3-6ab6-4f9c-b8f0-74d44cfba3a1","type":"Selection"},"selection_policy":{"id":"b2ecc3bd-b548-43dd-a3a8-53728df61105","type":"UnionRenderers"}},"id":"123d5a88-87bd-48e9-bb1f-408c10f3b654","type":"ColumnDataSource"},{"attributes":{"overlay":{"id":"9b253379-e7f9-4891-ad6f-282978011997","type":"BoxAnnotation"}},"id":"e6a34415-7983-4354-97bb-7226600ad815","type":"BoxZoomTool"},{"attributes":{},"id":"77919902-0d2c-4bec-a08a-1f71771df926","type":"CategoricalTicker"},{"attributes":{"line_alpha":0.1,"line_color":"red","line_width":2,"x":{"field":"democratic republic congo 1991 - 2015"},"y":{"field":"normalised precipitation and temperature"}},"id":"ecfae16d-4788-4f88-8066-8bfed6305fe4","type":"Line"},{"attributes":{},"id":"2a915006-b3d0-46d7-9e46-dec5cd084c76","type":"WheelZoomTool"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"plot":null,"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"9b253379-e7f9-4891-ad6f-282978011997","type":"BoxAnnotation"},{"attributes":{},"id":"0c5f40b3-6ab6-4f9c-b8f0-74d44cfba3a1","type":"Selection"},{"attributes":{"line_alpha":0.2,"line_color":"red","line_width":2,"x":{"field":"democratic republic congo 1991 - 2015"},"y":{"field":"normalised precipitation and temperature"}},"id":"f082a468-6b0d-4fec-bcd8-bed4e1e01d74","type":"Line"},{"attributes":{"label":{"value":"precipitation"},"renderers":[{"id":"753b3870-74a1-4751-a97a-d7df91556b73","type":"GlyphRenderer"}]},"id":"1f99d070-fa7e-486e-8c2c-3bf8398e49dd","type":"LegendItem"},{"attributes":{"callback":null,"factors":["1991.0","1991.08","1991.17","1991.25","1991.33","1991.42","1991.5","1991.58","1991.67","1991.75","1991.83","1991.92","1992.0","1992.08","1992.17","1992.25","1992.33","1992.42","1992.5","1992.58","1992.67","1992.75","1992.83","1992.92","1993.0","1993.08","1993.17","1993.25","1993.33","1993.42","1993.5","1993.58","1993.67","1993.75","1993.83","1993.92","1994.0","1994.08","1994.17","1994.25","1994.33","1994.42","1994.5","1994.58","1994.67","1994.75","1994.83","1994.92","1995.0","1995.08","1995.17","1995.25","1995.33","1995.42","1995.5","1995.58","1995.67","1995.75","1995.83","1995.92","1996.0","1996.08","1996.17","1996.25","1996.33","1996.42","1996.5","1996.58","1996.67","1996.75","1996.83","1996.92","1997.0","1997.08","1997.17","1997.25","1997.33","1997.42","1997.5","1997.58","1997.67","1997.75","1997.83","1997.92","1998.0","1998.08","1998.17","1998.25","1998.33","1998.42","1998.5","1998.58","1998.67","1998.75","1998.83","1998.92","1999.0","1999.08","1999.17","1999.25","1999.33","1999.42","1999.5","1999.58","1999.67","1999.75","1999.83","1999.92","2000.0","2000.08","2000.17","2000.25","2000.33","2000.42","2000.5","2000.58","2000.67","2000.75","2000.83","2000.92","2001.0","2001.08","2001.17","2001.25","2001.33","2001.42","2001.5","2001.58","2001.67","2001.75","2001.83","2001.92","2002.0","2002.08","2002.17","2002.25","2002.33","2002.42","2002.5","2002.58","2002.67","2002.75","2002.83","2002.92","2003.0","2003.08","2003.17","2003.25","2003.33","2003.42","2003.5","2003.58","2003.67","2003.75","2003.83","2003.92","2004.0","2004.08","2004.17","2004.25","2004.33","2004.42","2004.5","2004.58","2004.67","2004.75","2004.83","2004.92","2005.0","2005.08","2005.17","2005.25","2005.33","2005.42","2005.5","2005.58","2005.67","2005.75","2005.83","2005.92","2006.0","2006.08","2006.17","2006.25","2006.33","2006.42","2006.5","2006.58","2006.67","2006.75","2006.83","2006.92","2007.0","2007.08","2007.17","2007.25","2007.33","2007.42","2007.5","2007.58","2007.67","2007.75","2007.83","2007.92","2008.0","2008.08","2008.17","2008.25","2008.33","2008.42","2008.5","2008.58","2008.67","2008.75","2008.83","2008.92","2009.0","2009.08","2009.17","2009.25","2009.33","2009.42","2009.5","2009.58","2009.67","2009.75","2009.83","2009.92","2010.0","2010.08","2010.17","2010.25","2010.33","2010.42","2010.5","2010.58","2010.67","2010.75","2010.83","2010.92","2011.0","2011.08","2011.17","2011.25","2011.33","2011.42","2011.5","2011.58","2011.67","2011.75","2011.83","2011.92","2012.0","2012.08","2012.17","2012.25","2012.33","2012.42","2012.5","2012.58","2012.67","2012.75","2012.83","2012.92","2013.0","2013.08","2013.17","2013.25","2013.33","2013.42","2013.5","2013.58","2013.67","2013.75","2013.83","2013.92","2014.0","2014.08","2014.17","2014.25","2014.33","2014.42","2014.5","2014.58","2014.67","2014.75","2014.83","2014.92","2015.0","2015.08","2015.17","2015.25","2015.33","2015.42","2015.5","2015.58","2015.67","2015.75","2015.83","2015.92"]},"id":"e9c35168-a48f-4bca-97ef-fb0f4dbfccd7","type":"FactorRange"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"1df365d6-5e45-4911-98ed-bd14f5cac4a2","type":"HoverTool"},{"id":"dfa73527-6293-4e8c-b884-fb29e6d69f58","type":"SaveTool"},{"id":"bf48f327-39e2-4f84-ad4b-b6115df0dfaa","type":"PanTool"},{"id":"2a915006-b3d0-46d7-9e46-dec5cd084c76","type":"WheelZoomTool"},{"id":"e6a34415-7983-4354-97bb-7226600ad815","type":"BoxZoomTool"},{"id":"3abac3bb-143f-4d3e-aed2-4af28633c6be","type":"ResetTool"}]},"id":"a1d45897-6fb2-4e5f-aeb2-dcd924ede933","type":"Toolbar"},{"attributes":{},"id":"3abac3bb-143f-4d3e-aed2-4af28633c6be","type":"ResetTool"},{"attributes":{"callback":null,"data":{"democratic republic congo 1991 - 2015":["1991.0","1991.08","1991.17","1991.25","1991.33","1991.42","1991.5","1991.58","1991.67","1991.75","1991.83","1991.92","1992.0","1992.08","1992.17","1992.25","1992.33","1992.42","1992.5","1992.58","1992.67","1992.75","1992.83","1992.92","1993.0","1993.08","1993.17","1993.25","1993.33","1993.42","1993.5","1993.58","1993.67","1993.75","1993.83","1993.92","1994.0","1994.08","1994.17","1994.25","1994.33","1994.42","1994.5","1994.58","1994.67","1994.75","1994.83","1994.92","1995.0","1995.08","1995.17","1995.25","1995.33","1995.42","1995.5","1995.58","1995.67","1995.75","1995.83","1995.92","1996.0","1996.08","1996.17","1996.25","1996.33","1996.42","1996.5","1996.58","1996.67","1996.75","1996.83","1996.92","1997.0","1997.08","1997.17","1997.25","1997.33","1997.42","1997.5","1997.58","1997.67","1997.75","1997.83","1997.92","1998.0","1998.08","1998.17","1998.25","1998.33","1998.42","1998.5","1998.58","1998.67","1998.75","1998.83","1998.92","1999.0","1999.08","1999.17","1999.25","1999.33","1999.42","1999.5","1999.58","1999.67","1999.75","1999.83","1999.92","2000.0","2000.08","2000.17","2000.25","2000.33","2000.42","2000.5","2000.58","2000.67","2000.75","2000.83","2000.92","2001.0","2001.08","2001.17","2001.25","2001.33","2001.42","2001.5","2001.58","2001.67","2001.75","2001.83","2001.92","2002.0","2002.08","2002.17","2002.25","2002.33","2002.42","2002.5","2002.58","2002.67","2002.75","2002.83","2002.92","2003.0","2003.08","2003.17","2003.25","2003.33","2003.42","2003.5","2003.58","2003.67","2003.75","2003.83","2003.92","2004.0","2004.08","2004.17","2004.25","2004.33","2004.42","2004.5","2004.58","2004.67","2004.75","2004.83","2004.92","2005.0","2005.08","2005.17","2005.25","2005.33","2005.42","2005.5","2005.58","2005.67","2005.75","2005.83","2005.92","2006.0","2006.08","2006.17","2006.25","2006.33","2006.42","2006.5","2006.58","2006.67","2006.75","2006.83","2006.92","2007.0","2007.08","2007.17","2007.25","2007.33","2007.42","2007.5","2007.58","2007.67","2007.75","2007.83","2007.92","2008.0","2008.08","2008.17","2008.25","2008.33","2008.42","2008.5","2008.58","2008.67","2008.75","2008.83","2008.92","2009.0","2009.08","2009.17","2009.25","2009.33","2009.42","2009.5","2009.58","2009.67","2009.75","2009.83","2009.92","2010.0","2010.08","2010.17","2010.25","2010.33","2010.42","2010.5","2010.58","2010.67","2010.75","2010.83","2010.92","2011.0","2011.08","2011.17","2011.25","2011.33","2011.42","2011.5","2011.58","2011.67","2011.75","2011.83","2011.92","2012.0","2012.08","2012.17","2012.25","2012.33","2012.42","2012.5","2012.58","2012.67","2012.75","2012.83","2012.92","2013.0","2013.08","2013.17","2013.25","2013.33","2013.42","2013.5","2013.58","2013.67","2013.75","2013.83","2013.92","2014.0","2014.08","2014.17","2014.25","2014.33","2014.42","2014.5","2014.58","2014.67","2014.75","2014.83","2014.92","2015.0","2015.08","2015.17","2015.25","2015.33","2015.42","2015.5","2015.58","2015.67","2015.75","2015.83","2015.92"],"democratic_republic_congo_1991_hyphen_minus_2015":["1991.0","1991.08","1991.17","1991.25","1991.33","1991.42","1991.5","1991.58","1991.67","1991.75","1991.83","1991.92","1992.0","1992.08","1992.17","1992.25","1992.33","1992.42","1992.5","1992.58","1992.67","1992.75","1992.83","1992.92","1993.0","1993.08","1993.17","1993.25","1993.33","1993.42","1993.5","1993.58","1993.67","1993.75","1993.83","1993.92","1994.0","1994.08","1994.17","1994.25","1994.33","1994.42","1994.5","1994.58","1994.67","1994.75","1994.83","1994.92","1995.0","1995.08","1995.17","1995.25","1995.33","1995.42","1995.5","1995.58","1995.67","1995.75","1995.83","1995.92","1996.0","1996.08","1996.17","1996.25","1996.33","1996.42","1996.5","1996.58","1996.67","1996.75","1996.83","1996.92","1997.0","1997.08","1997.17","1997.25","1997.33","1997.42","1997.5","1997.58","1997.67","1997.75","1997.83","1997.92","1998.0","1998.08","1998.17","1998.25","1998.33","1998.42","1998.5","1998.58","1998.67","1998.75","1998.83","1998.92","1999.0","1999.08","1999.17","1999.25","1999.33","1999.42","1999.5","1999.58","1999.67","1999.75","1999.83","1999.92","2000.0","2000.08","2000.17","2000.25","2000.33","2000.42","2000.5","2000.58","2000.67","2000.75","2000.83","2000.92","2001.0","2001.08","2001.17","2001.25","2001.33","2001.42","2001.5","2001.58","2001.67","2001.75","2001.83","2001.92","2002.0","2002.08","2002.17","2002.25","2002.33","2002.42","2002.5","2002.58","2002.67","2002.75","2002.83","2002.92","2003.0","2003.08","2003.17","2003.25","2003.33","2003.42","2003.5","2003.58","2003.67","2003.75","2003.83","2003.92","2004.0","2004.08","2004.17","2004.25","2004.33","2004.42","2004.5","2004.58","2004.67","2004.75","2004.83","2004.92","2005.0","2005.08","2005.17","2005.25","2005.33","2005.42","2005.5","2005.58","2005.67","2005.75","2005.83","2005.92","2006.0","2006.08","2006.17","2006.25","2006.33","2006.42","2006.5","2006.58","2006.67","2006.75","2006.83","2006.92","2007.0","2007.08","2007.17","2007.25","2007.33","2007.42","2007.5","2007.58","2007.67","2007.75","2007.83","2007.92","2008.0","2008.08","2008.17","2008.25","2008.33","2008.42","2008.5","2008.58","2008.67","2008.75","2008.83","2008.92","2009.0","2009.08","2009.17","2009.25","2009.33","2009.42","2009.5","2009.58","2009.67","2009.75","2009.83","2009.92","2010.0","2010.08","2010.17","2010.25","2010.33","2010.42","2010.5","2010.58","2010.67","2010.75","2010.83","2010.92","2011.0","2011.08","2011.17","2011.25","2011.33","2011.42","2011.5","2011.58","2011.67","2011.75","2011.83","2011.92","2012.0","2012.08","2012.17","2012.25","2012.33","2012.42","2012.5","2012.58","2012.67","2012.75","2012.83","2012.92","2013.0","2013.08","2013.17","2013.25","2013.33","2013.42","2013.5","2013.58","2013.67","2013.75","2013.83","2013.92","2014.0","2014.08","2014.17","2014.25","2014.33","2014.42","2014.5","2014.58","2014.67","2014.75","2014.83","2014.92","2015.0","2015.08","2015.17","2015.25","2015.33","2015.42","2015.5","2015.58","2015.67","2015.75","2015.83","2015.92"],"normalised precipitation and temperature":{"__ndarray__":"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","dtype":"float64","shape":[300]},"normalised_precipitation_and_temperature":{"__ndarray__":"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","dtype":"float64","shape":[300]}},"selected":{"id":"eb5798fd-c44c-423e-9c65-3bc090838aff","type":"Selection"},"selection_policy":{"id":"f19aaf43-72ba-43cc-b833-87af12500a91","type":"UnionRenderers"}},"id":"e47eb9cf-1563-446b-9d14-48cb7fc61d7e","type":"ColumnDataSource"}],"root_ids":["0e4a3ca4-dd56-4b5b-97ec-0897dca809e7"]},"title":"Bokeh Application","version":"0.12.16"}};
+  var render_items = [{"docid":"2f5c046a-8ced-45f7-a780-a14d0c20a533","elementid":"16adc0df-beed-43e5-9272-f9724ef80e90","modelid":"0e4a3ca4-dd56-4b5b-97ec-0897dca809e7"}];
+  root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
+
+  }
+  if (root.Bokeh !== undefined) {
+    embed_document(root);
+  } else {
+    var attempts = 0;
+    var timer = setInterval(function(root) {
+      if (root.Bokeh !== undefined) {
+        embed_document(root);
+        clearInterval(timer);
+      }
+      attempts++;
+      if (attempts > 100) {
+        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
+        clearInterval(timer);
+      }
+    }, 10, root)
+  }
+})(window);
+</script>
+</div>
