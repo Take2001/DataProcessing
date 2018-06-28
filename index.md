@@ -36,21 +36,21 @@ Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart 
 
 <div id="chords" style="height:auto; width:832px;">
 
-<iframe src="plotted comparisons/chord_charts/chord_chart_africa.html" scrolling="no" style="overflow:hidden; height:950px"></iframe>
+<iframe src="docs/chord_charts/chord_chart_africa.html" scrolling="no" style="overflow:hidden; height:950px"></iframe>
 
-<iframe src="plotted comparisons/chord_charts/chord_chart_middle_east.html" scrolling="no" style="overflow:hidden; height:950px"></iframe>
+<iframe src="docs/chord_charts/chord_chart_middle_east.html" scrolling="no" style="overflow:hidden; height:950px"></iframe>
 
 </div>
 
 # Top 3 meest interessante bevindingen
 ## Lokaal tegenover geïmporteerde rijst
 
-![alt-text](plotted comparisons/local_vs_imported_product/local_vs_imported_maize_senegal.png)
+![alt-text](docs/local_vs_imported_product/local_vs_imported_maize_senegal.png)
 Je kan zien dat de prijs van lokale rijst een lineair verband heeft met de prijs van geïmporteerde rijst.
 
 ## Gemiddelde prijzen
 
-![gemiddelde prijs niger](plotted comparisons/average_prices_per_country/average_prices_niger.png)
+![gemiddelde prijs niger](docs/average_prices_per_country/average_prices_niger.png)
 
 Het is duidelijk zichtbaar dat de prijzen in Niger over het algemeen gestegen zijn.
 
