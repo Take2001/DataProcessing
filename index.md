@@ -24,9 +24,11 @@ Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart 
 </div>
 
 <div id="intmap" style="height:650px; width:832px;">
-<iframe src="github page/interactive_map.html" style="overflow:hidden;"></iframe>
+<iframe src="github page/interactive_map.html" style="overflow:hidden;" ></iframe>
 </div>
+
 # Resultaten
+
 <div id="grafiek">
 <iframe src="plotted comparisons/regression_plots/Sudan/Sudan_wheat.html" ></iframe>
 
@@ -37,9 +39,9 @@ Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart 
 </div>
 
 ## Producten per land
+<div id="chords" style="height:1600px;"
+<iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_africa.html" style="overflow:hidden;"></iframe>
 
-<iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_africa.html" style="height:832px;"></iframe>
-
-<iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_middle_east.html"></iframe>
+<iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_middle_east.html" style="overflow:hidden;"></iframe>
 </div>
 # Top 3 meest interessante bevindingen
