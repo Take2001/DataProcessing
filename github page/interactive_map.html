@@ -59,16 +59,17 @@ products={
 };
 
 var map = AmCharts.makeChart("chartdiv", {
-    "type": "map",
-    "theme": "light",
-    "dataProvider": {
-      "map": "worldLow",
-      "zoomLevel": 2.7,
-      "zoomLongitude": 35.0174,
-      "zoomLatitude": 3.1076,
-      "areas": [
+ type: "map",
+ theme: "light",
+ dataProvider: {
+  map: "worldLow",
+  zoomLevel: 3.6,
+  zoomLongitude: 28.0174,
+  zoomLatitude: 3.1076,
+
+      areas: [
         { "id": "AE", "color": "darkgrey" },
-        { "id": "AF", "autoZoom": true, "selectedColor": "#CC0000","info": "Afghanistan goooooo" },
+        { "id": "AF", "autoZoom": true, "selectedColor": "#CC0000" },
         { "id": "AO", "color": "darkgrey" },
         { "id": "BF", "color": "darkgrey" },
         { "id": "BI", "color": "darkgrey" },
@@ -134,11 +135,14 @@ var map = AmCharts.makeChart("chartdiv", {
       ]
     },
 
-    "areasSettings": {
-      "unlistedAreasAlpha": 0
-    },
-    "zoomControl": {
-      "minZoomLevel": 2.7
+  areasSettings: {
+    alpha: 0.5, 
+    unlistedAreasAlpha: 1,
+    unlistedAreasColor: "#DDDDDD"
+  }
+
+    zoomControl: {
+      minZoomLevel: 2.7
     },
 
   });
