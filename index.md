@@ -31,17 +31,21 @@ Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart 
 
 <div id="grafiek">
 <iframe src="plotted comparisons/regression_plots/Sudan/Sudan_wheat.html" ></iframe>
+</div>
 
 ## Gemiddelde prijzen
 
-![Average prices Uganda](plotted comparisons/average_prices_per_country/average_prices_uganda.png)
-![Local vs imported](plotted comparisons/average_prices_per_country/average_prices_uganda.png)
-</div>
+![gemiddelde prijs uganda](plotted comparisons/average_prices_per_country/average_prices_niger.png)
+
 
 ## Producten per land
-<div id="chords" style="height:1600px;"
+
+<div id="chords" style="height:1600px; width:832px;">
+
 <iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_africa.html" style="overflow:hidden;"></iframe>
 
 <iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_middle_east.html" style="overflow:hidden;"></iframe>
+
 </div>
+
 # Top 3 meest interessante bevindingen
