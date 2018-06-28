@@ -40,9 +40,9 @@ Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart 
 
 ## Producten per land
 
-<div id="chords" style="height:1600px; width:832px;">
+<div id="chords" style="height:auto; width:832px;">
 
-<iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_africa.html" style="overflow:hidden;"></iframe>
+<iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_africa.html" style="overflow:hidden; height:950px"></iframe>
 
 <iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_middle_east.html" style="overflow:hidden;"></iframe>
 

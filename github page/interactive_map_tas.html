@@ -10,20 +10,24 @@
                 height: 100%;
                 margin: 0px;
                 }
-        
+
             #chartdiv {
                 width: 416px;
                 height: 70%;
                 }
-        
+        #yearcount1{
+          background-image: linear-gradient(120deg, #155799, #159957);
+          color:white;
+          font-family: arial;
+        }
         </style>
 </head>
 
 
 <div id="yearcount1"> 1991
-  
+
 </div>
-  
+
 <div id="chartdiv"></div>
 
 
@@ -33,9 +37,9 @@
     var isBootstrapEvent = false;
     if (window.jQuery) {
         var all = jQuery('*');
-        jQuery.each(['hide.bs.dropdown', 
-            'hide.bs.collapse', 
-            'hide.bs.modal', 
+        jQuery.each(['hide.bs.dropdown',
+            'hide.bs.collapse',
+            'hide.bs.modal',
             'hide.bs.tooltip',
             'hide.bs.popover'], function(index, eventName) {
             all.on(eventName, function( event ) {
@@ -313,7 +317,7 @@ var interval, myVar = 1;
 function myStartFunction() {
     alertFunc(myVar + 1991);
     setDataset(myVar);
-    if (myVar < 23) myVar++; 
+    if (myVar < 23) myVar++;
     else myVar = 0;
 
 
