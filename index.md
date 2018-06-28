@@ -8,19 +8,28 @@ iframe{
   border: none;
   overflow: hidden;
 }
+.grafiek{
+  width: 416px;
+  height: 650px;
+}
 </style>
 # Introductie
-we hebben ons bezig gehouden met vluchtelingen, voedselprijzen, neerslag en temperatuur. De vraag was of deze drie datasets invloed hadden op elkaar en of we oplossingen konden vinden om  de vluchtelingenstromen te verminderen.
+Dit onderzoek poogt patronen te zoeken in de prijsveranderingen van voedsel, specifiek in de regio’s Afrika en en het Midden-Oosten.  Hoofdzakelijk wordt er prijsverandering onderzocht onder invloed van nabij gelegen markten van verschillende landen.  Andere producten zijn hevig afhankelijk van klimato-
+logische verschijnselen zoals temperatuur en regenval.  En lokale voedselprijzen hebben weer invloed op migratiestromen in een regio.
 # Interactieve kaarten
-Om de data weer te geven hebben we twee interactieve kaarten gemaakt. Een kaart die de voedselprijzen per land weergeeft en een kaart die de temperatuur per land weergeeft.
-<a href="github pages/interactive_map"> Klik hier voor de kaart over voedselprijzen.</a>
+Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart die de voedselprijzen per land weergeeft, een kaart die de temperatuur per land weergeeft en een kaart die neerslag per land weergeeft.
 
-# Resultaten
 <div id="idiv" style="height:550px; width:500px;">
 <iframe src="github page/interactive_maps_pr_tas.html" scrolling="no" style="overflow:hidden;"></iframe>
 </div>
-# Top 3 meest interessante bevindingen
+
 <div id="intmap" style="height:650px; width:832px;">
 <iframe src="github page/interactive_map.html" style="overflow:hidden;"></iframe>
 </div>
-![Rijstprijs tegenover vluchtelingen uit nigeria](/plotted comparisons/regression_plots/Nigeria/Nigeria_Rice (local).html)
+# Resultaten
+<div id="grafiek">
+<iframe src="github page/plotted comparisons/regression_plots/Sudan/Sudan_wheat.html"></iframe>
+<img src="github page/plotted comparisons/average_prices_per_country/average_prices_uganda.png"></img>
+![Average prices uganda](/github page/plotted comparisons/average_prices_per_country/average_prices_uganda.png)
+</div>
+# Top 3 meest interessante bevindingen
