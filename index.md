@@ -32,20 +32,23 @@ Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart 
 
 ## Gemiddelde prijzen
 
-![gemiddelde prijs uganda](plotted comparisons/average_prices_per_country/average_prices_niger.png)
+![gemiddelde prijs niger](plotted comparisons/average_prices_per_country/average_prices_niger.png)
 
 
 ## Producten per land
 
 <div id="chords" style="height:auto; width:832px;">
 
-<iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_africa.html" style="overflow:hidden; height:950px"></iframe>
+<iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_africa.html" scrolling="no" style="overflow:hidden; height:950px"></iframe>
 
-<iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_middle_east.html" style="overflow:hidden; height:950px"></iframe>
+<iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_middle_east.html" scrolling="no" style="overflow:hidden; height:950px"></iframe>
 
 </div>
 
 # Top 3 meest interessante bevindingen
 ## Lokaal tegenover geïmporteerde rijst
 
-![alt-text](/plotted comparisons/local_vs_imported_maize_senegal.png)
+![alt-text](plotted comparisons/local_vs_imported_product/local_vs_imported_maize_senegal.png)
+Je kan zien dat de prijs van lokale rijst een lineair verband heeft met de prijs van geïmporteerde rijst.
+
+## Gemiddelde prijzen
