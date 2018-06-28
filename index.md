@@ -30,18 +30,15 @@ Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart 
 # Resultaten
 
 
-## Gemiddelde prijzen
-
-![gemiddelde prijs niger](plotted comparisons/average_prices_per_country/average_prices_niger.png)
 
 
 ## Producten per land
 
 <div id="chords" style="height:auto; width:832px;">
 
-<iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_africa.html" scrolling="no" style="overflow:hidden; height:950px"></iframe>
+<iframe src="plotted comparisons/chord_charts/chord_chart_africa.html" scrolling="no" style="overflow:hidden; height:950px"></iframe>
 
-<iframe id="chord" src="plotted comparisons/chord_charts/chord_chart_middle_east.html" scrolling="no" style="overflow:hidden; height:950px"></iframe>
+<iframe src="plotted comparisons/chord_charts/chord_chart_middle_east.html" scrolling="no" style="overflow:hidden; height:950px"></iframe>
 
 </div>
 
@@ -52,3 +49,10 @@ Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart 
 Je kan zien dat de prijs van lokale rijst een lineair verband heeft met de prijs van geïmporteerde rijst.
 
 ## Gemiddelde prijzen
+
+![gemiddelde prijs niger](plotted comparisons/average_prices_per_country/average_prices_niger.png)
+
+Het is duidelijk zichtbaar dat de prijzen in Niger over het algemeen gestegen zijn.
+
+## Temperatuur, neerslag en voedselprijzen
+Hier kan je zien dat de hoge temperatuur heeft gezorgd voor een slechte oogst, waardoor de prijs steeg in 2012.
