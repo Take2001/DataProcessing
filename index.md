@@ -48,6 +48,17 @@ Afrika
 
 </div>
 
+## Vluchtelingen per land
+
+
+stacked_area_charts
+
+Midden-Oosten
+![alt-text](docs/stacked_area_charts/stacked_area_middle_east.png)
+
+Afrika
+![alt-text](docs/stacked_area_charts/stacked_area_africa.png)
+
 # Top 3 meest interessante bevindingen
 ## Lokale- tegenover geïmporteerde producten
 Senegal
