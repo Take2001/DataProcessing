@@ -299,6 +299,14 @@ zoomOnDoubleClick: false,
 
 });
 
+        map.addListener("clickMapObject", function(event) {
+            country = event.mapObject.id;
+
+            document.getElementById("img").src="form.html";
+
+        });
+
+
   function setDataset(i) {
       map.dataProvider.areas = dataSets[Number(i)];
       map.validateData();
