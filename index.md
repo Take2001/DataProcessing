@@ -68,4 +68,4 @@ Hier kan je zien dat de hoge temperatuur heeft gezorgd voor een slechte oogst, w
 
 Hier kan je zien dat de prijs laag blijft mits de temperatuur ook laag blijft.
 
-<iframe src="github page/slideshow_take.html" style="height:832px; width:832px"></iframe>
+<iframe src="github page/slideshow_take.html" scrolling="no" style="height:832px; width:832px"></iframe>
