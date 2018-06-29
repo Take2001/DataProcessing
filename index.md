@@ -83,7 +83,7 @@ Afrika
 <iframe src="github page/interactive_maps_pr_tas.html" scrolling="no" style="overflow:hidden;"></iframe>
 </div>
 
-Hier kan je zien dat de hoge temperatuur heeft gezorgd voor een slechte oogst, waardoor de prijs steeg in 2013.
+In de grafiek hieronder is te zien dat de hoge temperatuur heeft gezorgd voor een slechte oogst, waardoor de prijs steeg in 2013.
 
 Hier kan je zien dat de prijs duidelijk afhankelijk is van de neerslag en temperatuur.
 
