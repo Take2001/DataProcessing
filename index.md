@@ -58,6 +58,10 @@ Je kan zien dat de prijs van lokale rijst een lineair verband heeft met de prijs
 ## Gemiddelde prijzen van producten in Niger
 
 ![gemiddelde prijs niger](docs/average_prices_per_country/average_prices_niger.png)
+![gemiddelde prijs kenya](docs/average_prices_per_country/average_prices_kenya.png)
+![gemiddelde prijs mali](docs/average_prices_per_country/average_prices_mali.png)
+![gemiddelde prijs senegal](docs/average_prices_per_country/average_prices_senegal.png)
+![gemiddelde prijs uganda](docs/average_prices_per_country/average_prices_uganda.png)
 
 Het is duidelijk zichtbaar dat de prijzen in Niger over het algemeen gestegen zijn.
 
