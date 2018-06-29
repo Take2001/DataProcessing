@@ -45,10 +45,13 @@ Afrika
 ## Lokale- tegenover geïmporteerde producten
 Senegal
 ![alt-text](docs/local_vs_imported_product/local_vs_imported_maize_senegal.png)
-Mais
+
+Rwanda
 ![alt-text](docs/local_vs_imported_product/local_vs_imported_maize_flour_rwanda.png)
+
 Democratische republiek Congo
 ![alt-text](docs/local_vs_imported_product/local_vs_imported_rice_democratic_republic_of_the_congo.png)
+
 Mali
 ![alt-text](docs/local_vs_imported_product/local_vs_imported_rice_mali.png)
 
@@ -57,8 +60,10 @@ Je kan zien dat de prijs van lokale rijst een lineair verband heeft met de prijs
 ## Gemiddelde prijzen van producten in verschillende landen
 Niger
 ![gemiddelde prijs niger](docs/average_prices_per_country/average_prices_niger.png)
+
 Senegal
 ![gemiddelde prijs senegal](docs/average_prices_per_country/average_prices_senegal.png)
+
 Uganda
 ![gemiddelde prijs uganda](docs/average_prices_per_country/average_prices_uganda.png)
 
