@@ -38,13 +38,13 @@ Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart 
 
 <div id="chords" style="height:auto; width:832px;">
 
-Afrika
-
-<iframe src="docs/chord_charts/chord_chart_africa.html" scrolling="no" style="overflow:hidden; height:825px"></iframe>
-
 Midden-Oosten
 
 <iframe src="docs/chord_charts/chord_chart_middle_east.html" scrolling="no" style="overflow:hidden; height:825px"></iframe>
+
+Afrika
+
+<iframe src="docs/chord_charts/chord_chart_africa.html" scrolling="no" style="overflow:hidden; height:825px"></iframe>
 
 </div>
 
