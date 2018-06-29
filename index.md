@@ -44,16 +44,16 @@ Afrika
 # Top 3 meest interessante bevindingen
 ## Lokale- tegenover geïmporteerde producten
 Senegal
-![alt-text](docs/local_vs_imported_product/local_vs_imported_maize_senegal.png)
+![prijs mais senegal](docs/local_vs_imported_product/local_vs_imported_maize_senegal.png)
 
 Rwanda
-![alt-text](docs/local_vs_imported_product/local_vs_imported_maize_flour_rwanda.png)
+![prijs mais bloem rwanda](docs/local_vs_imported_product/local_vs_imported_maize_flour_rwanda.png)
 
 Democratische republiek Congo
-![alt-text](docs/local_vs_imported_product/local_vs_imported_rice_democratic_republic_of_the_congo.png)
+![prijs rijst DRC](docs/local_vs_imported_product/local_vs_imported_rice_democratic_republic_of_the_congo.png)
 
 Mali
-![alt-text](docs/local_vs_imported_product/local_vs_imported_rice_mali.png)
+![prijs rijst mali](docs/local_vs_imported_product/local_vs_imported_rice_mali.png)
 
 Je kan zien dat de prijs van lokale rijst een lineair verband heeft met de prijs van geïmporteerde rijst.
 
