@@ -149,14 +149,8 @@ var map = AmCharts.makeChart("chartdiv", {
   map.addListener("clickMapObject", function(event) {
     var x = event.mapObject.id;
 
-
-    document.getElementById('wideplots').onclick = function() {
-
-    var iframe = document.createElement('iframe');
-    iframe.src = x + ".html";
-    document.body.appendChild(iframe);
-
-};
+  document.getElementById("info").src = x + ".html";
+});
 
 
 </script>
