@@ -72,7 +72,7 @@ Afrika
 ![alt-text](docs/stacked_area_charts/stacked_area_africa.png)
 
 
-## Temperatuur, neerslag en voedselprijzen
+## Temperatuur en neerslag
 
 <div id="idiv" style="height:550px; width:500px;">
 <iframe src="github page/interactive_maps_pr_tas.html" scrolling="no" style="overflow:hidden;"></iframe>
