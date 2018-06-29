@@ -27,8 +27,6 @@ Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart 
 <iframe src="github page/interactive_map.html" style="overflow:hidden;" ></iframe>
 </div>
 
-<div id="wideplots" style="height:300px; width:832px;"></div>
-
 # Resultaten
 
 
