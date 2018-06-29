@@ -49,7 +49,7 @@ Midden-Oosten
 </div>
 
 # Top 3 meest interessante bevindingen
-## Lokaal tegenover geïmporteerde rijst in Senegal
+## Lokale- tegenover geïmporteerde rijst in Senegal
 
 ![alt-text](docs/local_vs_imported_product/local_vs_imported_maize_senegal.png)
 
