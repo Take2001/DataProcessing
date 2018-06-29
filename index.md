@@ -19,10 +19,6 @@ logische verschijnselen zoals temperatuur en regenval.  En lokale voedselprijzen
 # Interactieve kaarten
 Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart die neerslag per land weergeeft, een kaart die de temperatuur per land weergeeft en een kaart die de voedselprijzen per land weergeeft.
 
-<div id="idiv" style="height:550px; width:500px;">
-<iframe src="github page/interactive_maps_pr_tas.html" scrolling="no" style="overflow:hidden;"></iframe>
-</div>
-
 <div id="intmap" style="height:650px; width:832px;">
 <iframe src="github page/interactive_map.html" style="overflow:hidden;" ></iframe>
 </div>
@@ -30,11 +26,7 @@ Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart 
 # Resultaten
 
 
-
-
 ## Producten per land
-
-
 
 <div id="chords" style="height:auto; width:832px;">
 
@@ -48,13 +40,6 @@ Afrika
 
 </div>
 
-## Migranten per land
-
-Midden-Oosten
-![alt-text](docs/stacked_area_charts/stacked_area_middle_east.png)
-
-Afrika
-![alt-text](docs/stacked_area_charts/stacked_area_africa.png)
 
 # Top 3 meest interessante bevindingen
 ## Lokale- tegenover geïmporteerde producten
@@ -77,7 +62,22 @@ Senegal
 Uganda
 ![gemiddelde prijs uganda](docs/average_prices_per_country/average_prices_uganda.png)
 
+
+## Migranten per land
+
+Midden-Oosten
+![alt-text](docs/stacked_area_charts/stacked_area_middle_east.png)
+
+Afrika
+![alt-text](docs/stacked_area_charts/stacked_area_africa.png)
+
+
 ## Temperatuur, neerslag en voedselprijzen
+
+<div id="idiv" style="height:550px; width:500px;">
+<iframe src="github page/interactive_maps_pr_tas.html" scrolling="no" style="overflow:hidden;"></iframe>
+</div>
+
 Hier kan je zien dat de hoge temperatuur heeft gezorgd voor een slechte oogst, waardoor de prijs steeg in 2013.
 
 Hier kan je zien dat de prijs duidelijk afhankelijk is van de neerslag en temperatuur.
