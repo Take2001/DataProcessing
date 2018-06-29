@@ -49,13 +49,13 @@ Midden-Oosten
 </div>
 
 # Top 3 meest interessante bevindingen
-## Lokaal tegenover geïmporteerde rijst
+## Lokaal tegenover geïmporteerde rijst in Senegal
 
 ![alt-text](docs/local_vs_imported_product/local_vs_imported_maize_senegal.png)
 
 Je kan zien dat de prijs van lokale rijst een lineair verband heeft met de prijs van geïmporteerde rijst.
 
-## Gemiddelde prijzen
+## Gemiddelde prijzen van producten in Niger
 
 ![gemiddelde prijs niger](docs/average_prices_per_country/average_prices_niger.png)
 
@@ -63,3 +63,5 @@ Het is duidelijk zichtbaar dat de prijzen in Niger over het algemeen gestegen zi
 
 ## Temperatuur, neerslag en voedselprijzen
 Hier kan je zien dat de hoge temperatuur heeft gezorgd voor een slechte oogst, waardoor de prijs steeg in 2012.
+
+
