@@ -16,8 +16,8 @@ iframe{
 # Introductie
 Dit onderzoek poogt patronen te zoeken in de prijsveranderingen van voedsel, specifiek in de regio’s Afrika en en het Midden-Oosten.  Hoofdzakelijk wordt er prijsverandering onderzocht onder invloed van nabij gelegen markten van verschillende landen.  Andere producten zijn hevig afhankelijk van klimato-
 logische verschijnselen zoals temperatuur en regenval.  En lokale voedselprijzen hebben weer invloed op migratiestromen in een regio.
-# Interactieve kaarten
-Om de data weer te geven hebben we drie interactieve kaarten gemaakt. Een kaart die neerslag per land weergeeft, een kaart die de temperatuur per land weergeeft en een kaart die de voedselprijzen per land weergeeft.
+
+# Voedselprijzen per land
 
 <div id="intmap" style="height:650px; width:832px;">
 <iframe src="github page/interactive_map.html" style="overflow:hidden;" ></iframe>
