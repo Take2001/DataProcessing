@@ -59,12 +59,12 @@ Afrika
 Je kan zien dat de prijs van lokale rijst een lineair verband heeft met de prijs van geïmporteerde rijst.
 
 ## Gemiddelde prijzen van producten in verschillende landen
-
+Niger
 ![gemiddelde prijs niger](docs/average_prices_per_country/average_prices_niger.png)
+Senegal
 ![gemiddelde prijs senegal](docs/average_prices_per_country/average_prices_senegal.png)
+Uganda
 ![gemiddelde prijs uganda](docs/average_prices_per_country/average_prices_uganda.png)
-
-Het is duidelijk zichtbaar dat de prijzen in Niger over het algemeen gestegen zijn.
 
 ## Temperatuur, neerslag en voedselprijzen
 Hier kan je zien dat de hoge temperatuur heeft gezorgd voor een slechte oogst, waardoor de prijs steeg in 2013.
