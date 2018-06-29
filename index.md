@@ -45,16 +45,12 @@ Afrika
 ## Lokale- tegenover geïmporteerde producten
 Senegal
 ![prijs mais senegal](docs/local_vs_imported_product/local_vs_imported_maize_senegal.png)
-
 Rwanda
 ![prijs mais bloem rwanda](docs/local_vs_imported_product/local_vs_imported_maize_flour_rwanda.png)
-
 Democratische republiek Congo
 ![prijs rijst DRC](docs/local_vs_imported_product/local_vs_imported_rice_democratic_republic_of_the_congo.png)
-
 Mali
 ![prijs rijst mali](docs/local_vs_imported_product/local_vs_imported_rice_mali.png)
-
 Je kan zien dat de prijs van lokale rijst een lineair verband heeft met de prijs van geïmporteerde rijst.
 
 ## Gemiddelde prijzen van producten in verschillende landen
