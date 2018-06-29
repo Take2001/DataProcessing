@@ -62,6 +62,10 @@ Je kan zien dat de prijs van lokale rijst een lineair verband heeft met de prijs
 Het is duidelijk zichtbaar dat de prijzen in Niger over het algemeen gestegen zijn.
 
 ## Temperatuur, neerslag en voedselprijzen
-Hier kan je zien dat de hoge temperatuur heeft gezorgd voor een slechte oogst, waardoor de prijs steeg in 2012.
+Hier kan je zien dat de hoge temperatuur heeft gezorgd voor een slechte oogst, waardoor de prijs steeg in 2013.
 
+![prijsstijging mais niger](docs/pngs/Maize_niger.png)
 
+Hier kan je zien dat de prijs laag blijft mits de temperatuur ook laag blijft.
+
+![prijsstijging mais zimbabwe](docs/pngs/Maize_zimbabwe.png)
