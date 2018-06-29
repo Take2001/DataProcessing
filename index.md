@@ -50,7 +50,7 @@ Afrika
 
 # Top 3 meest interessante bevindingen
 ## Lokale- tegenover geïmporteerde producten
-Sengegal
+Senegal
 ![alt-text](docs/local_vs_imported_product/local_vs_imported_maize_senegal.png)
 Mais
 ![alt-text](docs/local_vs_imported_product/local_vs_imported_maize_flour_rwanda.png)
