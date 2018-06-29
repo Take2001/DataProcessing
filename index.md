@@ -68,6 +68,6 @@ Het is duidelijk zichtbaar dat de prijzen in Niger over het algemeen gestegen zi
 ## Temperatuur, neerslag en voedselprijzen
 Hier kan je zien dat de hoge temperatuur heeft gezorgd voor een slechte oogst, waardoor de prijs steeg in 2013.
 
-Hier kan je zien dat de prijs laag blijft mits de temperatuur ook laag blijft.
+Hier kan je zien dat de prijs duidelijk afhankelijk is van de neerslag en temperatuur.
 
 <iframe src="github page/slideshow_take.html" scrolling="no" style="height:700px; width:832px"></iframe>

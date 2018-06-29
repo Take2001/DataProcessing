@@ -1,6 +1,6 @@
 <script src="https://www.amcharts.com/lib/3/ammap.js"></script>
 <script src="https://www.amcharts.com/lib/3/maps/js/worldLow.js"></script>
-<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>	
+<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,22 +11,25 @@
                 height: 100%;
                 margin: 0px;
                 }
-        
-        
+
+
             #chartdiv {
                 width: 416px;
                 height: 70%;
                 }
 
-        
-        
+            #yearcount1{
+              font-family: arial;
+            }
+
+
         </style>
 </head>
 
 
 <div id="yearcount1" style="background-color: #159957; color: white;
-background-image: linear-gradient(120deg, #155799, #159957); font-family: arial;"> 1991</div>
-  
+background-image: linear-gradient(120deg, #155799, #159957);"> 1991</div>
+
 <div id="chartdiv"></div>
 
 
@@ -38,9 +41,9 @@ background-image: linear-gradient(120deg, #155799, #159957); font-family: arial;
     var isBootstrapEvent = false;
     if (window.jQuery) {
         var all = jQuery('*');
-        jQuery.each(['hide.bs.dropdown', 
-            'hide.bs.collapse', 
-            'hide.bs.modal', 
+        jQuery.each(['hide.bs.dropdown',
+            'hide.bs.collapse',
+            'hide.bs.modal',
             'hide.bs.tooltip',
             'hide.bs.popover'], function(index, eventName) {
             all.on(eventName, function( event ) {
@@ -63,10 +66,10 @@ background-image: linear-gradient(120deg, #155799, #159957); font-family: arial;
 
 
 <script>
-    
-  
 
-  
+
+
+
 
 var map = AmCharts.makeChart("chartdiv", {
  type: "map",
@@ -318,7 +321,7 @@ var interval, myVar = 1;
 function myStartFunction() {
     alertFunc(myVar + 1991);
     setDataset(myVar);
-    if (myVar < 23) myVar++; 
+    if (myVar < 23) myVar++;
     else myVar = 0;
 
 
