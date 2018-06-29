@@ -52,6 +52,9 @@ Midden-Oosten
 ## Lokale- tegenover geïmporteerde rijst in Senegal
 
 ![alt-text](docs/local_vs_imported_product/local_vs_imported_maize_senegal.png)
+![alt-text](docs/local_vs_imported_product/local_vs_imported_maize_flour_rwanda.png)
+![alt-text](docs/local_vs_imported_product/local_vs_imported_rice_democratic_republic_of_the_congo.png)
+![alt-text](docs/local_vs_imported_product/local_vs_imported_rice_mali.png)
 
 Je kan zien dat de prijs van lokale rijst een lineair verband heeft met de prijs van geïmporteerde rijst.
 
