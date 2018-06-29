@@ -62,13 +62,13 @@ products={
 };
 
 var map = AmCharts.makeChart("chartdiv", {
-    "type": "map",
-    "theme": "light",
-    "dataProvider": {
+      "type": "map",
+      "theme": "light",
+      "dataProvider": {
       "map": "worldLow",
       "zoomLevel": 3.6,
-  "zoomLongitude": 28.0174,
-  "zoomLatitude": 3.1076,
+      "zoomLongitude": 28.0174,
+      "zoomLatitude": 3.1076,
       "areas": [
         { "id": "AE", "color": "darkgrey" },
         { "id": "AF", "autoZoom": true, "selectedColor": "#CC0000" },
@@ -138,6 +138,7 @@ var map = AmCharts.makeChart("chartdiv", {
     },
 
     "areasSettings": {
+      "selectedColor": "#CC0000",
       "alpha": "0.7",
       "color": "#155799",
       "rollOverColor": "blue"
@@ -148,8 +149,14 @@ var map = AmCharts.makeChart("chartdiv", {
   map.addListener("clickMapObject", function(event) {
     var x = event.mapObject.id;
 
-  document.getElementById("info").src = x + ".html";
-});
+
+    document.getElementById('wideplots').onclick = function() {
+
+    var iframe = document.createElement('iframe');
+    iframe.src = x + ".html";
+    document.body.appendChild(iframe);
+
+};
 
 
 </script>
